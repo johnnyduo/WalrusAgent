@@ -54,10 +54,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
             </h2>
 
             <p className="text-base text-gray-400 max-w-2xl leading-relaxed">
-              <span className="text-walrus-purple font-semibold">7 AI agents</span> coordinate to train <span className="text-walrus-purple font-semibold">real neural networks</span> directly in your browser with TensorFlow.js. 
+              <span className="text-walrus-purple font-semibold">Multi-agents</span> coordinate to train <span className="text-walrus-purple font-semibold">real neural networks</span> directly in your browser with TensorFlow.js. 
               Store model weights on <span className="text-walrus-teal font-semibold">Walrus Protocol</span> with Seal certification. 
               Track contributions on <span className="text-walrus-purple font-semibold">Sui blockchain</span>. 
-              True <span className="text-walrus-teal font-semibold">multi-agent</span> decentralized AI training—no servers required.
+              True <span className="text-walrus-teal font-semibold">decentralized</span> AI training—no servers required.
             </p>
 
             <div className="flex flex-wrap gap-4">

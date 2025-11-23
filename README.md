@@ -32,7 +32,7 @@
 🐋 Publisher: `https://publisher.walrus-testnet.walrus.space`  
 🐋 System Object: `0x98ebc47370603fe81d9e15491b2f1443d619d1dab720d586e429ed233e1255c1`
 
-🔗 **Live Demo**: [Deploy on Vercel]  
+🔗 **Live Demo**: [walrus-agent.vercel.app](https://walrus-agent.vercel.app/)  
 🐋 **Walrus Scan**: [walruscan.com/testnet](https://walruscan.com/testnet)  
 🔗 **Sui Explorer**: [suiscan.xyz/testnet](https://suiscan.xyz/testnet)
 
@@ -816,7 +816,7 @@ Upload to Walrus (3 sec) → View Results → Done! ✅
 ## 🎬 Demo & Screenshots
 
 ### Live Demo
-**URL**: [Coming Soon - Deploy to Vercel]
+**URL**: [https://walrus-agent.vercel.app/](https://walrus-agent.vercel.app/)
 
 ### Video Walkthrough
 **YouTube**: [Coming Soon - 3-minute demo video]
@@ -1739,6 +1739,6 @@ Built with ❤️ for Walrus Haulout Hackathon - AI x Data Track
 
 **⭐ Star us on GitHub if you find this project helpful!**
 
-[Live Demo](https://walrus.quest) • [Documentation](./docs) • [Report Bug](https://github.com/johnnyduo/WalrusAgents/issues) • [Request Feature](https://github.com/johnnyduo/WalrusAgents/issues)
+[Live Demo](https://walrus-agent.vercel.app/) • [Documentation](./docs) • [Report Bug](https://github.com/johnnyduo/WalrusAgents/issues) • [Request Feature](https://github.com/johnnyduo/WalrusAgents/issues)
 
 </div>
