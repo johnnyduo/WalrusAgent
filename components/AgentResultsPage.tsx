@@ -140,9 +140,9 @@ export const AgentResultsPage: React.FC<AgentResultsPageProps> = ({
     if (!ability) return null;
 
     const orders: { [key: string]: string } = {
-      'a1': `"Monitor all major DeFi token prices using ${ability.apis.join(' & ')}. Provide real-time market intelligence on HBAR, ETH, BTC, and SAUCE pairs. Track volume spikes and price movements."`,
-      'a2': `"Analyze market sentiment across news sources using ${ability.apis.join(' & ')}. Process breaking news about Hedera, DeFi, and crypto markets. Score sentiment and detect emerging trends."`,
-      'a3': `"Execute HBAR trading operations on ${ability.apis[0]} when conditions are favorable. Trade HBAR/USDC and HBAR/SAUCE pairs, calculate slippage, and monitor DEX pools.${(ability as any).maxTradeSize ? ` Maximum trade: ${(ability as any).maxTradeSize}.` : ''}"`,
+      'a1': `"Monitor all major DeFi token prices using ${ability.apis.join(' & ')}. Provide real-time market intelligence on SUI, ETH, BTC, and USDC pairs. Track volume spikes and price movements."`,
+      'a2': `"Analyze market sentiment across news sources using ${ability.apis.join(' & ')}. Process breaking news about Sui, DeFi, and crypto markets. Score sentiment and detect emerging trends."`,
+      'a3': `"Execute SUI trading operations on ${ability.apis[0]} when conditions are favorable. Trade SUI/USDC pairs, calculate slippage, and monitor DEX pools.${(ability as any).maxTradeSize ? ` Maximum trade: ${(ability as any).maxTradeSize}.` : ''}"`,
       'a4': `"Assess portfolio risk and calculate risk metrics using ${ability.apis.join(' & ')}. Analyze volatility, risk-reward ratios, position sizing, and portfolio exposure. Protect against excessive risk."`,
       'a5': `"Generate AI-powered predictions using ${ability.apis.join(' & ')}. Analyze chart patterns, forecast price movements, and identify support/resistance levels for key assets."`,
       'a6': `"Monitor breaking news and whale movements using ${ability.apis.join(' & ')}. Alert on major transactions, detect market-moving events, and track real-time developments."`
@@ -370,7 +370,7 @@ export const AgentResultsPage: React.FC<AgentResultsPageProps> = ({
                     className="flex items-center gap-1 px-3 py-1.5 bg-walrus-teal/20 hover:bg-walrus-teal/30 border border-walrus-teal/50 rounded text-walrus-teal text-xs font-mono transition-all"
                   >
                     <ExternalLink className="w-3 h-3" />
-                    HashScan
+                    Suiscan
                   </a>
                 </div>
               </div>
@@ -382,7 +382,7 @@ export const AgentResultsPage: React.FC<AgentResultsPageProps> = ({
                 <span>TRADE LIMITS & REQUIREMENTS</span>
               </div>
               <div className="text-xs text-gray-400 mb-2">
-                Max per trade: 0.05 HBAR • Network: Hedera Testnet • Auto-execution enabled
+                Max per trade: 0.05 SUI • Network: Sui Testnet • Auto-execution enabled
               </div>
               <div className="text-xs text-yellow-400 bg-yellow-500/10 border border-yellow-500/30 rounded px-2 py-1">
                 ⚠️ Trading operations require Merchant agent (Reynard Swift - a3) to be active on canvas
@@ -724,7 +724,7 @@ export const AgentResultsPage: React.FC<AgentResultsPageProps> = ({
                                 onClick={(e) => e.stopPropagation()}
                               >
                                 <ExternalLink className="w-3 h-3" />
-                                View Transaction on HashScan
+                                View Transaction on Suiscan
                               </a>
                             )}
                           </div>

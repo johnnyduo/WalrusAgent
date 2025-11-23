@@ -14,7 +14,8 @@ export default defineConfig(({ mode }) => {
         'import.meta.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
         'import.meta.env.TWELVEDATA_API_KEY': JSON.stringify(env.TWELVEDATA_API_KEY),
         'import.meta.env.NEWS_API_KEY': JSON.stringify(env.NEWS_API_KEY),
-        'import.meta.env.HEDERA_MIRROR_NODE_URL': JSON.stringify(env.HEDERA_MIRROR_NODE_URL || 'https://mainnet.mirrornode.hedera.com/api/v1'),
+        'import.meta.env.SUISCAN_API_KEY': JSON.stringify(env.SUISCAN_API_KEY),
+        'import.meta.env.SUISCAN_API_URL': JSON.stringify(env.SUISCAN_API_URL || 'https://suiscan.xyz/api'),
       },
       resolve: {
         alias: {

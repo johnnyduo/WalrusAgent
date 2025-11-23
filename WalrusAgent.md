@@ -48,11 +48,11 @@ They want projects that show:
 
 We're redesigning it to:
 
-## ❌ Remove Hedera-specific features
+## ✅ Sui-native features implemented
 
-* Remove HTS, HCS
-* Remove x402
-* Remove Hedera consensus patterns
+* Sui Move smart contracts
+* Agent registry on Sui
+* Training rewards contract
 
 ## ✔ Replace with Sui-native equivalents
 

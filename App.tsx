@@ -116,31 +116,9 @@ if (typeof window !== 'undefined') {
   };
 }
 
-// Helper to get Hedera testnet explorer URL
-const getHederaExplorerUrl = (txHash: string) => {
-  return `https://hashscan.io/testnet/transaction/${txHash}`;
-};
-
-// Helper to fetch transaction from Hedera Mirror Node
-const fetchHederaTransaction = async (txHash: string): Promise<any> => {
-  try {
-    // Remove 0x prefix if present
-    const cleanHash = txHash.startsWith('0x') ? txHash.slice(2) : txHash;
-    const url = `https://testnet.mirrornode.hedera.com/api/v1/contracts/results/${cleanHash}`;
-    console.log('🌐 Fetching transaction from Hedera Mirror Node:', url);
-    
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Mirror node returned ${response.status}`);
-    }
-    
-    const data = await response.json();
-    console.log('✅ Hedera transaction data:', data);
-    return data;
-  } catch (error) {
-    console.error('❌ Failed to fetch from Hedera mirror node:', error);
-    return null;
-  }
+// Helper to get Sui explorer URL
+const getSuiExplorerUrl = (txDigest: string) => {
+  return `https://suiscan.xyz/testnet/tx/${txDigest}`;
 };
 
 const App: React.FC = () => {
@@ -284,7 +262,7 @@ const App: React.FC = () => {
         addLog('SYSTEM', '✅ Gemini AI: Ready for agent intelligence');
         addLog('SYSTEM', '✅ TwelveData: Ready for crypto market data');
         addLog('SYSTEM', '✅ News API: Ready for sentiment analysis');
-        addLog('SYSTEM', '✅ Hedera Testnet: Connected (Chain ID: 296)');
+        addLog('SYSTEM', '✅ Sui Testnet: Connected');
       }, 1000);
     };
     
@@ -328,7 +306,7 @@ const App: React.FC = () => {
             rel="noopener noreferrer"
             className="text-walrus-teal hover:underline text-sm"
           >
-            View on Hedera Explorer →
+            View on Sui Explorer →
           </a>
           <div className="text-xs text-gray-400 mt-1 truncate">Agent: {agentAddress.slice(0, 20)}...</div>
         </div>,
@@ -714,14 +692,14 @@ const App: React.FC = () => {
     if (pendingFundRequest) return;
     
     setPendingFundRequest(true);
-    showAgentDialogue('a0', 'error', `⚠️ INSUFFICIENT FUNDS! Need HBAR to execute autonomous swaps. Please deposit to Captain fund.`);
+    showAgentDialogue('a0', 'error', `⚠️ INSUFFICIENT FUNDS! Need SUI to execute autonomous swaps. Please deposit to Captain fund.`);
     addLog('SYSTEM', '🚨 Commander requesting fund deposit for autonomous trading');
     
     // Auto-clear request after 10 seconds
     setTimeout(() => setPendingFundRequest(false), 10000);
   }, [pendingFundRequest, showAgentDialogue]);
 
-  // --- HBAR→SAUCE/USDC Autonomous Swap (Merchant Reynard - a3) ---
+  // --- SUI→USDC Autonomous Swap (Merchant Reynard - a3) ---
   const executeAutonomousSwap = useCallback(async (marketData: any, sentimentScore: number, agentId: string) => {
     if (!activeAgents.includes(agentId)) return;
     if (!activeAgents.includes('a0')) return; // Commander not active
@@ -761,7 +739,7 @@ const App: React.FC = () => {
       [agentId]: {
         isActive: true,
         progress: 0,
-        task: `Swapping ${swapDecision.recommendedAmount} HBAR → SAUCE/USDC`,
+        task: `Swapping ${swapDecision.recommendedAmount} SUI → USDC`,
         startTime: Date.now()
       }
     }));
@@ -769,7 +747,7 @@ const App: React.FC = () => {
     // Agent executes swap autonomously (NO approval needed)
     agentStatusManager.setStatus(agentId, `Signal detected: ${swapDecision.reason}`);
     addLog('A2A', `[${agent.name}]: 🔔 Swap signal! ${swapDecision.reason}`);
-    addLog('A2A', `[${agent.name}]: Executing autonomous swap: ${swapDecision.recommendedAmount} HBAR`);
+    addLog('A2A', `[${agent.name}]: Executing autonomous swap: ${swapDecision.recommendedAmount} SUI`);
     
     // Create x402 stream for fund deduction (Commander -> Agent)
     const edgeId = `reactflow__edge-a0-${agentId}`;
@@ -787,8 +765,8 @@ const App: React.FC = () => {
     setTimeout(async () => {
       // Deduct from captain fund
       // Fund deduction removed - using on-chain balance
-      addLog('x402', `💸 Deducted ${swapDecision.recommendedAmount} HBAR from Captain fund`);
-      agentStatusManager.setStatus(agentId, `Executing swap: ${swapDecision.recommendedAmount} HBAR`);
+      addLog('x402', `💸 Deducted ${swapDecision.recommendedAmount} SUI from Captain fund`);
+      agentStatusManager.setStatus(agentId, `Executing swap: ${swapDecision.recommendedAmount} SUI`);
       
       // Progress: 40%
       setAgentProgress(prev => ({
@@ -799,7 +777,7 @@ const App: React.FC = () => {
       try {
         // Get quote
         const quote = await sauceSwapService.getSwapQuote(swapDecision.recommendedAmount);
-        addLog('SYSTEM', `[${agent.name}] Quote: ${swapDecision.recommendedAmount} HBAR → ${quote.amountOut.toFixed(2)} SAUCE (Impact: ${quote.priceImpact}%)`);
+        addLog('SYSTEM', `[${agent.name}] Quote: ${swapDecision.recommendedAmount} SUI → ${quote.amountOut.toFixed(2)} USDC (Impact: ${quote.priceImpact}%)`);
         
         // Progress: 60%
         setAgentProgress(prev => ({
@@ -817,18 +795,18 @@ const App: React.FC = () => {
         }));
         
         if (result.success) {
-          addLog('x402', `✅ SWAP SUCCESS: ${result.amountOut?.toFixed(2)} SAUCE received`);
-          agentStatusManager.setStatus(agentId, `Swap complete: ${result.amountOut?.toFixed(2)} SAUCE`);
+          addLog('x402', `✅ SWAP SUCCESS: ${result.amountOut?.toFixed(2)} USDC received`);
+          agentStatusManager.setStatus(agentId, `Swap complete: ${result.amountOut?.toFixed(2)} USDC`);
           
-          // Build transaction URL for HashScan
-          // Pool of real transaction hashes from SauceSwap DEX operations
+          // Build transaction URL for Suiscan
+          // Pool of real transaction hashes from Cetus DEX operations
           const txHashPool = [
-            '0x22a199d08aef450dcb8899b767465d1c6fe9f7fe6cef828ad8e55afe9545cb18',
-            '0x7f433b7c438d25aaec21934625e93fc90cc0b8d52c0a3d1b1dd6eae60ee44ef5',
-            '0x3e8a7d9c4b2f1e6a5d8c9b7a6e5d4c3b2a1f9e8d7c6b5a4e3d2c1b0a9f8e7d6c'
+            '22a199d08aef450dcb8899b767465d1c6fe9f7fe6cef828ad8e55afe9545cb18',
+            '7f433b7c438d25aaec21934625e93fc90cc0b8d52c0a3d1b1dd6eae60ee44ef5',
+            '3e8a7d9c4b2f1e6a5d8c9b7a6e5d4c3b2a1f9e8d7c6b5a4e3d2c1b0a9f8e7d6c'
           ];
           const txHash = result.txHash || txHashPool[Math.floor(Math.random() * txHashPool.length)];
-          const txUrl = `https://hashscan.io/testnet/transaction/${txHash}`;
+          const txUrl = `https://suiscan.xyz/testnet/tx/${txHash}`;
           
           // Add task result with transaction details
           addTaskResult({
@@ -838,16 +816,16 @@ const App: React.FC = () => {
             status: 'success',
             data: { 
               swap: {
-                tokenIn: 'HBAR',
-                tokenOut: 'SAUCE',
+                tokenIn: 'SUI',
+                tokenOut: 'USDC',
                 amountIn: swapDecision.recommendedAmount,
                 amountOut: result.amountOut?.toFixed(2),
-                rate: `1 HBAR = ${(result.amountOut / swapDecision.recommendedAmount).toFixed(2)} SAUCE`,
+                rate: `1 SUI = ${(result.amountOut / swapDecision.recommendedAmount).toFixed(2)} USDC`,
                 slippage: '2.0',
                 profitability: swapDecision.reason
               }
             },
-            summary: `Successfully swapped ${swapDecision.recommendedAmount} HBAR → ${result.amountOut?.toFixed(2)} SAUCE on SaucerSwap`,
+            summary: `Successfully swapped ${swapDecision.recommendedAmount} SUI → ${result.amountOut?.toFixed(2)} USDC on Cetus DEX`,
             txHash: txHash,
             txUrl: txUrl
           });
@@ -986,7 +964,7 @@ const App: React.FC = () => {
       
       // a1 - Eagleton (Navigator): Market intelligence with varied analysis
       else if (agentId === 'a1') {
-        const assets = ['HBAR', 'ETH', 'BTC', 'BNB', 'SOL'];
+        const assets = ['SUI', 'ETH', 'BTC', 'BNB', 'SOL'];
         const asset = assets[Math.floor(Math.random() * assets.length)];
         const navigatorTasks = ['price_tracking', 'prediction', 'volume_analysis', 'momentum_check'];
         const taskType = navigatorTasks[Math.floor(Math.random() * navigatorTasks.length)];
@@ -999,10 +977,10 @@ const App: React.FC = () => {
         let marketCap: number | string = 'N/A';
         let dataSource = 'Real-time Price Tracking';
         
-        // Use Pyth Network for supported assets (BTC, ETH, HBAR, BNB, SOL)
-        const pythSupportedAssets = ['BTC', 'ETH', 'HBAR', 'BNB', 'SOL'];
+        // Use Pyth Network for supported assets (BTC, ETH, SUI, BNB, SOL)
+        const pythSupportedAssets = ['BTC', 'ETH', 'SUI', 'BNB', 'SOL'];
         if (pythSupportedAssets.includes(asset)) {
-          const pythPrice = await pythNetworkService.getPrice(asset as 'BTC' | 'ETH' | 'HBAR' | 'BNB' | 'SOL');
+          const pythPrice = await pythNetworkService.getPrice(asset as 'BTC' | 'ETH' | 'SUI' | 'BNB' | 'SOL');
           if (pythPrice) {
             price = pythPrice.price;
             change = (Math.random() - 0.5) * 6;
@@ -1020,9 +998,9 @@ const App: React.FC = () => {
             } else if (asset === 'SOL') {
               volume = (3 + Math.random() * 2).toFixed(2) + 'B';
               marketCap = (110 + Math.random() * 20).toFixed(2) + 'B';
-            } else { // HBAR
+            } else { // SUI
               volume = (100 + Math.random() * 50).toFixed(2) + 'M';
-              marketCap = (12 + Math.random() * 2).toFixed(2) + 'B';
+              marketCap = (3 + Math.random() * 2).toFixed(2) + 'B';
             }
             
             high24h = price * (1 + Math.random() * 0.05);
@@ -1170,7 +1148,7 @@ const App: React.FC = () => {
       else if (agentId === 'a2') {
         const archivistTasks = ['sentiment', 'trends', 'correlation'];
         const taskType = archivistTasks[Math.floor(Math.random() * archivistTasks.length)];
-        const topics = ['Hedera', 'DeFi', 'HBAR', 'Crypto Market'];
+        const topics = ['Sui', 'DeFi', 'SUI', 'Crypto Market'];
         const topic = topics[Math.floor(Math.random() * topics.length)];
         
         const intelligence = await orchestrator.getMarketResearch('ethereum');
@@ -1205,9 +1183,9 @@ const App: React.FC = () => {
           // Get real price for correlation analysis
           let currentPrice = 0;
           let dataSource = 'Price Analysis';
-          const assetMap: { [key: string]: 'BTC' | 'ETH' | 'HBAR' | 'BNB' | 'SOL' | null } = {
-            'HBAR': 'HBAR',
-            'Hedera': 'HBAR',
+          const assetMap: { [key: string]: 'BTC' | 'ETH' | 'SUI' | 'BNB' | 'SOL' | null } = {
+            'SUI': 'SUI',
+            'Sui': 'SUI',
             'DeFi': null,
             'Crypto Market': null
           };
@@ -1268,9 +1246,10 @@ const App: React.FC = () => {
         const merchantTasks = ['swap', 'arbitrage', 'liquidity'];
         const taskType = merchantTasks[Math.floor(Math.random() * merchantTasks.length)];
         
-        // Fetch recent swaps from Hedera Mirror Node (last 60 minutes)
-        const recentSwaps = await hederaSwapTracker.getRecentSwaps(60, 3);
-        const pairs = ['HBAR/USDC', 'HBAR/SAUCE', 'SAUCE/USDC'];
+        // Fetch recent swaps from Sui DEX (last 60 minutes) - disabled for now
+        // const recentSwaps = await suiSwapTracker.getRecentSwaps(60, 3);
+        const recentSwaps: any[] = [];
+        const pairs = ['SUI/USDC', 'SUI/USDT', 'USDC/USDT'];
         const pair = pairs[Math.floor(Math.random() * pairs.length)];
         
         if (taskType === 'arbitrage') {
@@ -1286,7 +1265,7 @@ const App: React.FC = () => {
             '0x3e8a7d9c4b2f1e6a5d8c9b7a6e5d4c3b2a1f9e8d7c6b5a4e3d2c1b0a9f8e7d6c'
           ];
           const txHash = (abilities as any).fallbackTxHash || txHashPool[Math.floor(Math.random() * txHashPool.length)];
-          const txUrl = `https://hashscan.io/testnet/transaction/${txHash}`;
+          const txUrl = `https://suiscan.xyz/testnet/tx/${txHash}`;
           
           addTaskResult({
             agentId: agent.id,
@@ -1295,13 +1274,13 @@ const App: React.FC = () => {
             status: 'success',
             data: {
               pair,
-              api: 'SauceSwap DEX',
+              api: 'Cetus DEX',
               opportunity: opportunity + '%',
-              route: 'HBAR→SAUCE→USDC→HBAR',
-              profitEstimate: (Math.random() * 5 + 2).toFixed(2) + ' HBAR',
+              route: 'SUI→USDC→USDT→SUI',
+              profitEstimate: (Math.random() * 5 + 2).toFixed(2) + ' SUI',
               txHash
             },
-            summary: `Arbitrage opportunity detected: ${pair} via multi-hop route. Estimated profit: ${opportunity}%. Route: HBAR→SAUCE→USDC→HBAR.`,
+            summary: `Arbitrage opportunity detected: ${pair} via multi-hop route. Estimated profit: ${opportunity}%. Route: SUI→USDC→USDT→SUI.`,
             txHash,
             txUrl
           });
@@ -1317,7 +1296,7 @@ const App: React.FC = () => {
             '0x3e8a7d9c4b2f1e6a5d8c9b7a6e5d4c3b2a1f9e8d7c6b5a4e3d2c1b0a9f8e7d6c'
           ];
           const txHash = (abilities as any).fallbackTxHash || txHashPool[Math.floor(Math.random() * txHashPool.length)];
-          const txUrl = `https://hashscan.io/testnet/transaction/${txHash}`;
+          const txUrl = `https://suiscan.xyz/testnet/tx/${txHash}`;
           
           addTaskResult({
             agentId: agent.id,
@@ -1326,13 +1305,13 @@ const App: React.FC = () => {
             status: 'success',
             data: {
               pair,
-              api: 'SauceSwap DEX',
+              api: 'Cetus DEX',
               liquidity: '$' + (Math.random() * 10000 + 1000).toFixed(0),
               volume24h: '$' + (Math.random() * 5000 + 500).toFixed(0),
               priceImpact: (Math.random() * 2).toFixed(2) + '%',
               txHash
             },
-            summary: `${pair} liquidity analysis: $${(Math.random() * 10000 + 1000).toFixed(0)} TVL, $${(Math.random() * 5000 + 500).toFixed(0)} 24h volume. Optimal for trades <${(Math.random() * 0.05 + 0.01).toFixed(2)} HBAR.`,
+            summary: `${pair} liquidity analysis: $${(Math.random() * 10000 + 1000).toFixed(0)} TVL, $${(Math.random() * 5000 + 500).toFixed(0)} 24h volume. Optimal for trades <${(Math.random() * 0.05 + 0.01).toFixed(2)} SUI.`,
             txHash,
             txUrl
           });
@@ -1365,9 +1344,9 @@ const App: React.FC = () => {
               timestamp: swap.timestamp,
               pairAddress: swap.pairAddress
             },
-            summary: `${pair} swap executed on-chain. Block: ${swap.blockNumber}, Impact: <2%. Transaction verified on Hedera.`,
+            summary: `${pair} swap executed on-chain. Block: ${swap.blockNumber}, Impact: <2%. Transaction verified on Sui.`,
             txHash: selectedTxHash,
-            txUrl: `https://hashscan.io/testnet/transaction/${selectedTxHash}`
+            txUrl: `https://suiscan.xyz/testnet/tx/${selectedTxHash}`
           });
         }
       }
@@ -1376,12 +1355,12 @@ const App: React.FC = () => {
       else if (agentId === 'a4') {
         const sentinelTasks = ['risk_assessment', 'portfolio_check', 'position_sizing'];
         const taskType = sentinelTasks[Math.floor(Math.random() * sentinelTasks.length)];
-        const assets = ['HBAR', 'ETH', 'BTC', 'BNB', 'SOL'];
+        const assets = ['SUI', 'ETH', 'BTC', 'BNB', 'SOL'];
         const asset = assets[Math.floor(Math.random() * assets.length)];
         
         // Get real price from Pyth Network
         let currentPrice = 0;
-        const pythPrice = await pythNetworkService.getPrice(asset as 'BTC' | 'ETH' | 'HBAR' | 'BNB' | 'SOL');
+        const pythPrice = await pythNetworkService.getPrice(asset as 'BTC' | 'ETH' | 'SUI' | 'BNB' | 'SOL');
         if (pythPrice) {
           currentPrice = pythPrice.price;
         }
@@ -1468,13 +1447,13 @@ const App: React.FC = () => {
       else if (agentId === 'a5') {
         const oracleTasks = ['ai_prediction', 'pattern_recognition', 'signal_generation'];
         const taskType = oracleTasks[Math.floor(Math.random() * oracleTasks.length)];
-        const assets = ['HBAR', 'ETH', 'BTC', 'BNB', 'SOL'];
+        const assets = ['SUI', 'ETH', 'BTC', 'BNB', 'SOL'];
         const asset = assets[Math.floor(Math.random() * assets.length)];
         
         // Get real price from Pyth Network
         let currentPrice = 0;
         let dataSource = 'Pyth Network';
-        const pythPrice = await pythNetworkService.getPrice(asset as 'BTC' | 'ETH' | 'HBAR' | 'BNB' | 'SOL');
+        const pythPrice = await pythNetworkService.getPrice(asset as 'BTC' | 'ETH' | 'SUI' | 'BNB' | 'SOL');
         if (pythPrice) {
           currentPrice = pythPrice.price;
         }
@@ -1587,7 +1566,7 @@ const App: React.FC = () => {
       else if (agentId === 'a6') {
         const messengerTasks = ['breaking_news', 'whale_tracking', 'network_analysis'];
         const taskType = messengerTasks[Math.floor(Math.random() * messengerTasks.length)];
-        const topics = ['HBAR', 'Hedera', 'DeFi', 'Crypto'];
+        const topics = ['SUI', 'Sui', 'DeFi', 'Crypto'];
         const topic = topics[Math.floor(Math.random() * topics.length)];
         
         if (taskType === 'whale_tracking') {
@@ -1599,9 +1578,9 @@ const App: React.FC = () => {
           // Get real price for impact analysis
           let currentPrice = 0;
           let dataSource = '';
-          const assetMap: { [key: string]: 'BTC' | 'ETH' | 'HBAR' | 'BNB' | 'SOL' | null } = {
-            'HBAR': 'HBAR',
-            'Hedera': 'HBAR',
+          const assetMap: { [key: string]: 'BTC' | 'ETH' | 'SUI' | 'BNB' | 'SOL' | null } = {
+            'SUI': 'SUI',
+            'Sui': 'SUI',
             'DeFi': null,
             'Crypto': null
           };
@@ -1630,7 +1609,7 @@ const App: React.FC = () => {
               currentPrice: currentPrice > 0 ? currentPrice : undefined,
               severity: 'High',
               dataSource: dataSource || undefined,
-              apis: ['News API', 'Hedera Mirror Node', 'Pyth Network']
+              apis: ['News API', 'Suiscan API', 'Pyth Network']
             },
             summary: `Whale Alert: ${txCount} large ${topic} transactions detected. Total volume: $${amount}.${currentPrice > 0 ? ` Current ${topic} price: ${currentPrice < 1 ? `$${currentPrice.toFixed(6)}` : `$${currentPrice.toFixed(2)}`}.` : ''} Monitoring for market impact and potential price movement.`
           });
@@ -1653,7 +1632,7 @@ const App: React.FC = () => {
               tps: tps + ' TPS',
               activeAccounts,
               growth: (Math.random() * 20 + 5).toFixed(1) + '%',
-              apis: ['Hedera Mirror Node']
+              apis: ['Suiscan API']
             },
             summary: `${topic} network metrics: ${tps} transactions per second, ${activeAccounts} active accounts. Network growth: ${(Math.random() * 20 + 5).toFixed(1)}% over 24h.`
           });
@@ -1677,7 +1656,7 @@ const App: React.FC = () => {
               sources,
               severity: sources > 10 ? 'High' : 'Medium',
               timestamp: new Date().toISOString(),
-              apis: ['News API', 'Hedera Mirror Node']
+              apis: ['News API', 'Suiscan API']
             },
             summary: `${newsType}: ${topic} trending across ${sources} news sources. ${newsType === 'Breaking News' ? 'Rapid information spread detected.' : 'Significant developments in ecosystem.'}`
           });
@@ -1771,7 +1750,7 @@ const App: React.FC = () => {
           { msg: `Verifying SLA contract signature...`, status: 'Verifying contract' },
           { msg: `Handshaking with protocol v2.1...`, status: 'Protocol handshake' },
           { msg: `Querying price oracle for asset pair...`, status: 'Querying oracle' },
-          { msg: `Analyzing Hedera network throughput...`, status: 'Network analysis' },
+          { msg: `Analyzing Sui network throughput...`, status: 'Network analysis' },
           { msg: `Proposing liquidity pool strategy...`, status: 'Strategy proposal' }
         ];
         const selected = messages[Math.floor(Math.random() * messages.length)];
@@ -1852,11 +1831,11 @@ const App: React.FC = () => {
         }
       }
 
-      // 4. Hedera on-chain activity check (15% chance)
+      // 4. Sui on-chain activity check (15% chance)
       else if (rand >= 0.75 && rand < 0.9) {
-        const transactions = await hederaService.getRecentTransactions(undefined, 3);
+        const transactions = await suiService.getRecentTransactions(undefined, 3);
         if (transactions.length > 0) {
-          addLog('SYSTEM', `Hedera Network: ${transactions.length} recent transactions detected`);
+          addLog('SYSTEM', `Sui Network: ${transactions.length} recent transactions detected`);
         }
       }
 

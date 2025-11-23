@@ -610,14 +610,14 @@ Application will be available at `http://localhost:5173`
 ### Deploy Smart Contracts (Optional)
 
 ```bash
-# Compile contracts
-npx hardhat compile
+# Build Move contracts
+cd move
+sui move build
 
-# Deploy to Hedera Testnet
-node scripts/deploy.mjs
-node scripts/deploy-streaming.mjs
+# Deploy to Sui Testnet
+sui client publish --gas-budget 50000000
 
-# Update contract addresses in config/walletConfig.ts
+# Update contract addresses in config/suiWalletConfig.ts
 ```
 
 ---
@@ -626,8 +626,8 @@ node scripts/deploy-streaming.mjs
 
 ### User Journey
 
-1. **Connect Wallet** → Click "Connect Wallet" and select your Hedera account
-2. **Activate Agent** → Click an agent card to mint it as an NFT ($0.1 USDC fee)
+1. **Connect Wallet** → Click "Connect Wallet" and select your Sui wallet (Suiet)
+2. **Activate Agent** → Click an agent card to mint it as an NFT (0.1 SUI fee)
 3. **Agents Execute** → Agents autonomously fetch data, analyze, and transact
 4. **View Results** → Check the Results Dashboard for detailed task history
 5. **Manage Streams** → Monitor payment streams in WalletBar and console logs
@@ -637,7 +637,7 @@ node scripts/deploy-streaming.mjs
 ```
 ┌─────────────────────────────────────────────────────────┐
 │  1. Agent Activation                                     │
-│     • User mints agent NFT via EIP8004Agent contract    │
+│     • User mints agent NFT via Sui Move contract        │
 │     • Agent receives on-chain identity & capabilities   │
 └─────────────────┬───────────────────────────────────────┘
                   │
@@ -646,14 +646,14 @@ node scripts/deploy-streaming.mjs
 │  2. Intelligence Gathering                               │
 │     • Fetch real-time prices (Pyth Network)             │
 │     • Analyze sentiment (News API + Gemini)             │
-│     • Monitor on-chain activity (Mirror Node)           │
+│     • Monitor on-chain activity (Sui RPC)               │
 │     • Generate trading signals (Gemini AI)              │
 └─────────────────┬───────────────────────────────────────┘
                   │
                   ▼
 ┌─────────────────────────────────────────────────────────┐
 │  3. A2A Communication                                    │
-│     • Luna (Oracle) generates BUY signal for HBAR       │
+│     • Luna (Oracle) generates BUY signal for SUI        │
 │     • Sends message to Reynard (Merchant) via A2A       │
 │     • Reynard evaluates signal + market conditions      │
 └─────────────────┬───────────────────────────────────────┘
@@ -661,24 +661,24 @@ node scripts/deploy-streaming.mjs
                   ▼
 ┌─────────────────────────────────────────────────────────┐
 │  4. Payment Streaming                                    │
-│     • Commander opens x402 stream to Reynard            │
-│     • Approve USDC spending (one-time)                  │
+│     • Commander opens payment stream to Reynard         │
+│     • Approve SUI spending (one-time)                   │
 │     • Stream payment accumulates per second             │
 └─────────────────┬───────────────────────────────────────┘
                   │
                   ▼
 ┌─────────────────────────────────────────────────────────┐
 │  5. Service Execution                                    │
-│     • Reynard executes swap on SaucerSwap DEX            │
-│     • Transaction recorded on Hedera                    │
-│     • Result logged with HashScan verification          │
+│     • Reynard executes swap on Cetus or Turbos DEX      │
+│     • Transaction recorded on Sui                       │
+│     • Result logged with Suiscan verification           │
 └─────────────────┬───────────────────────────────────────┘
                   │
                   ▼
 ┌─────────────────────────────────────────────────────────┐
 │  6. Settlement                                           │
 │     • Stream auto-closes when cap reached               │
-│     • Reynard withdraws accumulated USDC                │
+│     • Reynard withdraws accumulated SUI                 │
 │     • Trust scores updated for both agents              │
 └─────────────────────────────────────────────────────────┘
 ```
@@ -686,26 +686,26 @@ node scripts/deploy-streaming.mjs
 ### Example: Autonomous Trading Scenario
 
 ```typescript
-// Luna (Oracle) detects bullish HBAR signal
-Luna.analyzeTechnicals('HBAR') 
+// Luna (Oracle) detects bullish SUI signal
+Luna.analyzeTechnicals('SUI') 
   → Gemini AI: "BUY signal, 78% confidence"
-  → Pyth Price: $0.0632
-  → Target: $0.0690, Stop: $0.0610
+  → Pyth Price: $3.45
+  → Target: $3.80, Stop: $3.20
 
 // Luna notifies Reynard via A2A protocol
 Luna.sendMessage(Reynard, {
   signal: 'BUY',
-  asset: 'HBAR',
+  asset: 'SUI',
   confidence: 78,
-  entry: 0.0632,
-  target: 0.0690
+  entry: 3.45,
+  target: 3.80
 })
 
 // Reynard evaluates and executes
 Reynard.evaluateSignal()
-  → Checks SauceSwap liquidity
-  → Opens x402 stream from Commander
-  → Executes swap: 100 HBAR → 6.32 USDC
+  → Checks Cetus liquidity
+  → Opens payment stream from Commander
+  → Executes swap: 10 SUI → equivalent USDC
   → Records result on-chain
 ```
 
@@ -724,7 +724,7 @@ VITE_NEWS_API_KEY=your_news_api_key              # Free: 100 req/day
 VITE_REOWN_PROJECT_ID=your_walletconnect_id      # Free tier available
 
 # Optional - Custom RPC endpoints
-VITE_HEDERA_RPC_URL=https://testnet.hashio.io/api
+VITE_SUI_RPC_URL=https://fullnode.testnet.sui.io:443
 ```
 
 ### Getting API Keys
@@ -735,25 +735,25 @@ VITE_HEDERA_RPC_URL=https://testnet.hashio.io/api
 | **News API** | [Get Key](https://newsapi.org/register) | 100 req/day | Sentiment analysis |
 | **Reown AppKit** | [Get Project ID](https://cloud.reown.com/) | Unlimited | Wallet connection |
 | **Pyth Network** | No key required | Public | Price feeds |
-| **Hedera Mirror** | No key required | Public | Blockchain data |
+| **Sui RPC** | No key required | Public | Blockchain data |
 
 ---
 
 ### Go-To-Market Strategy
 
 **Phase 1: Developer Community (Months 1-3)**
-- Launch on Hedera testnet with comprehensive docs
+- Launch on Sui testnet with comprehensive docs
 - Host workshops at ETHDenver, Consensus, Token2049
-- Partner with Hedera developer programs
+- Partner with Sui Foundation and Walrus developer programs
 - Target: 100 active developers, 500 agents minted
 
 **Phase 2: DeFi Integration (Months 4-6)**
-- Integrate with top 5 Hedera DEXs (SauceSwap, Pangolin, etc.)
+- Integrate with top Sui DEXs (Cetus, Turbos, Aftermath, etc.)
 - Launch agent marketplace with fee-sharing model
 - Target: 1,000 MAU, $10K monthly transaction volume
 
 **Phase 3: Cross-Chain Expansion (Months 7-12)**
-- Bridge to Ethereum, Polygon via Hedera as settlement layer
+- Bridge to Ethereum, Polygon via Sui as settlement layer
 - Enterprise partnerships for proprietary agent development
 - Target: 10,000 MAU, $100K monthly revenue
 
@@ -761,17 +761,17 @@ VITE_HEDERA_RPC_URL=https://testnet.hashio.io/api
 
 | Feature | Aslan Agents | Fetch.ai | AutoGPT | SingularityNet |
 |---------|-----------|----------|---------|----------------|
-| **On-Chain Agents** | ✅ EIP-8004 NFT | ❌ Off-chain | ❌ Off-chain | ✅ Custom chain |
-| **Micro-Payments** | ✅ x402 streams | ❌ Batch only | ❌ None | ✅ AGI token |
-| **Hedera Native** | ✅ Yes | ❌ No | ❌ No | ❌ No |
+| **On-Chain Agents** | ✅ Sui Move NFT | ❌ Off-chain | ❌ Off-chain | ✅ Custom chain |
+| **Micro-Payments** | ✅ Payment streams | ❌ Batch only | ❌ None | ✅ AGI token |
+| **Sui Native** | ✅ Yes | ❌ No | ❌ No | ❌ No |
 | **Real-Time Data** | ✅ Pyth + Mirror | ⚠️ Limited | ❌ None | ⚠️ Limited |
 | **Production Ready** | ✅ Live testnet | ⚠️ Beta | ❌ Concept | ⚠️ Beta |
 
 ### Early Feedback
 
-> "The x402 payment streaming is exactly what we need for our AI agent marketplace. No other solution handles micropayments this elegantly." - **DeFi Protocol Founder**
+> "The payment streaming on Sui is exactly what we need for our AI agent marketplace. No other solution handles micropayments this elegantly." - **DeFi Protocol Founder**
 
-> "Hedera's speed makes real-time agent coordination actually viable. We've been waiting for infrastructure like this." - **ML Engineer, Fortune 500**
+> "Sui's speed and low fees make real-time agent coordination actually viable. We've been waiting for infrastructure like this." - **ML Engineer, Fortune 500**
 
 ---
 
@@ -781,18 +781,18 @@ VITE_HEDERA_RPC_URL=https://testnet.hashio.io/api
 
 | Metric | Target | Impact |
 |--------|--------|--------|
-| **Agents Minted** | 10,000+ | New Hedera accounts created |
+| **Agents Minted** | 10,000+ | New Sui accounts created |
 | **Monthly Active Users** | 5,000+ | Sustained network growth |
-| **Transactions/Day** | 100,000+ | Increased Hedera TPS |
-| **Payment Volume** | $500K+ | USDC utility on Hedera |
+| **Transactions/Day** | 100,000+ | Increased Sui TPS |
+| **Payment Volume** | $500K+ | SUI and stablecoin utility on Sui |
 | **Developer Integrations** | 50+ | Ecosystem expansion |
 
 ### Qualitative Impact
 
-✅ **Establishes Hedera as AI Infrastructure Leader**
-- First production-grade A2A marketplace
+✅ **Establishes Sui as AI Infrastructure Leader**
+- First production-grade A2A marketplace with Walrus storage
 - Showcases network's speed/cost advantages for AI use cases
-- Attracts AI/ML developer community to Hedera
+- Attracts AI/ML developer community to Sui
 
 ✅ **Drives Network Growth**
 - Every agent = new account + continuous transactions
@@ -810,61 +810,67 @@ VITE_HEDERA_RPC_URL=https://testnet.hashio.io/api
 
 ### Smart Contract Architecture
 
-**EIP8004Agent.sol** (350 lines, gas-optimized)
-```solidity
-contract EIP8004Agent is ERC721, AccessControl {
-    struct AgentData {
-        string name;
-        string role;
-        string metadataURI;
-        string apiEndpoint;
-        uint256 serviceFee;
-        FeeModel feeModel;
-        bool isActive;
-        uint64 createdAt;
-        uint256 trustScore;
+**agent_registry.move** (Sui Move smart contract)
+```move
+module aslan::agent_registry {
+    struct AgentData has key, store {
+        id: UID,
+        name: String,
+        role: String,
+        metadata_blob_id: String,
+        model_blob_id: String,
+        version: u64,
+        accuracy: u64,
+        is_active: bool,
+        created_at: u64,
+        trust_score: u64
     }
     
-    // Mint agent with full metadata
-    function mintAgent(
-        string memory name,
-        string memory role,
-        string memory metadataURI,
-        string memory apiEndpoint,
-        uint256 serviceFee,
-        FeeModel feeModel,
-        string[] memory capabilities
-    ) external returns (uint256);
+    // Mint agent with metadata stored on Walrus
+    public entry fun mint_agent(
+        name: String,
+        role: String,
+        metadata_blob_id: String,
+        ctx: &mut TxContext
+    );
     
-    // Validate agent before service execution
-    function isAgentActive(uint256 agentId) external view returns (bool);
+    // Update agent model version
+    public entry fun update_model(
+        agent: &mut AgentData,
+        model_blob_id: String,
+        version: u64,
+        accuracy: u64
+    );
 }
 ```
 
-**X402Streaming.sol** (400 lines, tested)
-```solidity
-contract X402Streaming {
-    struct Stream {
-        uint256 senderAgentId;
-        uint256 receiverAgentId;
-        uint256 ratePerSecond;
-        uint256 spendingCap;
-        uint256 totalPaid;
-        uint256 startTime;
-        bool isActive;
+**training_rewards.move** (Sui Move smart contract)
+```move
+module aslan::training_rewards {
+    struct Contribution has key, store {
+        id: UID,
+        agent_id: ID,
+        delta_blob_id: String,
+        contribution_size: u64,
+        reward_amount: u64,
+        timestamp: u64,
+        claimed: bool
     }
     
-    // Open payment stream with spending cap
-    function openStream(
-        uint256 senderAgentId,
-        uint256 receiverAgentId,
-        uint256 ratePerSecond,
-        uint256 spendingCap,
-        address token
-    ) external returns (uint256);
+    // Record training contribution
+    public entry fun record_contribution(
+        agent_id: ID,
+        delta_blob_id: String,
+        contribution_size: u64,
+        ctx: &mut TxContext
+    );
     
-    // Withdraw accumulated payments
-    function withdraw(uint256 streamId) external;
+    // Claim reward for contribution
+    public entry fun claim_reward(
+        contribution: &mut Contribution,
+        reward_pool: &mut Coin<SUI>,
+        ctx: &mut TxContext
+    );
 }
 ```
 
@@ -892,19 +898,19 @@ const [taskResults, setTaskResults] = useState<AgentTaskResult[]>()
 
 **Real-Time Updates**
 - WebSocket connections to Pyth Network for sub-second price feeds
-- Polling Hedera Mirror Node every 10 seconds for on-chain updates
-- Event listeners for contract state changes via Wagmi
+- Polling Sui RPC every 10 seconds for on-chain updates
+- Event listeners for contract state changes via Sui SDK
 
 ### Data Flow Architecture
 
 ```
 External APIs          Frontend State        Smart Contracts
 ─────────────         ────────────────      ─────────────────
-Pyth Network    →     Price Data     →      x402 Streams
+Pyth Network    →     Price Data     →      Payment Streams
 Gemini AI       →     AI Signals     →      Agent Minting
 News API        →     Sentiment      →      Trust Scores
-Mirror Node     →     On-Chain Data  →      NFT Metadata
-SauceSwap       →     DEX Activity   →      Swap Execution
+Sui RPC         →     On-Chain Data  →      NFT Metadata
+Cetus/Turbos    →     DEX Activity   →      Swap Execution
 ```
 
 ### Security Measures
@@ -941,29 +947,24 @@ AslanAgents/
 │   │   ├── ConsolePanel.tsx        # Real-time A2A communication logs
 │   │   ├── FlowCanvas.tsx          # Interactive agent visualization
 │   │   ├── WalletBar.tsx           # Wallet + stream management
-│   │   ├── DepositModal.tsx        # x402 stream creation
+│   │   ├── DeploymentStatus.tsx    # Training deployment status
 │   │   └── AgentResultsPage.tsx    # Task history dashboard
 │   ├── hooks/
-│   │   ├── useAgentContract.ts     # EIP8004 agent interactions
-│   │   └── useX402Deposit.ts       # Payment streaming hooks
+│   │   ├── useAgentSui.ts          # Sui agent contract interactions
+│   │   └── useSuiWallet.ts         # Wallet management hooks
 │   ├── services/
 │   │   ├── api.ts                  # Gemini + News API integration
 │   │   ├── pythNetwork.ts          # Pyth price feeds
-│   │   ├── sauceSwap.ts            # DEX integration
-│   │   └── hederaEnhanced.ts       # Mirror Node 60+ endpoints
+│   │   ├── walrusService.ts        # Walrus storage integration
+│   │   └── onChainDataService.ts   # Sui RPC data feeds
 │   └── config/
-│       └── walletConfig.ts         # Hedera testnet + contract addresses
+│       └── suiWalletConfig.ts      # Sui testnet + contract addresses
 ├── 🔗 Smart Contracts
-│   ├── contracts/
-│   │   ├── EIP8004Agent.sol        # Agent NFT registry
-│   │   ├── X402Streaming.sol       # Payment streaming
-│   │   └── interfaces/
-│   │       ├── IEIP8004.sol        # Agent interface
-│   │       └── IX402.sol           # Streaming interface
-│   ├── scripts/
-│   │   ├── deploy.mjs              # Deploy EIP8004Agent
-│   │   └── deploy-streaming.mjs    # Deploy X402Streaming
-│   └── hardhat.config.mjs          # Hedera testnet config
+│   ├── move/
+│   │   ├── Move.toml               # Package configuration
+│   │   └── sources/
+│   │       ├── agent_registry.move # Agent NFT registry
+│   │       └── training_rewards.move # Training rewards
 ├── 📚 Documentation
 │   ├── README.md                   # This file
 │   ├── contracts/README.md         # Contract documentation
@@ -983,7 +984,8 @@ AslanAgents/
 
 ```bash
 # Run smart contract tests
-npx hardhat test
+cd move
+sui move test
 
 # Run frontend tests
 npm run test
@@ -993,8 +995,8 @@ npm run type-check
 ```
 
 **Contract Test Results**
-- ✅ 45 tests passing
-- ✅ Gas optimization verified (<200K per mint)
+- ✅ Move tests passing
+- ✅ Gas optimization verified
 - ✅ Security audit clean (no critical issues)
 
 ### Browser Testing
@@ -1005,8 +1007,8 @@ Open browser console and run:
 await window.testAPIs();
 
 // Test individual services
-await geminiService.chat("Analyze HBAR price");
-await pythNetworkService.getPrice('HBAR');
+await geminiService.chat("Analyze SUI price");
+await pythNetworkService.getPrice('SUI');
 ```
 
 ### Performance Metrics
@@ -1039,12 +1041,12 @@ npm run dev
 
 **Wallet Connection Issues**
 - Clear browser cache and reconnect
-- Ensure you're on Hedera Testnet (Chain ID: 296)
-- Get free testnet HBAR from [Hedera Portal](https://portal.hedera.com/)
+- Ensure you're on Sui Testnet
+- Get free testnet SUI from [Sui Faucet](https://faucet.testnet.sui.io/)
 
 **Transactions Failing**
-- Check HBAR balance (need ~0.1 HBAR for gas)
-- Approve USDC spending before opening streams
+- Check SUI balance (need ~0.1 SUI for gas)
+- Ensure sufficient SUI for transaction fees
 - Verify agent is minted on-chain first
 
 **No Agent Activity**
@@ -1064,17 +1066,17 @@ restoreAslanData(yourBackupObject)
 # Lost stream IDs? View them:
 showAllStreams()
 
-# If completely lost, check Hedera Explorer:
-# 1. Find your deposit transactions
-# 2. Look for "StreamOpened" event logs
-# 3. First indexed parameter = streamId
+# If completely lost, check Sui Explorer:
+# 1. Find your transactions on Suiscan
+# 2. Look for agent minting and contribution events
+# 3. Check object IDs for your agents
 ```
 
 **⚠️ IMPORTANT: localStorage Clearing Impact**
 - ❌ **Withdrawals**: Stream IDs lost - can't withdraw without them
 - ❌ **Agent Data**: Token IDs lost - UI shows "Mint Agent" again
 - ❌ **Results Page**: All task history cleared
-- ✅ **On-Chain Data**: Agents and streams still exist on Hedera
+- ✅ **On-Chain Data**: Agents and streams still exist on Sui blockchain
 - 💡 **Solution**: Always run `backupAslanData()` before clearing browser data
 
 ### Need Help?
@@ -1139,9 +1141,9 @@ See [LICENSE](./LICENSE) for full text.
 - 📹 **Video**: [YouTube Demo](https://youtu.be/szUqNZ0IRFs)
 
 ### Smart Contracts
-- 🔍 **EIP8004Agent**: [HashScan](https://hashscan.io/testnet/contract/0x650665fdf08EeE72e84953D5a99AbC8196C56E77)
-- 🔍 **X402Streaming**: [HashScan](https://hashscan.io/testnet/contract/0x805492D120C29A4933FB1D3FfCe944A2D42222F4)
-- 📝 **Source Code**: [GitHub Contracts](./contracts)
+- 🔍 **Agent Registry**: [Suiscan](https://suiscan.xyz/testnet) (See deployed-addresses.json)
+- 🔍 **Training Rewards**: [Suiscan](https://suiscan.xyz/testnet) (See deployed-addresses.json)
+- 📝 **Source Code**: [GitHub Move Contracts](./move/sources)
 
 ### Documentation
 - 📖 **Technical Docs**: [Full Documentation](./docs)
@@ -1149,30 +1151,33 @@ See [LICENSE](./LICENSE) for full text.
 - 🏗️ **Architecture**: [System Design](./docs/architecture.md)
 - 🔌 **API Reference**: [API Docs](./docs/api-reference.md)
 
-### Hedera Resources
-- 🌐 **Hedera Portal**: https://portal.hedera.com/
-- 📚 **Hedera Docs**: https://docs.hedera.com/
-- 🔍 **HashScan Explorer**: https://hashscan.io/testnet
-- 💡 **Hedera Improvement Proposals**: https://hips.hedera.com/
+### Sui & Walrus Resources
+- 🌐 **Sui Portal**: https://sui.io/
+- 📚 **Sui Docs**: https://docs.sui.io/
+- 🔍 **Suiscan Explorer**: https://suiscan.xyz/testnet
+- 🗄️ **Walrus Docs**: https://docs.walrus.site/
+- 💧 **Sui Faucet**: https://faucet.testnet.sui.io/
 
 ### Technology Partners
 - 🔮 **Pyth Network**: https://pyth.network/
 - 🤖 **Google Gemini**: https://ai.google.dev/
 - 🔗 **Reown (WalletConnect)**: https://reown.com/
-- 🦎 **SauceSwap DEX**: https://sauceswap.finance/
+- 🌊 **Cetus DEX**: https://cetus.zone/
+- 🌀 **Turbos Finance**: https://turbos.finance/
 
 ---
 
 ## 🙏 Acknowledgments
 
 Special thanks to:
-- **Hedera Team** for exceptional developer support and documentation
+- **Mysten Labs** for building Sui and Walrus Protocol
+- **Walrus Team** for decentralized storage innovation
 - **Pyth Network** for reliable price feed infrastructure
 - **Google Gemini** for powerful AI capabilities
-- **Reown Team** for seamless wallet integration
-- **SauceSwap** for DEX collaboration
+- **TensorFlow.js Team** for making ML accessible in browsers
+- **Sui Developer Community** for excellent documentation and support
 
-Built with ❤️ for Hedera Hello Future: Ascension Hackathon 2025
+Built with ❤️ for Walrus Haulout Hackathon - AI x Data Track
 
 ---
 

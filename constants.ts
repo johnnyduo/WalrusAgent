@@ -84,12 +84,12 @@ export const AGENTS: AgentMetadata[] = [
     personality: {
       traits: ['Opportunistic', 'Fast-trading', 'Risk-aware', 'Sharp'],
       dialogues: [
-        'My cunning senses a trade! HBAR→SAUCE signal. Seeking Aslan\'s blessing...',
-        'Swift as a fox! Swap executed: 0.023 HBAR → 47 SAUCE. Slippage: 0.4%.',
-        'I\'ve sniffed out the best pool. SaucerSwap analysis complete.',
-        'Great Aslan, Eagleton signals a hunt! HBAR trend is ripe. Ready to pounce.',
-        'Clever trading: Max 0.05 HBAR per hunt. This catch: 0.018 HBAR.',
-        'My den is ready. testnet.saucerswap.finance connected and optimized.'
+        'My cunning senses a trade! SUI→USDC signal. Seeking Aslan\'s blessing...',
+        'Swift as a fox! Swap executed: 0.023 SUI → 0.47 USDC. Slippage: 0.4%.',
+        'I\'ve sniffed out the best pool. Cetus DEX analysis complete.',
+        'Great Aslan, Eagleton signals a hunt! SUI trend is ripe. Ready to pounce.',
+        'Clever trading: Max 0.05 SUI per hunt. This catch: 0.018 SUI.',
+        'My den is ready. Cetus Protocol connected and optimized.'
       ]
     }
   },
@@ -155,7 +155,7 @@ export const AGENTS: AgentMetadata[] = [
       dialogues: [
         'CAW CAW! 🚨 BREAKING: SEC regulations announced! Storm approaches!',
         'Message from the trading grounds: 5,000 BTC moved! I track the giant!',
-        'Fresh tidings! Major exchange lists HBAR. Price surge takes wing!',
+        'Fresh tidings! Major exchange lists SUI. Price surge takes wing!',
         'My wings tire: 47 breaking stories in 10 minutes. Filtering the noise...',
         'The messages align! News sentiment matches Eagleton\'s sightings!',
         'Aslan! Urgent news! Sentiment turned dark across 12 sources. CAW!'

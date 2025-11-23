@@ -1,12 +1,13 @@
-// API Service Layer for ASLAN AGENTS
-// Integrates: Gemini AI, TwelveData, News API, and Hedera Mirror Node
+// API Service Layer for WALRUS AGENTS
+// Integrates: Gemini AI, TwelveData, News API, Sui Network, and Walrus Storage
 
 import { GoogleGenAI } from "@google/genai";
 
 const GEMINI_API_KEY = (import.meta as any).env?.GEMINI_API_KEY || '';
 const TWELVEDATA_API_KEY = (import.meta as any).env?.TWELVEDATA_API_KEY || '';
 const NEWS_API_KEY = (import.meta as any).env?.NEWS_API_KEY || '';
-const HEDERA_MIRROR_NODE_URL = (import.meta as any).env?.HEDERA_MIRROR_NODE_URL || 'https://testnet.mirrornode.hedera.com/api/v1';
+const SUISCAN_API_KEY = (import.meta as any).env?.SUISCAN_API_KEY || '';
+const SUISCAN_API_URL = (import.meta as any).env?.SUISCAN_API_URL || 'https://suiscan.xyz/api';
 const PYTH_HERMES_URL = 'https://hermes.pyth.network';
 
 // Initialize Gemini AI
@@ -381,8 +382,8 @@ const pythService = {
     'ethereum': '0xff61491a931112ddf1bd8147cd1b641375f79f5825126d665480874634fd0ace',
     'bitcoin': '0xe62df6c8b4a85fe1a67db44dc12de5db330f7ac66b72dc658afedf0f4a415b43',
     'solana': '0xef0d8b6fda2ceba41da15d4095d1da392a0d2f8ed0c6c7bc0f4cfac8c280b56d',
-    'hedera-hashgraph': '0x8ac0c70fff57e9aefdf5edf44b51d62c2d433653cbb2cf5cc06bb115af04d221',
-    'hbar': '0x8ac0c70fff57e9aefdf5edf44b51d62c2d433653cbb2cf5cc06bb115af04d221'
+
+
   },
 
   async getPrice(coinId: string): Promise<CryptoPriceData | null> {
@@ -416,8 +417,8 @@ const pythService = {
         'ethereum': 'ETH',
         'bitcoin': 'BTC',
         'solana': 'SOL',
-        'hedera-hashgraph': 'HBAR',
-        'hbar': 'HBAR'
+
+
       };
 
       return {
@@ -464,8 +465,7 @@ function getCoinGeckoId(input: string): string {
     'bitcoin': 'bitcoin',
     'eth': 'ethereum',
     'ethereum': 'ethereum',
-    'hbar': 'hedera-hashgraph',
-    'hedera': 'hedera-hashgraph',
+
     'bnb': 'binancecoin',
     'binancecoin': 'binancecoin',
     'sol': 'solana',
@@ -582,7 +582,7 @@ export const coingeckoService = {
       'ethereum': { price: 3052, symbol: 'ETH' },
       'bitcoin': { price: 42000, symbol: 'BTC' },
       'solana': { price: 85, symbol: 'SOL' },
-      'hedera-hashgraph': { price: 0.08, symbol: 'HBAR' }
+
     };
 
     const base = basePrices[coinId] || { price: 100, symbol: coinId.toUpperCase() };
@@ -671,7 +671,7 @@ export const cryptoService = {
       'ETH/USD': 2400 + Math.random() * 200,
       'BTC/USD': 42000 + Math.random() * 2000,
       'SOL/USD': 85 + Math.random() * 10,
-      'HBAR/USD': 0.08 + Math.random() * 0.02
+
     };
 
     const price = basePrices[symbol] || 100 + Math.random() * 50;
@@ -813,93 +813,60 @@ export const newsService = {
 };
 
 // ===========================
-// HEDERA MIRROR NODE SERVICE
+// SUI NETWORK SERVICE
 // ===========================
 
-export interface HederaAccount {
-  account: string;
-  balance: number;
-  transactions: number;
-}
-
-export interface HederaTransaction {
-  transaction_id: string;
-  consensus_timestamp: string;
+export interface SuiTransaction {
+  digest: string;
+  timestamp: string;
   type: string;
-  result: string;
-  transfers: any[];
+  status: string;
+  gasUsed: number;
 }
 
-export const hederaService = {
-  async getAccountInfo(accountId: string): Promise<HederaAccount | null> {
+export const suiService = {
+  async getRecentTransactions(address?: string, limit: number = 10): Promise<SuiTransaction[]> {
     try {
-      const response = await fetch(
-        `${HEDERA_MIRROR_NODE_URL}/accounts/${accountId}`
-      );
+      // Suiscan API endpoint for transactions
+      const url = address
+        ? `${SUISCAN_API_URL}/transactions?address=${address}&limit=${limit}`
+        : `${SUISCAN_API_URL}/transactions?limit=${limit}`;
 
-      if (!response.ok) {
-        throw new Error(`Hedera API error: ${response.status}`);
+      const headers: Record<string, string> = {};
+      if (SUISCAN_API_KEY) {
+        headers['Authorization'] = `Bearer ${SUISCAN_API_KEY}`;
       }
 
-      const data = await response.json();
-      
-      return {
-        account: data.account,
-        balance: parseInt(data.balance?.balance || '0') / 100000000, // Convert tinybars to HBAR
-        transactions: data.transactions || 0
-      };
-    } catch (error) {
-      console.error('Hedera account info error:', error);
-      return null;
-    }
-  },
-
-  async getRecentTransactions(accountId?: string, limit: number = 10): Promise<HederaTransaction[]> {
-    try {
-      const url = accountId 
-        ? `${HEDERA_MIRROR_NODE_URL}/transactions?account.id=${accountId}&limit=${limit}&order=desc`
-        : `${HEDERA_MIRROR_NODE_URL}/transactions?limit=${limit}&order=desc`;
-
-      const response = await fetch(url);
+      const response = await fetch(url, { headers });
 
       if (!response.ok) {
-        throw new Error(`Hedera API error: ${response.status}`);
+        throw new Error(`Suiscan API error: ${response.status}`);
       }
 
       const data = await response.json();
       return data.transactions || [];
     } catch (error) {
-      console.error('Hedera transactions error:', error);
+      console.error('Sui transactions error:', error);
       return [];
     }
   },
 
   async getNetworkStats(): Promise<any> {
     try {
-      const response = await fetch(`${HEDERA_MIRROR_NODE_URL}/network/supply`);
+      const headers: Record<string, string> = {};
+      if (SUISCAN_API_KEY) {
+        headers['Authorization'] = `Bearer ${SUISCAN_API_KEY}`;
+      }
+
+      const response = await fetch(`${SUISCAN_API_URL}/network/stats`, { headers });
       
       if (!response.ok) {
-        throw new Error(`Hedera API error: ${response.status}`);
+        throw new Error(`Suiscan API error: ${response.status}`);
       }
 
       return await response.json();
     } catch (error) {
-      console.error('Hedera network stats error:', error);
-      return { error: error instanceof Error ? error.message : 'UNKNOWN_ERROR' };
-    }
-  },
-
-  async getTokenInfo(tokenId: string): Promise<any> {
-    try {
-      const response = await fetch(`${HEDERA_MIRROR_NODE_URL}/tokens/${tokenId}`);
-      
-      if (!response.ok) {
-        throw new Error(`Hedera API error: ${response.status}`);
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error('Hedera token info error:', error);
+      console.error('Sui network stats error:', error);
       return { error: error instanceof Error ? error.message : 'UNKNOWN_ERROR' };
     }
   }
@@ -959,7 +926,7 @@ export const orchestrator = {
       const [marketData, sentiment, transactions] = await Promise.all([
         coingeckoService.getMarketData('ethereum').catch(() => undefined),
         newsService.getCryptoNews(symbol.split('/')[0]).catch(() => undefined),
-        hederaService.getRecentTransactions(undefined, 5).catch(() => [])
+        suiService.getRecentTransactions(undefined, 5).catch(() => [])
       ]);
 
       results.marketData = marketData;
@@ -1005,14 +972,14 @@ export const orchestrator = {
   },
 
   async analyzeMultiChainActivity(): Promise<any> {
-    const [hederaStats, ethPrice, btcPrice] = await Promise.all([
-      hederaService.getNetworkStats(),
+    const [suiStats, ethPrice, btcPrice] = await Promise.all([
+      suiService.getNetworkStats(),
       cryptoService.getPrice('ETH/USD'),
       cryptoService.getPrice('BTC/USD')
     ]);
 
     return {
-      hedera: hederaStats,
+      sui: suiStats,
       prices: { eth: ethPrice, btc: btcPrice },
       timestamp: Date.now()
     };
@@ -1122,25 +1089,25 @@ export const agentStatusManager = {
   }
 };
 
-// --- SauceSwap DEX Service for HBAR/SAUCE Swaps ---
+// --- Cetus DEX Service for SUI/USDC Swaps ---
 export const sauceSwapService = {
   baseURL: 'https://api.sauceswap.finance',
   testnetURL: 'https://testnet.sauceswap.finance',
 
-  // Get HBAR/SAUCE pair info
+  // Get SUI/USDC pair info
   async getPairInfo(): Promise<any> {
     try {
-      const response = await fetch(`${this.baseURL}/pairs/hbar-sauce`);
+      const response = await fetch(`${this.baseURL}/pairs/sui-usdc`);
       if (!response.ok) throw new Error('Failed to fetch pair info');
       return await response.json();
     } catch (error) {
-      console.error('SauceSwap pair info error:', error);
+      console.error('Cetus DEX pair info error:', error);
       throw error;
     }
   },
 
   // Get swap quote
-  async getSwapQuote(amountHBAR: number): Promise<{
+  async getSwapQuote(amountSUI: number): Promise<{
     amountIn: number;
     amountOut: number;
     priceImpact: number;
@@ -1148,14 +1115,14 @@ export const sauceSwapService = {
   }> {
     try {
       // Simulated quote for testnet
-      const mockRate = 2134.5; // 1 HBAR = ~2134 SAUCE (example rate)
-      const priceImpact = amountHBAR > 0.1 ? 0.8 : 0.3; // Higher impact for larger trades
+      const mockRate = 2.05; // 1 SUI = ~$2.05 USDC (example rate)
+      const priceImpact = amountSUI > 0.1 ? 0.8 : 0.3; // Higher impact for larger trades
       
       return {
-        amountIn: amountHBAR,
-        amountOut: amountHBAR * mockRate * (1 - priceImpact / 100),
+        amountIn: amountSUI,
+        amountOut: amountSUI * mockRate * (1 - priceImpact / 100),
         priceImpact,
-        route: ['HBAR', 'SAUCE']
+        route: ['SUI', 'USDC']
       };
     } catch (error) {
       console.error('SauceSwap quote error:', error);
@@ -1164,20 +1131,20 @@ export const sauceSwapService = {
   },
 
   // Execute swap (simulation for now - would need real wallet integration)
-  async executeSwap(amountHBAR: number, minAmountOut: number): Promise<{
+  async executeSwap(amountSUI: number, minAmountOut: number): Promise<{
     success: boolean;
     txHash?: string;
     amountOut?: number;
     error?: string;
   }> {
     try {
-      // Safety check: max 0.05 HBAR
-      if (amountHBAR > 0.05) {
-        throw new Error('Swap amount exceeds safety limit of 0.05 HBAR');
+      // Safety check: max 0.05 SUI
+      if (amountSUI > 0.05) {
+        throw new Error('Swap amount exceeds safety limit of 0.05 SUI');
       }
 
       // Simulated swap execution
-      const quote = await this.getSwapQuote(amountHBAR);
+      const quote = await this.getSwapQuote(amountSUI);
       
       if (quote.amountOut < minAmountOut) {
         throw new Error('Slippage tolerance exceeded');
@@ -1186,7 +1153,7 @@ export const sauceSwapService = {
       // Simulate transaction hash
       const mockTxHash = `0x${Math.random().toString(16).substr(2, 64)}`;
       
-      console.log(`✅ SWAP EXECUTED: ${amountHBAR} HBAR → ${quote.amountOut.toFixed(2)} SAUCE`);
+      console.log(`✅ SWAP EXECUTED: ${amountSUI} SUI → ${quote.amountOut.toFixed(2)} USDC`);
       console.log(`📝 Tx Hash: ${mockTxHash}`);
       
       return {
@@ -1214,7 +1181,7 @@ export const sauceSwapService = {
     const isBullish = sentimentScore > 60 && priceChange > 2;
     
     if (isBullish) {
-      // Scale swap amount based on signal strength (0.01 to 0.05 HBAR)
+      // Scale swap amount based on signal strength (0.01 to 0.05 SUI)
       const signalStrength = Math.min((sentimentScore / 100) * (priceChange / 10), 1);
       const recommendedAmount = 0.01 + (signalStrength * 0.04); // 0.01 to 0.05
       
@@ -1242,12 +1209,12 @@ export const pythNetworkService = {
   PRICE_FEED_IDS: {
     BTC: 'c5e0e0c92116c0c070a242b254270441a6201af680a33e0381561c59db3266c9',
     ETH: '06c217a791f5c4f988b36629af4cb88fad827b2485400a358f3b02886b54de92',
-    HBAR: '3728e591097635310e6341af53db8b7ee42da9b3a8d918f9463ce9cca886dfbd',
+    SUI: '23d7315113f5b1d3ba7a83604c44b94d79f4fd69af77f804fc7f920a6dc65744',
     BNB: '2f95862b045670cd22bee3114c39763a4a08beeb663b145d283c31d7d1101c4f',
     SOL: 'c2289a6a43d2ce91c6f55caec370f4acc38a2ed477f58813334c6d03749ff2a4'
   },
   
-  async getPrice(asset: 'BTC' | 'ETH' | 'HBAR' | 'BNB' | 'SOL'): Promise<{ price: number; confidence: number; timestamp: number; dataSource: string } | null> {
+  async getPrice(asset: 'BTC' | 'ETH' | 'SUI' | 'BNB' | 'SOL'): Promise<{ price: number; confidence: number; timestamp: number; dataSource: string } | null> {
     const cacheKey = `pyth_${asset.toLowerCase()}_price`;
     
     // Check cache first (30 seconds TTL for real-time price)
@@ -1300,8 +1267,8 @@ export const pythNetworkService = {
   },
   
   // Legacy method for backward compatibility
-  async getHBARPrice(): Promise<{ price: number; confidence: number; timestamp: number } | null> {
-    const result = await this.getPrice('HBAR');
+  async getSUIPrice(): Promise<{ price: number; confidence: number; timestamp: number } | null> {
+    const result = await this.getPrice('SUI');
     if (!result) return null;
     return {
       price: result.price,
@@ -1311,92 +1278,7 @@ export const pythNetworkService = {
   }
 };
 
-// ===========================
-// HEDERA SWAP TRACKING SERVICE
-// ===========================
 
-export const hederaSwapTracker = {
-  SAUCERSWAP_ROUTER_ADDRESS: '0x00000000000000000000000000000000002e1fa7', // Example
-  
-  async getRecentSwaps(timeWindowMinutes: number = 60, maxResults: number = 5): Promise<any[]> {
-    const cacheKey = `hedera_swaps_${timeWindowMinutes}`;
-    
-    // Check cache (1 minute TTL)
-    const cached = cache.get<any[]>(cacheKey);
-    if (cached) {
-      return cached;
-    }
-
-    try {
-      const now = Math.floor(Date.now() / 1000);
-      const unixFrom = now - (timeWindowMinutes * 60);
-      const unixTo = now;
-
-      // Swap event signature: Swap(address,uint256,uint256,uint256,uint256,address)
-      const swapTopic = '0xd78ad95fa46c994b6551d0da85fc275fe613ce37657fb8d5e3d130840159d822';
-      
-      // Build query string manually to support multiple timestamp parameters
-      const queryParams = [
-        `timestamp=gte:${unixFrom}`,
-        `timestamp=lte:${unixTo}`,
-        `topic0=${swapTopic}`,
-        `limit=${maxResults * 2}`
-      ].join('&');
-
-      const url = `${HEDERA_MIRROR_NODE_URL}/contracts/results/logs?${queryParams}`;
-      const response = await fetch(url);
-
-      if (!response.ok) {
-        throw new Error(`Hedera Mirror Node error: ${response.status}`);
-      }
-
-      const data = await response.json();
-      const logs = data.logs || [];
-
-      // Group logs by transaction hash
-      const groupedLogs: Record<string, any[]> = {};
-      for (const log of logs) {
-        const txHash = log.transaction_hash;
-        if (!groupedLogs[txHash]) {
-          groupedLogs[txHash] = [];
-        }
-        groupedLogs[txHash].push(log);
-      }
-
-      // Parse swaps
-      const swaps: any[] = [];
-      Object.keys(groupedLogs).slice(0, maxResults).forEach(txHash => {
-        const logs = groupedLogs[txHash].sort((a: any, b: any) => a.index - b.index);
-        
-        for (const log of logs) {
-          try {
-            // Parse log data (simplified - would need actual ABI decoding)
-            const pairAddress = log.address;
-            const timestamp = new Date(parseFloat(log.timestamp) * 1000).toLocaleString();
-            
-            swaps.push({
-              txHash,
-              pairAddress,
-              timestamp,
-              explorerUrl: `https://hashscan.io/testnet/transaction/${txHash}`,
-              blockNumber: log.block_number
-            });
-          } catch (error) {
-            console.warn('Failed to parse swap log:', error);
-          }
-        }
-      });
-
-      // Cache for 1 minute
-      cache.set(cacheKey, swaps, 60);
-      
-      return swaps;
-    } catch (error) {
-      console.error('Hedera swap tracking error:', error);
-      return [];
-    }
-  }
-};
 
 // Make utilities available globally for debugging
 if (typeof window !== 'undefined') {
@@ -1404,15 +1286,15 @@ if (typeof window !== 'undefined') {
   (window as any).agentStatusManager = agentStatusManager;
   (window as any).sauceSwapService = sauceSwapService;
   (window as any).pythNetworkService = pythNetworkService;
-  (window as any).hederaSwapTracker = hederaSwapTracker;
+  (window as any).suiService = suiService;
   
   // Helpful console commands
-  console.log('%c🦁 ASLAN AGENTS API UTILITIES', 'color: #99efe4; font-weight: bold; font-size: 14px;');
+  console.log('%c🐋 WALRUS AGENTS API UTILITIES', 'color: #99efe4; font-weight: bold; font-size: 14px;');
   console.log('%cUse these commands in console:', 'color: #99efe4;');
   console.log('  apiUtils.getRateLimitStatus() - Check API rate limits');
   console.log('  apiUtils.getCacheStats() - View cache statistics');
   console.log('  apiUtils.clearCache() - Clear all cached data');
   console.log('  apiUtils.shouldMakeApiCall("gemini") - Check if safe to call API');
   console.log('  agentStatusManager.getAllStatuses() - View agent activity cache');
-  console.log('  sauceSwapService.getSwapQuote(0.02) - Get HBAR→SAUCE swap quote');
+  console.log('  suiService.getNetworkStats() - Get Sui network statistics');
 }

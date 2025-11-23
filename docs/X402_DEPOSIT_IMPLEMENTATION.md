@@ -1,189 +1,186 @@
-# x402 Deposit Implementation
+# Agent Payment Implementation
 
 ## Overview
-Implemented real on-chain deposit functionality for funding the Captain (Commander Agent) via x402 streaming payments. This allows users to deposit HBAR or USDC that the Captain can autonomously use to pay other agents for tasks.
+On-chain payment functionality for funding agents via Sui smart contracts. This allows users to fund agents that can autonomously coordinate tasks and payments on the Sui Network.
 
 ## Smart Contract Integration
 
-### X402Streaming Contract
-- **Address**: `0x805492D120C29A4933FB1D3FfCe944A2D42222F4`
-- **Network**: Hedera Testnet (Chain ID: 296)
+### Sui Move Contracts
+- **Network**: Sui Testnet
 - **Features**:
-  - Real-time micropayments via streaming
-  - Spending caps and rate limits
-  - Auto-close on budget exhaustion
-  - Support for both HBAR and USDC
+  - Agent registry for identity management
+  - Training rewards for collaborative learning
+  - Object-based ownership model
+  - Dynamic fields for metadata
+  - Support for SUI and USDC tokens
 
-### Key Functions
-1. **openStream()**: Opens a payment stream from Captain to an agent
-   - Parameters: senderAgentId, receiverAgentId, ratePerSecond, spendingCap, asset
-   - Requires ERC20 approval for USDC
-   - Can send native HBAR directly
+### Key Functions (Sui Move)
+1. **mint_agent()**: Mints a new agent NFT
+   - Creates agent identity on-chain
+   - Returns agent token ID
+   - Stores metadata in dynamic fields
 
-2. **pushPayments()**: Processes accumulated payments (keeper function)
-3. **closeStream()**: Closes stream and returns unused funds
-4. **withdraw()**: Receiver withdraws accumulated payments
+2. **register_training()**: Records training contributions
+   - Tracks agent learning progress
+   - Rewards collaborative training
+   - Stores results on Walrus
 
 ## Implementation Files
 
-### 1. `hooks/useX402Deposit.ts`
-Custom React hooks for x402 operations:
+### 1. `hooks/useAgentSui.ts`
+Custom React hooks for Sui agent operations:
 
-- **useX402Deposit()**: Main deposit functionality
-  - Handles USDC approval workflow
-  - Opens streaming payment channels
-  - Returns transaction status and errors
+- **useMintAgent()**: Mint new agent NFTs
+  - Interacts with agent_registry.move
+  - Returns transaction digest
+  - Updates on-chain agent registry
   
-- **useX402StreamData()**: Read stream information
-  - Stream details (sender, receiver, rate, cap)
-  - Remaining allowance
-  - Amount owed
+- **useOnChainData()**: Read agent data from Sui
+  - Agent metadata and ownership
+  - Training history
+  - Token information
 
-- **useX402PushPayments()**: Keeper function to process payments
-- **useX402CloseStream()**: Close active streams
-- **useX402Withdraw()**: Withdraw earned payments
-
-### 2. `components/DepositModal.tsx`
-User interface for depositing funds:
+### 2. `components/TrainingDashboard.tsx`
+User interface for agent training:
 
 **Features**:
-- Asset selection (HBAR or USDC)
-- Amount input with validation
-- Receiver agent ID selection
-- Payment rate configuration (per second)
-- Duration calculator
-- Multi-step workflow:
-  1. Form input
-  2. USDC approval (if needed)
-  3. Stream opening transaction
-  4. Success confirmation
+- Real-time training metrics
+- Progress tracking
+- Reward distribution
+- Walrus storage integration
 
 **User Experience**:
-- Real-time duration calculation
-- Transaction status indicators
-- HashScan explorer links
-- Error handling with clear messages
+- Visual progress indicators
+- Transaction status updates
+- Suiscan explorer links
+- Clear error messages
 
 ### 3. `components/WalletBar.tsx`
-Added "Fund Balance" button:
-- Only visible when wallet connected
-- Opens deposit modal
-- Positioned next to Results button
+Wallet integration:
+- Sui wallet connection
+- Balance display
+- Network indicator
+- Transaction history
 
 ### 4. `App.tsx`
-Integration changes:
-- Imported DepositModal component
-- Added showDepositModal state
-- Connected modal to WalletBar button
-- Logs successful deposits to console
+Core application logic:
+- Agent lifecycle management
+- Sui transaction handling
+- State persistence
+- Real-time updates
 
-### 5. `contracts/abis/X402Streaming.json`
-Complete ABI for X402Streaming contract:
-- All function signatures
-- Event definitions
-- Struct types (StreamData)
+### 5. `move/sources/`
+Sui Move smart contracts:
+- **agent_registry.move**: Agent identity and ownership
+- **training_rewards.move**: Reward distribution system
 
-### 6. `config/walletConfig.ts`
-Exported contract addresses:
-- USDC_ADDRESS
-- EIP8004_ADDRESS  
-- X402_STREAMING_ADDRESS
+### 6. `config/suiWalletConfig.ts`
+Network configuration:
+- Testnet RPC endpoints
+- Contract package IDs
+- Module addresses
 
 ## Workflow
 
-### For USDC Deposits:
-1. User clicks "Fund Balance" button
-2. Enters amount, receiver agent ID, and payment rate
-3. Clicks "OPEN x402 STREAM"
-4. **Step 1**: Approve USDC spending
-   - User signs approval transaction
-   - Wait for confirmation
-5. **Step 2**: Open stream
-   - User signs stream creation transaction
-   - Funds transferred to escrow
-   - Stream begins immediately
-6. Success! Stream ID returned
+### Minting an Agent:
+1. User connects Sui wallet
+2. Selects agent type and configuration
+3. Clicks "Mint Agent"
+4. **Transaction**: Create agent NFT
+   - User signs Sui transaction
+   - Agent minted on-chain
+   - Metadata stored
+5. Success! Agent is active
 
-### For HBAR Deposits:
-1-3. Same as above
-4. **Single Step**: Open stream with native HBAR
-   - No approval needed
-   - HBAR sent directly with transaction
-5. Success! Stream active
+### Training an Agent:
+1. Agent performs training task
+2. Results stored on Walrus
+3. Training registered on-chain
+4. **Reward**: Training rewards distributed
+   - Automatic reward calculation
+   - On-chain verification
+   - Transparent distribution
+5. Agent improves and earns rewards
 
 ## Agent Usage
 
-Once deposited, the Captain can:
-- Use funds for autonomous operations
-- Pay other agents for tasks via streams
-- Monitor remaining balance
-- Close streams to recover unused funds
+Active agents can:
+- Participate in collaborative training
+- Earn rewards for contributions
+- Store model updates on Walrus
+- Access decentralized data
+- Coordinate with other agents
 
-Agents receiving payments can:
-- Withdraw accumulated payments anytime
-- See real-time payment flow
-- Auto-receive when cap is reached
+Users can:
+- Monitor agent performance
+- Track training progress
+- View reward history
+- Manage agent lifecycle
 
 ## Technical Details
 
-### Payment Rate Examples:
-- **0.0001 USDC/s** = ~$0.36/hour = ~$8.64/day
-- **0.001 USDC/s** = ~$3.60/hour = ~$86.40/day  
-- **0.00001 HBAR/s** = ~0.036 HBAR/hour
+### Sui Move Architecture:
+- **Object-based model**: Agents are owned objects
+- **Dynamic fields**: Flexible metadata storage
+- **Capabilities**: Secure permission system
+- **Events**: Real-time notifications
 
-### Spending Cap:
-- Maximum total amount that can be streamed
-- Stream auto-closes when cap reached
-- Unused funds returned to sender
+### Walrus Integration:
+- **Blob storage**: Store training data and model updates
+- **Content addressing**: Immutable references
+- **Erasure coding**: Redundant, fault-tolerant storage
+- **Proof of custody**: Verifiable storage
 
 ### Gas Optimization:
-- Keeper pattern for payment processing
-- Anyone can call pushPayments()
-- Batch processing of accumulated payments
-- Minimal gas per payment push
+- Efficient Move bytecode
+- Batch operations support
+- Minimal storage footprint
+- Optimized object structure
 
 ## Security Features
 
-1. **Agent Verification**: Only active EIP-8004 agents can participate
-2. **Owner Authorization**: Only agent owners can open/close streams
-3. **Spending Caps**: Hard limits prevent overspending
-4. **Reentrancy Protection**: SafeERC20 and ReentrancyGuard
-5. **Escrow Model**: Funds held in contract until withdrawn
+1. **Agent Ownership**: Only owners can control their agents
+2. **Move Safety**: Type safety and resource protection
+3. **On-chain Verification**: All actions verifiable
+4. **Walrus Integrity**: Cryptographic proof of storage
+5. **Access Control**: Capability-based permissions
 
 ## Future Enhancements
 
-- [ ] Multi-stream management UI
-- [ ] Stream analytics dashboard
-- [ ] Automated keeper service
-- [ ] Stream rate adjustment interface
-- [ ] Batch stream creation
-- [ ] Stream templates for common tasks
-- [ ] Integration with agent task assignment
+- [ ] Advanced training algorithms
+- [ ] Multi-agent coordination protocols
+- [ ] Decentralized model aggregation
+- [ ] SEAL integration for private inference
+- [ ] Cross-chain agent communication
+- [ ] Marketplace for trained agents
+- [ ] Governance for reward distribution
 
 ## Testing
 
-To test the deposit functionality:
+To test agent functionality:
 
-1. Connect wallet with USDC or HBAR balance
-2. Click "Fund Balance" in top bar
-3. Enter deposit details (recommend 0.1 USDC for testing)
-4. Complete approval (USDC only)
-5. Confirm stream creation
-6. Check HashScan for transaction details
+1. Connect Sui wallet (testnet)
+2. Ensure you have testnet SUI tokens
+3. Mint your first agent
+4. Participate in training
+5. Check Suiscan for transaction history
 
-View streams on-chain:
-```javascript
-// Read stream data
-const streamData = await contract.getStreamData(streamId);
-console.log(streamData);
+View agents on-chain:
+```typescript
+// Query agent data
+const agent = await suiClient.getObject({
+  id: agentId,
+  options: { showContent: true }
+});
+console.log(agent);
 ```
 
-## Contract Explorer
-- **HashScan**: https://hashscan.io/testnet/contract/0.0.5183604
-- **Mirror Node**: https://testnet.mirrornode.hedera.com/api/v1/contracts/0.0.5183604
+## Explorer Links
+- **Suiscan**: https://suiscan.xyz/testnet
+- **Sui Explorer**: https://suiexplorer.com/?network=testnet
 
 ---
 
 **Status**: ✅ Fully Implemented and Ready for Testing
-**Network**: Hedera Testnet
-**Last Updated**: November 20, 2025
+**Network**: Sui Testnet
+**Last Updated**: November 23, 2025

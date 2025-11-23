@@ -54,7 +54,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
             <p className="text-base text-gray-400 max-w-2xl leading-relaxed font-mono">
               Deploy autonomous AI agents powered by <span className="text-walrus-teal font-bold">x402 streaming payments</span> that 
               collaborate, trade, and execute smart contracts in real-time. 
-              Built with EIP-8004 on Hedera Hashgraph for enterprise-grade performance.
+              Built on Sui Network with Walrus decentralized storage for enterprise-grade performance.
             </p>
 
             <div className="flex flex-wrap gap-4">
@@ -159,7 +159,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
             name="Reynard Swift" 
             role="Merchant" 
             avatar="/lottie/Happy Unicorn Dog.json"
-            ability="DEX executor monitoring signals and swapping HBAR/SAUCE on SaucerSwap"
+            ability="DEX executor monitoring signals and swapping SUI/USDC on Cetus"
           />
           <AgentPreview 
             name="Ursus Guardian" 
@@ -186,7 +186,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
           <div className="inline-block p-8 bg-black/40 rounded-xl backdrop-blur-sm border border-walrus-teal/20">
             <h3 className="text-2xl font-bold mb-3 font-mono text-walrus-teal uppercase tracking-wider">Ready to Deploy?</h3>
             <p className="text-gray-400 mb-6 max-w-2xl mx-auto font-mono text-sm">
-              Experience autonomous AI agents on Hedera Hashgraph
+              Experience autonomous AI agents on Sui Network with Walrus Storage
             </p>
             <button
               onClick={onLaunchApp}

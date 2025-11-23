@@ -1,17 +1,17 @@
-// API Testing Utility for ASLAN AGENTS
+// API Testing Utility for WALRUS AGENTS
 // Use this to verify your API keys are working correctly
 
-import { geminiService, cryptoService, newsService, hederaService, orchestrator } from './services/api';
+import { geminiService, cryptoService, newsService, suiService, orchestrator } from './services/api';
 
 export const testAPIs = async () => {
-  console.log('🧪 ASLAN AGENTS API Testing Suite\n');
+  console.log('🧪 WALRUS AGENTS API Testing Suite\n');
   console.log('═══════════════════════════════════════\n');
 
   // Test Gemini AI
   console.log('1️⃣ Testing Gemini AI API...');
   try {
     const geminiResult = await geminiService.chat({
-      prompt: 'Say "Hello from ASLAN AGENTS!" in one sentence.',
+      prompt: 'Say "Hello from WALRUS AGENTS!" in one sentence.',
       temperature: 0.7
     });
     console.log('✅ Gemini AI:', geminiResult.text);
@@ -50,18 +50,18 @@ export const testAPIs = async () => {
 
   console.log('\n');
 
-  // Test Hedera Mirror Node
-  console.log('4️⃣ Testing Hedera Mirror Node...');
+  // Test Sui Network
+  console.log('4️⃣ Testing Sui Network via Suiscan...');
   try {
-    const transactions = await hederaService.getRecentTransactions(undefined, 5);
-    console.log(`✅ Hedera Transactions: ${transactions.length} recent found`);
+    const transactions = await suiService.getRecentTransactions(undefined, 5);
+    console.log(`✅ Sui Transactions: ${transactions.length} recent found`);
     
-    const networkStats = await hederaService.getNetworkStats();
+    const networkStats = await suiService.getNetworkStats();
     if (!networkStats.error) {
-      console.log('✅ Hedera Network: Connected successfully');
+      console.log('✅ Sui Network: Connected successfully');
     }
   } catch (error) {
-    console.error('❌ Hedera API failed:', error);
+    console.error('❌ Sui API failed:', error);
   }
 
   console.log('\n');
@@ -87,9 +87,9 @@ export const testAPIs = async () => {
   console.log('\n═══════════════════════════════════════');
   console.log('✨ Testing Complete!\n');
   console.log('💡 Tips:');
-  console.log('   - If any test fails, check your .env.local file');
+  console.log('   - If any test fails, check your .env file');
   console.log('   - Ensure API keys are valid and not rate-limited');
-  console.log('   - Hedera Mirror Node requires no API key');
+  console.log('   - Suiscan API may require an API key for higher limits');
   console.log('   - Fallback data will be used if APIs are unavailable\n');
 };
 
