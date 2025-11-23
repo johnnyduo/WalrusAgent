@@ -145,7 +145,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
           <AgentPreview 
             name="Walrus Commander" 
             role="Coordinator" 
-            avatar="/lottie/Lion - Breath.json"
+            avatar="https://media.baamboozle.com/uploads/images/488673/1634014446_120661.gif"
             ability="Distributed training coordination & epoch management across the network"
           />
           <AgentPreview 
