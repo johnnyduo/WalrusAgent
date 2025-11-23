@@ -41,7 +41,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
           <div className="flex-1 space-y-6">
             <div className="inline-block px-4 py-2 bg-gradient-to-r from-walrus-teal/10 to-walrus-purple/10 rounded-lg border border-walrus-purple/30 backdrop-blur-sm">
               <span className="text-xs font-mono uppercase tracking-wider text-walrus-purple">
-                🏆 Walrus Protocol Hackathon 2024 | AI x Data Track
+                🏆 Walrus Protocol Hackathon 2025 | AI x Data Track
               </span>
             </div>
 

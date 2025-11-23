@@ -2,7 +2,7 @@
 
 ## Democratizing AI Training Through Browser-Based Federated Learning
 
-> 🏆 **Built for Walrus Protocol Hackathon 2024**  
+> 🏆 **Built for Walrus Protocol Hackathon 2025**  
 > 🎯 **Category**: AI x Decentralized Storage  
 > ⛓️ **Blockchain**: Sui Network (Testnet)  
 > 🐋 **Storage**: Walrus Protocol with Seal Certification
@@ -896,7 +896,7 @@ MIT License - see [LICENSE](LICENSE) file for details
 **Network**: Sui Testnet  
 **Deployer**: `0xce2162a53565ac45e6338efcac7318d83d69debe934498bb2f592cee1f0410c9`
 
-**Built with ❤️ for the Walrus Protocol Hackathon 2024** 🐋
+**Built with ❤️ for the Walrus Protocol Hackathon 2025** 🐋
 
 3. **Blockchain-Coordinated AI**
    - Sui smart contracts manage agent registry and contributions
