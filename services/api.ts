@@ -1288,6 +1288,10 @@ export const pythNetworkService = {
 
 
 
+// Export Walrus Service
+import { walrusService } from './walrusService';
+export { walrusService };
+
 // Make utilities available globally for debugging
 if (typeof window !== 'undefined') {
   (window as any).apiUtils = apiUtils;
@@ -1295,6 +1299,7 @@ if (typeof window !== 'undefined') {
   (window as any).sauceSwapService = sauceSwapService;
   (window as any).pythNetworkService = pythNetworkService;
   (window as any).suiService = suiService;
+  (window as any).walrusService = walrusService;
   
   // Helpful console commands
   console.log('%c🐋 WALRUS AGENTS API', 'color: #cfb0ff; font-weight: bold; font-size: 16px; font-family: Outfit, sans-serif;');

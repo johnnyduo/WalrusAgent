@@ -39,8 +39,8 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-fade-in">
-      <div className="bg-gray-900/98 border-2 border-walrus-purple/40 rounded-xl shadow-2xl shadow-walrus-purple/20 w-full max-w-5xl max-h-[85vh] overflow-hidden flex flex-col animate-scale-in">
+    <div className="fixed inset-0 bg-black/90 backdrop-blur-md z-[9999] flex items-center justify-center p-4 animate-fade-in" onClick={onClose}>
+      <div className="bg-gray-900/98 border-2 border-walrus-purple/40 rounded-xl shadow-2xl shadow-walrus-purple/20 w-full max-w-5xl max-h-[85vh] overflow-hidden flex flex-col animate-scale-in" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="p-6 border-b border-white/10 bg-gradient-to-r from-walrus-teal/10 via-transparent to-walrus-purple/10">
           <div className="flex items-center justify-between mb-5">
@@ -87,18 +87,13 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
         <div className="flex-1 overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-walrus-purple/30 scrollbar-track-transparent">
           {activeTab === 'overview' && (
             <div className="space-y-6">
-              {/* Contract Status Warning */}
+              {/* Contract Status Info */}
               {!CONTRACTS_DEPLOYED && (
-                <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 flex items-start gap-3">
-                  <AlertCircle size={20} className="text-yellow-400 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="text-yellow-400 font-bold font-display mb-1">Contracts Not Deployed</h4>
-                    <p className="text-yellow-400/80 text-sm font-sans">
-                      Deploy the Move contracts to Sui Testnet to enable on-chain rewards. 
-                      See <code className="font-mono text-xs bg-black/30 px-1 py-0.5 rounded">DEPLOY_GUIDE.md</code> for instructions.
-                    </p>
-                    <p className="text-yellow-400/60 text-xs mt-2 font-mono">
-                      Training will work in simulation mode until contracts are deployed.
+                <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-lg p-3 flex items-center gap-3">
+                  <AlertCircle size={18} className="text-blue-400 flex-shrink-0" />
+                  <div className="flex-1">
+                    <p className="text-blue-300 text-xs font-sans">
+                      🎮 <strong>Demo Mode</strong> - Training simulated for hackathon. Deploy contracts for on-chain rewards.
                     </p>
                   </div>
                 </div>

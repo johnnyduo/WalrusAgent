@@ -63,7 +63,13 @@ class WalrusService {
 
       if (!response.ok) {
         const errorText = await response.text().catch(() => 'No response body');
-        throw new Error(`Walrus upload failed: ${response.status} - ${errorText}`);
+        console.error('Walrus upload failed:', {
+          status: response.status,
+          statusText: response.statusText,
+          url: `${this.publisherUrl}/v1/store?epochs=${epochs}`,
+          error: errorText
+        });
+        throw new Error(`Walrus testnet unavailable (${response.status}). Using local fallback.`);
       }
 
       const result = await response.json();

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Zap, Hand, DollarSign, TrendingUp, TrendingDown, Wallet, ChevronDown, ChevronUp, Brain } from 'lucide-react';
 import { TrainingDashboard } from './TrainingDashboard';
 
@@ -80,13 +81,14 @@ export const CaptainControlPanel: React.FC<CaptainControlPanelProps> = ({
         )}
       </div>
 
-      {/* Training Dashboard Modal */}
-      {showTrainingDashboard && isCaptainRegistered && (
+      {/* Training Dashboard Modal - Rendered via Portal to escape parent stacking context */}
+      {showTrainingDashboard && isCaptainRegistered && createPortal(
         <TrainingDashboard
           agentId={String(captainTokenId)}
           agentName={`Captain #${captainTokenId}`}
           onClose={() => setShowTrainingDashboard(false)}
-        />
+        />,
+        document.body
       )}
     </div>
   );

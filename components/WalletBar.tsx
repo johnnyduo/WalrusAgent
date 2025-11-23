@@ -129,7 +129,7 @@ const WalletBar: React.FC<WalletBarProps> = ({ onLogoClick }) => {
             >
                 <Layers size={16} className="drop-shadow-glow" /> 
                 WALRUS AGENTS 
-                <span className="text-white/30 text-[10px] font-normal ml-1">v1.0.4</span>
+                <span className="text-white/30 text-[10px] font-normal ml-1">v1.0</span>
             </h1>
         </div>
 

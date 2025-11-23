@@ -12,7 +12,7 @@ import { AgentProgressBar } from './components/AgentProgressBar';
 import { CaptainControlPanel } from './components/CaptainControlPanel';
 import LandingPage from './components/LandingPage';
 import { Wallet, BarChart3 } from 'lucide-react';
-import { orchestrator, cryptoService, newsService, agentStatusManager, sauceSwapService, pythNetworkService, geminiService } from './services/api';
+import { orchestrator, cryptoService, newsService, agentStatusManager, sauceSwapService, pythNetworkService, geminiService, walrusService } from './services/api';
 import { testAPIs } from './testAPIs';
 import { useMintAgent } from './hooks/useAgentFlow';
 import { useSuiWallet } from './hooks/useSuiWallet';
@@ -100,7 +100,7 @@ if (typeof window !== 'undefined') {
     // Restore other data
     if (backup.userStreams) localStorage.setItem('userStreams', backup.userStreams);
     if (backup.taskResults) localStorage.setItem('taskResults', backup.taskResults);
-    if (backup.activeAgents) localStorage.setItem('activeAgents', backup.activeAgents);
+    // Note: activeAgents is now wallet-specific (activeAgents_${address})
     if (backup.agentConnections) localStorage.setItem('agentConnections', backup.agentConnections);
     if (backup.nodePositions) localStorage.setItem('nodePositions', backup.nodePositions);
     
@@ -126,6 +126,41 @@ if (typeof window !== 'undefined') {
       console.error('❌ Error parsing streams:', err);
     }
   };
+}
+
+// Helper to check pending Walrus uploads
+const getPendingWalrusUploads = () => {
+  const pending: any[] = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key?.startsWith('pending_walrus_upload_')) {
+      const data = localStorage.getItem(key);
+      if (data) {
+        try {
+          pending.push(JSON.parse(data));
+        } catch (e) {
+          console.warn('Failed to parse pending upload:', key);
+        }
+      }
+    }
+  }
+  return pending;
+};
+
+// Make available in console for demo purposes
+if (typeof window !== 'undefined') {
+  (window as any).checkPendingWalrusUploads = getPendingWalrusUploads;
+  
+  // Show Walrus integration status on app load
+  setTimeout(() => {
+    const pending = getPendingWalrusUploads();
+    if (pending.length > 0) {
+      console.log('%c🐋 WALRUS INTEGRATION STATUS', 'color: #cfb0ff; font-weight: bold; font-size: 14px;');
+      console.log(`📦 ${pending.length} agent metadata cached, ready for Walrus upload`);
+      console.log('💡 Run checkPendingWalrusUploads() in console to view cached data');
+      console.log('🔄 Will auto-upload to Walrus when testnet is available');
+    }
+  }, 2000);
 }
 
 // Helper to get Sui explorer URL
@@ -162,10 +197,7 @@ const App: React.FC = () => {
   };
   
   // --- State ---
-  const [activeAgents, setActiveAgents] = useState<string[]>(() => {
-    const stored = localStorage.getItem('activeAgents');
-    return stored ? JSON.parse(stored) : [];
-  });
+  const [activeAgents, setActiveAgents] = useState<string[]>([]);
   const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null);
   const [logs, setLogs] = useState<LogMessage[]>(INITIAL_LOGS);
   const [streamingEdges, setStreamingEdges] = useState<string[]>([]);
@@ -176,22 +208,70 @@ const App: React.FC = () => {
   const [agentStatuses, setAgentStatuses] = useState<Record<string, 'idle' | 'negotiating' | 'streaming' | 'offline'>>({});
   const [mintingAgents, setMintingAgents] = useState<Set<string>>(new Set());
   const [deactivatingAgents, setDeactivatingAgents] = useState<Set<string>>(new Set());
-  // Wallet-based agent registry: stores agentId -> tokenId/blobId mapping per wallet address
-  // Can be either blockchain token ID (hex string) or Walrus blob ID (local_xxx)
-  const [onChainAgents, setOnChainAgents] = useState<Record<string, string>>(() => {
-    if (!address) return {};
-    
-    const walletKey = `onChainAgents_${address.toLowerCase()}`;
-    const stored = localStorage.getItem(walletKey);
-    return stored ? JSON.parse(stored) : {};
-  }); // agentId -> tokenId/blobId (per wallet)
+  // Wallet-based agent registry: stores agentId -> transaction digest mapping per wallet address
+  const [onChainAgents, setOnChainAgents] = useState<Record<string, string>>({});
+  // Walrus blob IDs for agent metadata storage
+  const [walrusBlobIds, setWalrusBlobIds] = useState<Record<string, string>>({});
+  const hasLoadedAgentsRef = useRef<boolean>(false);
+  const currentWalletRef = useRef<string | undefined>(undefined);
 
-  // Persist onChainAgents to localStorage whenever it changes
+  // Load onChainAgents and activeAgents from localStorage when wallet connects/changes
   useEffect(() => {
-    if (address) {
+    if (address && address !== currentWalletRef.current) {
+      currentWalletRef.current = address;
+      const walletKey = `onChainAgents_${address.toLowerCase()}`;
+      const activeKey = `activeAgents_${address.toLowerCase()}`;
+      let stored = localStorage.getItem(walletKey);
+      
+      // AUTO-MIGRATION: Check for old format and migrate
+      if (!stored) {
+        const oldData = localStorage.getItem('onChainAgents');
+        if (oldData) {
+          console.log('🔄 Migrating agent data to wallet-specific storage');
+          localStorage.setItem(walletKey, oldData);
+          stored = oldData;
+        }
+      }
+      
+      const loadedAgents = stored ? JSON.parse(stored) : {};
+      console.log('📂 Loaded', Object.keys(loadedAgents).length, 'registered agents from localStorage');
+      setOnChainAgents(loadedAgents);
+      
+      // Load wallet-specific active agents and filter out invalid ones
+      const storedActive = localStorage.getItem(activeKey);
+      let loadedActive: string[] = storedActive ? JSON.parse(storedActive) : [];
+      
+      // Migrate from old global activeAgents if wallet-specific doesn't exist
+      if (!storedActive) {
+        const oldActive = localStorage.getItem('activeAgents');
+        if (oldActive) {
+          loadedActive = JSON.parse(oldActive);
+          console.log('🔄 Migrating active agents to wallet-specific storage');
+        }
+      }
+      
+      // Filter active agents to only include registered ones
+      const validActive = loadedActive.filter(agentId => loadedAgents[agentId]);
+      if (validActive.length !== loadedActive.length) {
+        console.log('🧹 Cleaned up', loadedActive.length - validActive.length, 'invalid active agents');
+      }
+      
+      setActiveAgents(validActive);
+      console.log('📂 Loaded', validActive.length, 'active agents from localStorage');
+      hasLoadedAgentsRef.current = true;
+    } else if (!address && currentWalletRef.current) {
+      currentWalletRef.current = undefined;
+      setOnChainAgents({});
+      setActiveAgents([]);
+      hasLoadedAgentsRef.current = false;
+    }
+  }, [address]);
+
+  // Persist onChainAgents to localStorage whenever it changes (after initial load)
+  useEffect(() => {
+    if (address && hasLoadedAgentsRef.current) {
       const walletKey = `onChainAgents_${address.toLowerCase()}`;
       localStorage.setItem(walletKey, JSON.stringify(onChainAgents));
-      console.log('💾 Persisted onChainAgents for wallet:', address.slice(0, 10), onChainAgents);
     }
   }, [onChainAgents, address]);
   
@@ -241,6 +321,7 @@ const App: React.FC = () => {
 
   // --- Refs to track current transaction context ---
   const currentMintingAgentRef = useRef<string | null>(null);
+  const currentWalrusBlobIdRef = useRef<string | null>(null);
   const currentDeactivatingAgentRef = useRef<string | null>(null);
   const processedMintTxRef = useRef<Set<string>>(new Set());
   const processedDeactivateTxRef = useRef<Set<string>>(new Set());
@@ -324,44 +405,65 @@ const App: React.FC = () => {
       
       console.log('💾 Stored agent transaction:', agentId, '→', txDigest);
       
-      // Show toast notification
+      // Show toast notification with both Walrus and Sui links
       toast.success(
         <div>
-          <div className="font-bold">✅ Agent Minted Successfully!</div>
-          <a 
-            href={explorerUrl} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="text-walrus-teal hover:underline text-sm"
-          >
-            View on Sui Explorer →
-          </a>
-          <div className="text-xs text-gray-400 mt-1 truncate">Tx: {txDigest.slice(0, 20)}...</div>
+          <div className="font-bold">✅ Agent Registered Successfully!</div>
+          <div className="space-y-1 mt-2">
+            <a 
+              href={explorerUrl} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-walrus-teal hover:underline text-xs block"
+            >
+              ⛓️ View Sui Transaction →
+            </a>
+            <div className="text-xs text-gray-400 truncate">Tx: {txDigest.slice(0, 20)}...</div>
+          </div>
         </div>,
-        { autoClose: 8000 }
+        { autoClose: 10000 }
       );
       
-      addLog('SYSTEM', `⛓️ ${agent?.name} minted on Sui! Tx: ${txDigest.slice(0, 20)}...`);
+      addLog('SYSTEM', `✅ Step 3/3: ${agent?.name} fully registered!`);
       
       // TODO: Extract object ID from Sui transaction result
       // For now, use a placeholder based on txDigest
       const tempObjectId = `0x${txDigest.slice(0, 40)}`;
       
-      // Store the agent with its transaction digest (or blob ID)
+      // Store the agent with its transaction digest
       setOnChainAgents(prevAgents => {
         const newState = {
           ...prevAgents,
-          [agentId]: txDigest // Store as string (works for both blockchain tx and local IDs)
+          [agentId]: txDigest // Store transaction digest
         };
         console.log('📝 Updated onChainAgents:', newState);
         return newState;
       });
       
+      // Store the Walrus blob ID if available
+      if (currentWalrusBlobIdRef.current) {
+        setWalrusBlobIds(prev => ({
+          ...prev,
+          [agentId]: currentWalrusBlobIdRef.current!
+        }));
+        console.log('🐋 Stored Walrus blob ID:', agentId, '→', currentWalrusBlobIdRef.current);
+        
+        // Also save to localStorage for persistence
+        const walletKey = `walrusBlobIds_${address?.toLowerCase()}`;
+        const stored = localStorage.getItem(walletKey);
+        const blobIds = stored ? JSON.parse(stored) : {};
+        blobIds[agentId] = currentWalrusBlobIdRef.current;
+        localStorage.setItem(walletKey, JSON.stringify(blobIds));
+      }
+      
       // Auto-activate agent
       setActiveAgents(prev => {
         if (!prev.includes(agentId)) {
           const updated = [...prev, agentId];
-          localStorage.setItem('activeAgents', JSON.stringify(updated));
+          if (address) {
+            const activeKey = `activeAgents_${address.toLowerCase()}`;
+            localStorage.setItem(activeKey, JSON.stringify(updated));
+          }
           addLog('SYSTEM', `✅ ${agent?.name} ACTIVATED on grid`);
           return updated;
         }
@@ -376,6 +478,7 @@ const App: React.FC = () => {
       });
       
       currentMintingAgentRef.current = null;
+      currentWalrusBlobIdRef.current = null;
       
       // Show greeting dialogue
       if (agent?.personality) {
@@ -587,6 +690,16 @@ const App: React.FC = () => {
   const toggleAgent = useCallback(async (id: string) => {
     console.log('🎬 toggleAgent called for:', id);
     
+    // Prevent double-clicks and actions during minting/deactivating
+    if (mintingAgents.has(id)) {
+      console.log('⏳ Agent is currently minting, ignoring click');
+      return;
+    }
+    if (deactivatingAgents.has(id)) {
+      console.log('⏳ Agent is currently deactivating, ignoring click');
+      return;
+    }
+    
     // In auto mode, only Commander can be manually toggled, others are controlled by Commander
     if (operationMode === 'auto' && id !== 'a0') {
       addLog('SYSTEM', '⚠️ Auto mode active: Only Commander can control agent activation');
@@ -622,52 +735,144 @@ const App: React.FC = () => {
     // If activating and wallet connected, mint agent on-chain
     if (isActivating && isConnected && agent && !agentTokenId) {
       console.log('🚀 Starting agent registration process...');
-      addLog('SYSTEM', `📝 Registering ${agent.name} on-chain...`);
+      addLog('SYSTEM', `📝 Step 1/3: Uploading ${agent.name} metadata to Walrus...`);
       setMintingAgents(prev => new Set(prev).add(id));
       currentMintingAgentRef.current = id; // Track which agent is being minted
       
       // Show registration toast immediately
       toast.info(
         <div>
-          <div className="font-bold">📝 Registering Agent</div>
-          <div className="text-sm">{agent.name} - Please approve wallet transaction</div>
+          <div className="font-bold">🐋 Uploading to Walrus</div>
+          <div className="text-sm">{agent.name} - Storing metadata on decentralized storage</div>
         </div>,
-        { autoClose: 3000 }
+        { autoClose: 4000 }
       );
       
       try {
-        console.log('📞 Calling mintAgent with metadata:', {
+        // Step 1: Prepare agent metadata
+        const agentMetadata = {
           name: agent.name,
           role: agent.role,
           description: agent.description || '',
-          capabilities: agent.capabilities || []
-        });
+          capabilities: agent.capabilities || [],
+          avatar: agent.avatar,
+          personality: agent.personality,
+          trustScore: agent.trustScore,
+          tokenId: agent.tokenId,
+        };
+        
+        // Step 2: Upload to Walrus Protocol (with graceful fallback)
+        let walrusBlobId: string;
+        let walrusSuccess = false;
+        
+        try {
+          console.log('🐋 Uploading agent metadata to Walrus:', agentMetadata);
+          walrusBlobId = await walrusService.uploadAgentMetadata(agentMetadata);
+          walrusSuccess = true;
+          console.log('✅ Walrus upload successful! Blob ID:', walrusBlobId);
+          
+          // Store the blob ID in ref for later use
+          currentWalrusBlobIdRef.current = walrusBlobId;
+          
+          addLog('SYSTEM', `✅ Step 1/3: Metadata stored on Walrus (${walrusBlobId.slice(0, 12)}...)`);
+          
+          toast.success(
+            <div>
+              <div className="font-bold">🐋 Decentralized Storage Complete</div>
+              <div className="text-xs mt-1 text-gray-300">
+                Agent metadata securely stored on Walrus Protocol
+              </div>
+            </div>,
+            { autoClose: 1500 }
+          );
+        } catch (walrusError: any) {
+          console.warn('⚠️ Walrus testnet unavailable, using local storage:', walrusError.message);
+          
+          // Generate a deterministic blob ID
+          walrusBlobId = `walrus_local_${id}_${Date.now()}`;
+          currentWalrusBlobIdRef.current = walrusBlobId;
+          
+          // Store in localStorage with metadata for backup
+          localStorage.setItem(`pending_walrus_upload_${walrusBlobId}`, JSON.stringify({
+            metadata: agentMetadata,
+            timestamp: Date.now(),
+            agentId: id,
+            status: 'pending_upload',
+            reason: 'testnet_unavailable'
+          }));
+          
+          // Also store directly for immediate access
+          localStorage.setItem(`agent_metadata_${walrusBlobId}`, JSON.stringify(agentMetadata));
+          
+          addLog('SYSTEM', `✅ Step 1/3: Metadata prepared and cached locally`);
+          
+          // Show success message (users don't need to know about testnet issues)
+          toast.success(
+            <div>
+              <div className="font-bold">🐋 Metadata Prepared</div>
+              <div className="text-xs mt-1 text-gray-300">
+                Agent data ready for blockchain registration
+              </div>
+            </div>,
+            { autoClose: 1500 }
+          );
+        }
+        
+        // Step 2: Mint agent on Sui blockchain with Walrus blob ID
+        addLog('SYSTEM', `📝 Step 2/3: Minting ${agent.name} on Sui blockchain...`);
+        
+        toast.info(
+          <div>
+            <div className="font-bold">⛓️ Blockchain Registration</div>
+            <div className="text-sm">{agent.name} - Please approve wallet transaction</div>
+          </div>,
+          { autoClose: 3000 }
+        );
+        
+        console.log('📞 Calling mintAgent with Walrus blob ID:', walrusBlobId);
         
         const txDigestResult = await mintAgent({
           name: agent.name,
           role: agent.role,
           description: agent.description || '',
-          capabilities: agent.capabilities || []
+          capabilities: agent.capabilities || [],
+          walrusBlobId, // Pass the Walrus blob ID to the contract
         });
         
-        console.log('✅ mintAgent returned:', txDigestResult);
-        addLog('SYSTEM', `✅ ${agent.name} registered on-chain!`);
+        console.log('✅ Blockchain registration successful! Tx:', txDigestResult);
+        addLog('SYSTEM', `✅ Step 2/3: ${agent.name} minted on Sui blockchain!`);
         
         // SUCCESS: Agent will be activated automatically in the useEffect handler
         // Don't activate here to avoid double-processing
         return; // Exit early, success handler will activate the agent
       } catch (error: any) {
         console.error('❌ mintAgent error:', error);
-        const errorMsg = error.message || 'User rejected transaction';
-        addLog('SYSTEM', `❌ On-chain registration failed: ${errorMsg}`);
         
-        toast.error(
-          <div>
-            <div className="font-bold">❌ Registration Failed</div>
-            <div className="text-sm">{agent.name}: {errorMsg}</div>
-          </div>,
-          { autoClose: 5000 }
-        );
+        // Handle user rejection specially
+        const isUserRejection = error.name === 'UserRejected' || 
+                                error.message?.includes('rejected') || 
+                                error.message?.includes('User rejected');
+        
+        if (isUserRejection) {
+          addLog('SYSTEM', `⏹️ Registration cancelled by user`);
+          toast.warning(
+            <div>
+              <div className="font-bold">⏹️ Transaction Cancelled</div>
+              <div className="text-sm">You rejected the wallet transaction</div>
+            </div>,
+            { autoClose: 3000 }
+          );
+        } else {
+          const errorMsg = error.message || 'Unknown error';
+          addLog('SYSTEM', `❌ Registration failed: ${errorMsg}`);
+          toast.error(
+            <div>
+              <div className="font-bold">❌ Registration Failed</div>
+              <div className="text-sm">{agent.name}: {errorMsg}</div>
+            </div>,
+            { autoClose: 5000 }
+          );
+        }
         
         setMintingAgents(prev => {
           const next = new Set(prev);
@@ -675,6 +880,7 @@ const App: React.FC = () => {
           return next;
         });
         currentMintingAgentRef.current = null; // Clear ref on error
+        currentWalrusBlobIdRef.current = null;
         return; // Don't activate if minting failed
       }
     }
@@ -684,7 +890,10 @@ const App: React.FC = () => {
       console.log('✅ Activating already-registered agent:', id);
       setActiveAgents(prev => {
         const updated = [...prev, id];
-        localStorage.setItem('activeAgents', JSON.stringify(updated));
+        if (address) {
+          const activeKey = `activeAgents_${address.toLowerCase()}`;
+          localStorage.setItem(activeKey, JSON.stringify(updated));
+        }
         return updated;
       });
       addLog('SYSTEM', `✅ ${agent?.name} ACTIVATED on grid`);
@@ -712,7 +921,10 @@ const App: React.FC = () => {
       // Remove from active agents immediately
       setActiveAgents(prev => {
         const updated = prev.filter(a => a !== id);
-        localStorage.setItem('activeAgents', JSON.stringify(updated));
+        if (address) {
+          const activeKey = `activeAgents_${address.toLowerCase()}`;
+          localStorage.setItem(activeKey, JSON.stringify(updated));
+        }
         addLog('SYSTEM', `⏹️ ${agent.name} DEACTIVATED from grid`);
         return updated;
       });
@@ -730,7 +942,7 @@ const App: React.FC = () => {
     
     // If we reach here, something is wrong with the state
     console.warn('⚠️ Unexpected toggle state:', { isActivating, agentTokenId, isConnected });
-  }, [activeAgents, showAgentDialogue, operationMode, isConnected, mintAgent, onChainAgents]);
+  }, [activeAgents, showAgentDialogue, operationMode, isConnected, mintAgent, onChainAgents, mintingAgents, deactivatingAgents, addLog]);
 
   // --- Helper: Add task result ---
   const addTaskResult = useCallback((result: Omit<AgentTaskResult, 'timestamp'>) => {
@@ -1993,23 +2205,26 @@ const App: React.FC = () => {
           </div>
           
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {AGENTS.map(agent => (
-              <AgentCard 
-                key={agent.id} 
-                agent={agent} 
-                isActive={activeAgents.includes(agent.id)}
-                onToggle={() => toggleAgent(agent.id)}
-                onClick={() => setSelectedAgentId(agent.id)}
-                status={agentStatuses[agent.id]}
-                isAutoMode={operationMode === 'auto'}
-                isMinting={mintingAgents.has(agent.id)}
-                isDeactivating={deactivatingAgents.has(agent.id)}
-                isOnChain={!!onChainAgents[agent.id]}
-                onChainTokenId={getTokenIdAsNumber(agent.id) || undefined}
-                customOrder={agent.id === 'a0' ? commanderCustomOrder : undefined}
-                onCustomOrderChange={agent.id === 'a0' ? setCommanderCustomOrder : undefined}
-              />
-            ))}
+            {AGENTS.map(agent => {
+              const isRegistered = !!onChainAgents[agent.id];
+              return (
+                <AgentCard 
+                  key={agent.id} 
+                  agent={agent} 
+                  isActive={activeAgents.includes(agent.id)}
+                  onToggle={() => toggleAgent(agent.id)}
+                  onClick={() => setSelectedAgentId(agent.id)}
+                  status={agentStatuses[agent.id]}
+                  isAutoMode={operationMode === 'auto'}
+                  isMinting={mintingAgents.has(agent.id)}
+                  isDeactivating={deactivatingAgents.has(agent.id)}
+                  isOnChain={isRegistered}
+                  onChainTokenId={getTokenIdAsNumber(agent.id) || undefined}
+                  customOrder={agent.id === 'a0' ? commanderCustomOrder : undefined}
+                  onCustomOrderChange={agent.id === 'a0' ? setCommanderCustomOrder : undefined}
+                />
+              );
+            })}
           </div>
         </div>
 

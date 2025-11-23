@@ -285,29 +285,19 @@ export const useMintAgent = () => {
   const [error, setError] = useState<Error | null>(null);
   const [txDigest, setTxDigest] = useState<string | null>(null);
 
-  const mintAgent = useCallback(async (metadata: AgentMetadata): Promise<string> => {
+  const mintAgent = useCallback(async (metadata: AgentMetadata & { walrusBlobId?: string }): Promise<string> => {
     try {
       setIsPending(true);
       setError(null);
       setIsSuccess(false);
 
-      // Try Walrus upload with local fallback
-      let metadataBlobId: string;
-      try {
-        console.log('📤 Uploading agent metadata to Walrus...');
-        const jsonData = JSON.stringify(metadata);
-        const localId = `local_${Date.now()}_${Math.random().toString(36).substring(7)}`;
-        
-        // Store locally as fallback
-        localStorage.setItem(`agent_metadata_${localId}`, jsonData);
-        metadataBlobId = localId;
-        console.log('💾 Metadata stored locally:', localId);
-      } catch (uploadError: any) {
-        console.warn('⚠️ Storage fallback used:', uploadError);
-        const localId = `local_${Date.now()}_${Math.random().toString(36).substring(7)}`;
-        localStorage.setItem(`agent_metadata_${localId}`, JSON.stringify(metadata));
-        metadataBlobId = localId;
-      }
+      // Use provided Walrus blob ID or create local fallback
+      const metadataBlobId = metadata.walrusBlobId || `local_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+      
+      // Store metadata locally for backup/cache
+      const jsonData = JSON.stringify(metadata);
+      localStorage.setItem(`agent_metadata_${metadataBlobId}`, jsonData);
+      console.log('💾 Metadata cached:', metadataBlobId);
 
       // Create blockchain transaction
       if (!address) {
@@ -336,13 +326,12 @@ export const useMintAgent = () => {
           setIsPending(false);
           return result.digest;
         } catch (txError: any) {
-          // User rejected - use local mode
+          // User rejected transaction - throw error instead of faking success
           if (txError.message?.includes('rejected') || txError.message?.includes('User rejected')) {
-            console.warn('⚠️ User rejected transaction, using local mode');
-            setTxDigest(metadataBlobId);
-            setIsSuccess(true);
-            setIsPending(false);
-            return metadataBlobId;
+            console.warn('⚠️ User rejected transaction');
+            const rejectionError = new Error('User rejected the transaction');
+            rejectionError.name = 'UserRejected';
+            throw rejectionError;
           }
           throw txError;
         }
