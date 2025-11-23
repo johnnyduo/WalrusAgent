@@ -95,7 +95,9 @@ const AgentNode = React.memo(({ data }: NodeProps) => {
   );
 });
 
-// Define outside component
+AgentNode.displayName = 'AgentNode';
+
+// Define outside component to prevent re-creation
 const nodeTypes = { agentNode: AgentNode };
 const edgeTypes = {};
 const proOptions = { hideAttribution: true };
@@ -283,7 +285,7 @@ const FlowCanvas: React.FC<FlowCanvasProps> = ({
   );
 
   return (
-    <div className="w-full h-full bg-[#050505] relative">
+    <div className="w-full h-full bg-[#050505] relative" style={{ width: '100%', height: '100%' }}>
       <ReactFlow
         nodes={nodes}
         edges={edges}

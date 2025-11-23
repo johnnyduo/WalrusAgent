@@ -828,24 +828,31 @@ export interface SuiTransaction {
 export const suiService = {
   async getRecentTransactions(address?: string, limit: number = 10): Promise<SuiTransaction[]> {
     try {
-      // Suiscan API endpoint for transactions
-      const url = address
-        ? `${SUISCAN_API_URL}/transactions?address=${address}&limit=${limit}`
-        : `${SUISCAN_API_URL}/transactions?limit=${limit}`;
-
-      const headers: Record<string, string> = {};
-      if (SUISCAN_API_KEY) {
-        headers['Authorization'] = `Bearer ${SUISCAN_API_KEY}`;
+      // Use Sui RPC directly instead of Suiscan (which returns HTML)
+      const { suiClient } = await import('../config/suiWalletConfig');
+      
+      if (address) {
+        // Get transactions for specific address
+        const txs = await suiClient.queryTransactionBlocks({
+          filter: { FromAddress: address },
+          limit,
+          options: {
+            showEffects: true,
+            showInput: true,
+          },
+        });
+        
+        return txs.data.map((tx: any) => ({
+          digest: tx.digest,
+          timestamp: tx.timestampMs ? Number(tx.timestampMs) : Date.now(),
+          sender: tx.transaction?.data?.sender || 'unknown',
+          type: 'transaction',
+        }));
       }
-
-      const response = await fetch(url, { headers });
-
-      if (!response.ok) {
-        throw new Error(`Suiscan API error: ${response.status}`);
-      }
-
-      const data = await response.json();
-      return data.transactions || [];
+      
+      // For general transactions, just return empty for now
+      // (Sui RPC doesn't have a "latest transactions" endpoint without filter)
+      return [];
     } catch (error) {
       console.error('Sui transactions error:', error);
       return [];

@@ -23,15 +23,22 @@ export const suiClient = new SuiClient({
 
 // Walrus Protocol Configuration
 export const WALRUS_CONFIG = {
-  // Walrus Testnet Aggregator
+  // Walrus Upload Relay (recommended for browser apps)
+  uploadRelay: 'https://upload-relay.testnet.walrus.space',
+  
+  // Legacy HTTP API (may not work reliably)
   aggregator: 'https://aggregator.walrus-testnet.walrus.space',
   publisher: 'https://publisher.walrus-testnet.walrus.space',
   
   // Storage configuration
-  epochs: 1, // Number of epochs to store (1 epoch ≈ 1 day on testnet)
+  epochs: 3, // Number of epochs to store (recommended: 3+)
   
   // Blob limits
   maxBlobSize: 13 * 1024 * 1024, // 13 MB max per blob
+  
+  // System Object IDs for Walrus on testnet
+  systemObjectId: '0x98ebc47370603fe81d9e15491b2f1443d619d1dab720d586e429ed233e1255c1',
+  stakingPoolId: '0x20266a17b4f1a216727f3eef5772f8d486a9e3b5e319af80a5b75809c035561d',
 };
 
 // Token Configurations

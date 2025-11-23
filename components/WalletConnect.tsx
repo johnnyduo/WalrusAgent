@@ -1,20 +1,36 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSuiWallet } from '../hooks/useSuiWallet';
 import { useTokenBalances } from '../hooks/useTokenBalances';
 import { ConnectButton } from '@suiet/wallet-kit';
 import { suiClient, CONTRACTS_DEPLOYED } from '../config/suiWalletConfig';
 import { Wallet, Droplet, AlertCircle, CheckCircle, Coins } from 'lucide-react';
+import { withReact19Compat } from './React19CompatWrapper';
 
-export const WalletConnect: React.FC = () => {
+const WalletConnectComponent: React.FC = () => {
   const { address, isConnected } = useSuiWallet();
   const { balances, isLoading } = useTokenBalances();
   const [mounted, setMounted] = useState(false);
   const [showTokens, setShowTokens] = useState(false);
   const [suiBalance, setSuiBalance] = useState<string>('0.0000');
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowTokens(false);
+      }
+    };
+
+    if (showTokens) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [showTokens]);
 
   // Fetch SUI balance
   useEffect(() => {
@@ -59,11 +75,13 @@ export const WalletConnect: React.FC = () => {
       {isConnected && address ? (
         <>
           {/* Token Balances Dropdown */}
-          <div className="relative">
+          <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setShowTokens(!showTokens)}
               className="flex items-center gap-1 bg-black/40 px-2 py-1 rounded-md border border-white/10 hover:border-walrus-teal/30 transition-all"
               title="View token balances"
+              aria-expanded={showTokens}
+              aria-haspopup="true"
             >
               <Coins size={11} className="text-walrus-teal" />
               <span className="text-white/50 text-[10px] font-mono">SUI:</span>
@@ -72,20 +90,24 @@ export const WalletConnect: React.FC = () => {
             
             {/* Token Dropdown */}
             {showTokens && (
-              <div className="absolute top-full right-0 mt-1 bg-black/95 border border-walrus-teal/30 rounded-lg shadow-xl backdrop-blur-xl min-w-[140px] z-50">
+              <div 
+                className="absolute top-full right-0 mt-1 bg-black/95 border border-walrus-teal/30 rounded-lg shadow-xl backdrop-blur-xl min-w-[140px] z-50"
+                role="menu"
+                aria-label="Token balances"
+              >
                 <div className="p-2 space-y-1">
                   <div className="text-[9px] text-walrus-teal/70 font-mono uppercase px-1">Balances</div>
-                  <div className="flex items-center justify-between px-1 py-0.5">
+                  <div className="flex items-center justify-between px-1 py-0.5" role="menuitem">
                     <span className="text-white/50 text-[10px] font-mono">SUI:</span>
                     <span className="text-white font-bold text-[10px] font-mono">{suiBalance}</span>
                   </div>
-                  <div className="flex items-center justify-between px-1 py-0.5">
+                  <div className="flex items-center justify-between px-1 py-0.5" role="menuitem">
                     <span className="text-white/50 text-[10px] font-mono">USDC:</span>
                     <span className={`font-bold text-[10px] font-mono ${hasUSDC ? 'text-green-400' : 'text-white/30'}`}>
                       {parseFloat(usdcBalance).toFixed(2)}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between px-1 py-0.5">
+                  <div className="flex items-center justify-between px-1 py-0.5" role="menuitem">
                     <span className="text-white/50 text-[10px] font-mono">WAL:</span>
                     <span className={`font-bold text-[10px] font-mono ${hasWAL ? 'text-walrus-teal' : 'text-white/30'}`}>
                       {parseFloat(walBalance).toFixed(2)}
@@ -131,13 +153,13 @@ export const WalletConnect: React.FC = () => {
           )}
 
           {/* Use Suiet Wallet Kit's ConnectButton for disconnect - styled to match theme */}
-          <div className="wallet-kit-button-wrapper">
-            <ConnectButton />
+          <div className="wallet-kit-button-wrapper" role="group" aria-label="Wallet controls">
+            <ConnectButton key={`wallet-${address}`} />
           </div>
         </>
       ) : (
-        <div className="wallet-kit-button-wrapper">
-          <ConnectButton>
+        <div className="wallet-kit-button-wrapper" role="group" aria-label="Connect wallet">
+          <ConnectButton key="wallet-connect">
             <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-walrus-teal to-walrus-purple hover:from-walrus-teal/90 hover:to-walrus-purple/90 text-black font-bold text-xs rounded-lg transition-all duration-300 cursor-pointer shadow-lg hover:shadow-walrus-purple-glow hover:scale-105 active:scale-95">
               <Wallet size={14} />
               <span>Connect Wallet</span>
@@ -148,3 +170,6 @@ export const WalletConnect: React.FC = () => {
     </div>
   );
 };
+
+// Export with React 19 compatibility wrapper
+export const WalletConnect = withReact19Compat(WalletConnectComponent);

@@ -46,18 +46,24 @@ class WalrusService {
         throw new Error(`Data size ${blob.size} exceeds maximum ${WALRUS_CONFIG.maxBlobSize} bytes`);
       }
 
-      // Upload to Walrus Publisher
+      // Upload to Walrus Publisher with timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      
       const response = await fetch(`${this.publisherUrl}/v1/store?epochs=${epochs}`, {
         method: 'PUT',
         body: blob,
         headers: {
           'Content-Type': 'application/json',
         },
+        signal: controller.signal,
       });
+      
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Upload failed: ${response.status} - ${errorText}`);
+        const errorText = await response.text().catch(() => 'No response body');
+        throw new Error(`Walrus upload failed: ${response.status} - ${errorText}`);
       }
 
       const result = await response.json();
@@ -82,8 +88,11 @@ class WalrusService {
         epochs,
         cost,
       };
-    } catch (error) {
+    } catch (error: any) {
       console.error('Walrus upload error:', error);
+      if (error.name === 'AbortError') {
+        throw new Error('Walrus upload timeout - testnet may be down');
+      }
       throw error;
     }
   }
@@ -145,9 +154,15 @@ class WalrusService {
       version: '1.0',
     };
 
-    const result = await this.upload(metadata);
-    console.log('✅ Agent metadata uploaded to Walrus:', result.blobId);
-    return result.blobId;
+    try {
+      const result = await this.upload(metadata);
+      console.log('✅ Agent metadata uploaded to Walrus:', result.blobId);
+      return result.blobId;
+    } catch (error: any) {
+      console.error('❌ Walrus upload failed:', error.message);
+      // Re-throw with more context
+      throw new Error(`Walrus testnet unavailable (${error.message}). Using local fallback.`);
+    }
   }
 
   /**

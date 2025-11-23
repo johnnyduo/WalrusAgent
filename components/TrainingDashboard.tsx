@@ -39,42 +39,42 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-gray-900/95 border border-walrus-purple/30 rounded-lg shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-fade-in">
+      <div className="bg-gray-900/98 border-2 border-walrus-purple/40 rounded-xl shadow-2xl shadow-walrus-purple/20 w-full max-w-5xl max-h-[85vh] overflow-hidden flex flex-col animate-scale-in">
         {/* Header */}
-        <div className="p-4 border-b border-white/10 bg-gradient-to-r from-walrus-teal/10 to-walrus-purple/10">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-walrus-purple/20 rounded-lg">
-                <Brain className="text-walrus-purple" size={24} />
+        <div className="p-6 border-b border-white/10 bg-gradient-to-r from-walrus-teal/10 via-transparent to-walrus-purple/10">
+          <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-gradient-to-br from-walrus-purple/30 to-walrus-teal/20 rounded-xl border border-walrus-purple/30 shadow-lg shadow-walrus-purple/20">
+                <Brain className="text-walrus-purple" size={28} />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-white font-mono">
+                <h2 className="text-2xl font-bold text-white font-mono tracking-tight">
                   {agentName} Training
                 </h2>
-                <p className="text-xs text-gray-400 font-mono">
-                  Decentralized AI Training on Walrus
+                <p className="text-xs text-gray-400 font-mono mt-1">
+                  🐋 Decentralized AI Training on Walrus
                 </p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-gray-400 hover:text-white transition-all hover:rotate-90 duration-300 text-2xl w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/5"
             >
               ✕
             </button>
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-2 mt-4">
+          <div className="flex gap-2">
             {['overview', 'contribute', 'history'].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab as any)}
-                className={`px-4 py-2 rounded font-mono text-xs font-bold uppercase transition-all ${
+                className={`px-5 py-2.5 rounded-lg font-mono text-xs font-bold uppercase transition-all duration-300 ${
                   activeTab === tab
-                    ? 'bg-walrus-purple/30 text-walrus-purple border border-walrus-purple/50'
-                    : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10'
+                    ? 'bg-gradient-to-r from-walrus-purple/40 to-walrus-teal/40 text-white border-2 border-walrus-purple/60 shadow-lg shadow-walrus-purple/30 scale-105'
+                    : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10 hover:border-white/20 hover:text-gray-300'
                 }`}
               >
                 {tab}
@@ -84,7 +84,7 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-walrus-purple/30 scrollbar-track-transparent">
           {activeTab === 'overview' && (
             <div className="space-y-6">
               {/* Contract Status Warning */}
@@ -105,7 +105,7 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
               )}
 
               {/* Stats Grid */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 animate-slide-up">
                 <StatCard
                   icon={<TrendingUp size={20} />}
                   label="Model Version"
@@ -133,7 +133,7 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
               </div>
 
               {/* Training Status */}
-              <div className="bg-black/40 border border-walrus-purple/20 rounded-lg p-6">
+              <div className="bg-gradient-to-br from-black/40 to-walrus-purple/5 border border-walrus-purple/30 rounded-xl p-6 shadow-xl">
                 <h3 className="text-white font-bold font-mono mb-4 flex items-center gap-2">
                   <Zap size={16} className="text-walrus-teal" />
                   Training Status
@@ -174,16 +174,16 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
                     <button
                       onClick={handleStartTraining}
                       disabled={isTraining}
-                      className="px-6 py-3 bg-gradient-to-r from-walrus-teal to-walrus-purple text-black font-bold rounded font-mono text-sm hover:opacity-80 transition-opacity disabled:opacity-50"
+                      className="px-8 py-3 bg-gradient-to-r from-walrus-teal to-walrus-purple text-black font-bold rounded-lg font-mono text-sm hover:scale-105 hover:shadow-lg hover:shadow-walrus-purple/50 transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none"
                     >
-                      {isTraining ? 'Initializing...' : 'Start Training'}
+                      {isTraining ? '⚡ Initializing...' : '🚀 Start Training'}
                     </button>
                   </div>
                 )}
               </div>
 
               {/* Walrus Storage Info */}
-              <div className="bg-black/40 border border-walrus-teal/20 rounded-lg p-6">
+              <div className="bg-gradient-to-br from-black/40 to-walrus-teal/5 border border-walrus-teal/30 rounded-xl p-6 shadow-xl">
                 <h3 className="text-white font-bold font-mono mb-4 flex items-center gap-2">
                   <Database size={16} className="text-walrus-purple" />
                   Walrus Protocol Storage
@@ -246,9 +246,9 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
               <button
                 onClick={handleStartTraining}
                 disabled={isTraining || !isConnected}
-                className="px-8 py-4 bg-gradient-to-r from-walrus-teal to-walrus-purple text-black font-bold rounded-lg font-mono hover:opacity-80 transition-opacity disabled:opacity-50"
+                className="px-10 py-4 bg-gradient-to-r from-walrus-teal to-walrus-purple text-black font-bold rounded-xl font-mono hover:scale-105 hover:shadow-2xl hover:shadow-walrus-purple/50 transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none text-base"
               >
-                {!isConnected ? 'Connect Wallet First' : isTraining ? 'Training...' : 'Start Contributing'}
+                {!isConnected ? '🔗 Connect Wallet First' : isTraining ? '⚡ Training...' : '🚀 Start Contributing'}
               </button>
             </div>
           )}
@@ -310,18 +310,18 @@ interface StatCardProps {
 
 const StatCard: React.FC<StatCardProps> = ({ icon, label, value, color }) => {
   const colorClasses = color === 'purple' 
-    ? 'border-walrus-purple/30 bg-walrus-purple/5 text-walrus-purple'
-    : 'border-walrus-teal/30 bg-walrus-teal/5 text-walrus-teal';
+    ? 'border-walrus-purple/40 bg-gradient-to-br from-walrus-purple/10 to-walrus-purple/5 text-walrus-purple shadow-lg shadow-walrus-purple/10'
+    : 'border-walrus-teal/40 bg-gradient-to-br from-walrus-teal/10 to-walrus-teal/5 text-walrus-teal shadow-lg shadow-walrus-teal/10';
 
   return (
-    <div className={`border rounded-lg p-4 ${colorClasses}`}>
-      <div className="flex items-center gap-2 mb-2">
-        {icon}
-        <span className="text-xs text-gray-400 font-mono uppercase">
+    <div className={`border-2 rounded-xl p-5 ${colorClasses} hover:scale-105 transition-all duration-300 cursor-default`}>
+      <div className="flex items-center gap-2 mb-3">
+        <div className="opacity-80">{icon}</div>
+        <span className="text-xs text-gray-400 font-mono uppercase tracking-wider">
           {label}
         </span>
       </div>
-      <div className="text-2xl font-bold font-mono">
+      <div className="text-3xl font-bold font-mono tracking-tight">
         {value}
       </div>
     </div>

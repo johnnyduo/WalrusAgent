@@ -14,11 +14,23 @@ import LandingPage from './components/LandingPage';
 import { Wallet, BarChart3 } from 'lucide-react';
 import { orchestrator, cryptoService, newsService, agentStatusManager, sauceSwapService, pythNetworkService, geminiService } from './services/api';
 import { testAPIs } from './testAPIs';
-import { useMintAgent } from './hooks/useAgentSui';
+import { useMintAgent } from './hooks/useAgentFlow';
 import { useSuiWallet } from './hooks/useSuiWallet';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './toast-custom.css';
+
+// Suppress React 19 compatibility warnings from third-party libraries
+const originalConsoleError = console.error;
+console.error = (...args: any[]) => {
+  // Filter out @suiet/wallet-kit React 19 warnings
+  if (
+    args[0]?.includes?.('Accessing element.ref was removed in React 19') ||
+    args[0]?.includes?.('empty string ("") was passed to the src') ||
+    args[0]?.includes?.('aria-hidden on an element because its descendant retained focus')
+  ) return;
+  originalConsoleError.apply(console, args);
+};
 
 // Make test function available in browser console
 if (typeof window !== 'undefined') {
@@ -137,6 +149,18 @@ const App: React.FC = () => {
   const { address, isConnected } = useSuiWallet();
   const { mintAgent, isPending: isMinting, isSuccess: mintSuccess, txDigest } = useMintAgent();
   
+  // Helper: Convert agent ID to number (0 for local/invalid IDs)
+  const getTokenIdAsNumber = (agentId: string | undefined): number => {
+    if (!agentId) return 0;
+    const id = onChainAgents[agentId];
+    if (!id) return 0;
+    // If it's a local ID (starts with "local_"), return 0
+    if (id.startsWith('local_')) return 0;
+    // Try to parse as number (handles both decimal and hex strings)
+    const parsed = id.startsWith('0x') ? parseInt(id, 16) : parseInt(id, 10);
+    return isNaN(parsed) ? 0 : parsed;
+  };
+  
   // --- State ---
   const [activeAgents, setActiveAgents] = useState<string[]>(() => {
     const stored = localStorage.getItem('activeAgents');
@@ -152,20 +176,24 @@ const App: React.FC = () => {
   const [agentStatuses, setAgentStatuses] = useState<Record<string, 'idle' | 'negotiating' | 'streaming' | 'offline'>>({});
   const [mintingAgents, setMintingAgents] = useState<Set<string>>(new Set());
   const [deactivatingAgents, setDeactivatingAgents] = useState<Set<string>>(new Set());
-  // Wallet-based agent registry: stores agentId -> tokenId mapping per wallet address
-  const [onChainAgents, setOnChainAgents] = useState<Record<string, bigint>>(() => {
+  // Wallet-based agent registry: stores agentId -> tokenId/blobId mapping per wallet address
+  // Can be either blockchain token ID (hex string) or Walrus blob ID (local_xxx)
+  const [onChainAgents, setOnChainAgents] = useState<Record<string, string>>(() => {
     if (!address) return {};
     
     const walletKey = `onChainAgents_${address.toLowerCase()}`;
     const stored = localStorage.getItem(walletKey);
-    return stored ? JSON.parse(stored, (key, value) => {
-      // Convert string back to bigint for values that look like numbers
-      if (typeof value === 'string' && /^\d+$/.test(value)) {
-        return BigInt(value);
-      }
-      return value;
-    }) : {};
-  }); // agentId -> tokenId (per wallet)
+    return stored ? JSON.parse(stored) : {};
+  }); // agentId -> tokenId/blobId (per wallet)
+
+  // Persist onChainAgents to localStorage whenever it changes
+  useEffect(() => {
+    if (address) {
+      const walletKey = `onChainAgents_${address.toLowerCase()}`;
+      localStorage.setItem(walletKey, JSON.stringify(onChainAgents));
+      console.log('💾 Persisted onChainAgents for wallet:', address.slice(0, 10), onChainAgents);
+    }
+  }, [onChainAgents, address]);
   
   // --- New State for Dialogue & Results ---
   const [activeDialogue, setActiveDialogue] = useState<{
@@ -308,7 +336,7 @@ const App: React.FC = () => {
           >
             View on Sui Explorer →
           </a>
-          <div className="text-xs text-gray-400 mt-1 truncate">Agent: {agentAddress.slice(0, 20)}...</div>
+          <div className="text-xs text-gray-400 mt-1 truncate">Tx: {txDigest.slice(0, 20)}...</div>
         </div>,
         { autoClose: 8000 }
       );
@@ -319,11 +347,11 @@ const App: React.FC = () => {
       // For now, use a placeholder based on txDigest
       const tempObjectId = `0x${txDigest.slice(0, 40)}`;
       
-      // Store the agent with its transaction digest
+      // Store the agent with its transaction digest (or blob ID)
       setOnChainAgents(prevAgents => {
         const newState = {
           ...prevAgents,
-          [agentId]: BigInt(`0x${txDigest.slice(0, 16)}`) // Temporary placeholder
+          [agentId]: txDigest // Store as string (works for both blockchain tx and local IDs)
         };
         console.log('📝 Updated onChainAgents:', newState);
         return newState;
@@ -593,28 +621,49 @@ const App: React.FC = () => {
     
     // If activating and wallet connected, mint agent on-chain
     if (isActivating && isConnected && agent && !agentTokenId) {
+      console.log('🚀 Starting agent registration process...');
       addLog('SYSTEM', `📝 Registering ${agent.name} on-chain...`);
       setMintingAgents(prev => new Set(prev).add(id));
       currentMintingAgentRef.current = id; // Track which agent is being minted
       
+      // Show registration toast immediately
+      toast.info(
+        <div>
+          <div className="font-bold">📝 Registering Agent</div>
+          <div className="text-sm">{agent.name} - Please approve wallet transaction</div>
+        </div>,
+        { autoClose: 3000 }
+      );
+      
       try {
-        await mintAgent({
+        console.log('📞 Calling mintAgent with metadata:', {
           name: agent.name,
           role: agent.role,
           description: agent.description || '',
           capabilities: agent.capabilities || []
         });
         
+        const txDigestResult = await mintAgent({
+          name: agent.name,
+          role: agent.role,
+          description: agent.description || '',
+          capabilities: agent.capabilities || []
+        });
+        
+        console.log('✅ mintAgent returned:', txDigestResult);
         addLog('SYSTEM', `✅ ${agent.name} registered on-chain!`);
-        // Agent will be activated automatically in the success handler
+        
+        // SUCCESS: Agent will be activated automatically in the useEffect handler
+        // Don't activate here to avoid double-processing
         return; // Exit early, success handler will activate the agent
       } catch (error: any) {
+        console.error('❌ mintAgent error:', error);
         const errorMsg = error.message || 'User rejected transaction';
         addLog('SYSTEM', `❌ On-chain registration failed: ${errorMsg}`);
         
         toast.error(
           <div>
-            <div className="font-bold">❌ Minting Failed</div>
+            <div className="font-bold">❌ Registration Failed</div>
             <div className="text-sm">{agent.name}: {errorMsg}</div>
           </div>,
           { autoClose: 5000 }
@@ -632,12 +681,21 @@ const App: React.FC = () => {
     
     // If activating an already-minted agent (just toggle, no blockchain needed)
     if (isActivating && agentTokenId) {
+      console.log('✅ Activating already-registered agent:', id);
       setActiveAgents(prev => {
         const updated = [...prev, id];
         localStorage.setItem('activeAgents', JSON.stringify(updated));
         return updated;
       });
       addLog('SYSTEM', `✅ ${agent?.name} ACTIVATED on grid`);
+      
+      toast.success(
+        <div>
+          <div className="font-bold">✅ Agent Activated</div>
+          <div className="text-sm">{agent?.name} joined the grid</div>
+        </div>,
+        { autoClose: 2000 }
+      );
       
       // Show greeting dialogue
       if (agent?.personality) {
@@ -646,8 +704,8 @@ const App: React.FC = () => {
       return;
     }
     
-    // If deactivating an on-chain agent (no blockchain tx needed, just local state change)
-    if (!isActivating && agent && agentTokenId) {
+    // If deactivating any agent (no blockchain tx needed, just local state change)
+    if (!isActivating && agent) {
       console.log('🔻 DEACTIVATE: Removing', agent.name, 'from active agents (local only)');
       addLog('SYSTEM', `🔻 Deactivating ${agent.name}...`);
       
@@ -670,7 +728,8 @@ const App: React.FC = () => {
       return;
     }
     
-    // TODO: Implement Sui-based agent deactivation
+    // If we reach here, something is wrong with the state
+    console.warn('⚠️ Unexpected toggle state:', { isActivating, agentTokenId, isConnected });
   }, [activeAgents, showAgentDialogue, operationMode, isConnected, mintAgent, onChainAgents]);
 
   // --- Helper: Add task result ---
@@ -1831,11 +1890,11 @@ const App: React.FC = () => {
         }
       }
 
-      // 4. Sui on-chain activity check (15% chance)
-      else if (rand >= 0.75 && rand < 0.9) {
-        const transactions = await suiService.getRecentTransactions(undefined, 3);
+      // 4. Sui on-chain activity check (15% chance) - check connected wallet txs
+      else if (rand >= 0.75 && rand < 0.9 && address) {
+        const transactions = await suiService.getRecentTransactions(address, 3);
         if (transactions.length > 0) {
-          addLog('SYSTEM', `Sui Network: ${transactions.length} recent transactions detected`);
+          addLog('SYSTEM', `Sui Network: ${transactions.length} transactions from your wallet`);
         }
       }
 
@@ -1946,7 +2005,7 @@ const App: React.FC = () => {
                 isMinting={mintingAgents.has(agent.id)}
                 isDeactivating={deactivatingAgents.has(agent.id)}
                 isOnChain={!!onChainAgents[agent.id]}
-                onChainTokenId={onChainAgents[agent.id] ? Number(onChainAgents[agent.id]) : undefined}
+                onChainTokenId={getTokenIdAsNumber(agent.id) || undefined}
                 customOrder={agent.id === 'a0' ? commanderCustomOrder : undefined}
                 onCustomOrderChange={agent.id === 'a0' ? setCommanderCustomOrder : undefined}
               />
@@ -1963,11 +2022,11 @@ const App: React.FC = () => {
               onModeChange={setOperationMode}
               isConnected={isConnected}
               isCaptainRegistered={!!onChainAgents['a0']}
-              captainTokenId={onChainAgents['a0'] ? Number(onChainAgents['a0']) : 0}
+              captainTokenId={getTokenIdAsNumber('a0')}
             />
           </div>
           
-          <div className="flex-1 relative">
+          <div className="flex-1 relative h-full min-h-0">
              <FlowCanvas 
                 agents={AGENTS} 
                 activeAgents={activeAgents}
@@ -2009,7 +2068,7 @@ const App: React.FC = () => {
         <AgentDetailPanel 
           agent={selectedAgent} 
           onClose={() => setSelectedAgentId(null)}
-          onChainTokenId={selectedAgent && onChainAgents[selectedAgent.id] ? Number(onChainAgents[selectedAgent.id]) : undefined}
+          onChainTokenId={selectedAgent ? getTokenIdAsNumber(selectedAgent.id) || undefined : undefined}
         />
 
       </div>

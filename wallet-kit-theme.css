@@ -2,6 +2,16 @@
 
 /* Override the default Suiet wallet kit styles to match our ocean theme */
 
+/* Fix React 19 compatibility - prevent aria-hidden on focused elements */
+[aria-hidden="true"]:has(button:focus),
+[aria-hidden="true"]:has(a:focus),
+[aria-hidden="true"]:has(input:focus),
+[data-aria-hidden="true"]:has(button:focus),
+[data-aria-hidden="true"]:has(a:focus),
+[data-aria-hidden="true"]:has(input:focus) {
+  aria-hidden: false !important;
+}
+
 /* Wallet Kit Button Wrapper */
 .wallet-kit-button-wrapper button {
   border: none !important;
