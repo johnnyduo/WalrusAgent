@@ -1,13 +1,13 @@
-# 🐋 WALRUS - Decentralized AI Training Network
+# 🐋 WALRUS - Tokenized AI Agents
 
-## Democratizing AI Training Through Browser-Based Federated Learning
+## Decentralized AI Training Network with NFT-Based Multi-Agent Coordination
 
 > 🏆 **Built for Walrus Haulout Hackathon**  
 > 🎯 **Category**: AI x Decentralized Storage  
 > ⛓️ **Blockchain**: Sui Network (Testnet)  
 > 🐋 **Storage**: Walrus Protocol with Seal Certification
 
-**A production-ready platform where anyone can train AI models directly in their browser, with all training data cryptographically stored on Walrus Protocol and contributions rewarded on Sui blockchain.**
+**A production-ready platform featuring tokenized AI agents as NFTs on Sui blockchain. Each agent coordinates decentralized training directly in your browser, with all training data cryptographically stored on Walrus Protocol and contributions tracked on-chain.**
 
 [![Sui](https://img.shields.io/badge/Sui-Testnet-4DA2FF?logo=sui)](https://suiscan.xyz/testnet)
 [![Walrus](https://img.shields.io/badge/Walrus-Protocol-99EFE4)](https://walruscan.com)
@@ -57,21 +57,24 @@
 
 ## 🎯 Overview
 
-**WALRUS** is a decentralized AI training network that brings machine learning to the masses. Built specifically for the Walrus Haulout Hackathon, this platform demonstrates how decentralized storage can revolutionize AI training by making it:
+**WALRUS** is a tokenized AI agent platform where each agent is an NFT on Sui blockchain. Built for the Walrus Haulout Hackathon, this platform demonstrates how blockchain and decentralized storage revolutionize AI training by making it:
 
-✅ **Transparent** - All training data is cryptographically verified on Walrus  
-✅ **Accessible** - Anyone can train models directly in their browser  
-✅ **Tracked** - Contributions are persisted locally and verifiable on-chain  
-✅ **Verifiable** - Every training session links to Walrus blobs  
-✅ **Permanent** - Training data is preserved with 10-epoch storage
+✅ **Tokenized** - Each AI agent is a unique NFT with on-chain identity  
+✅ **Decentralized** - Train models directly in your browser with TensorFlow.js  
+✅ **Verifiable** - All training data cryptographically certified on Walrus  
+✅ **Tradeable** - Agents are on-chain assets that can be transferred  
+✅ **Transparent** - Every training session links to Walrus Seal certificates  
+✅ **Permanent** - Training data preserved with 10-epoch storage guarantee
 
 ### What Makes This Special?
 
-This isn't just a demo—it's a fully functional decentralized AI training system with:
+This isn't just a demo—it's a fully functional tokenized AI agent ecosystem with:
+- **NFT-Based Agents**: Mint AI agents as Sui NFTs with metadata on Walrus
+- **Multi-Agent Training**: 7 specialized agents coordinate training pipeline
 - **Real ML Training**: 41-parameter neural network with actual backpropagation
-- **Real Walrus Storage**: Training gradients uploaded with Seal certification
-- **Real Blockchain Integration**: On-chain contribution tracking (deployed to Sui testnet)
-- **Real-Time UI**: Live metrics showing loss/accuracy improvements during training
+- **Seal Certification**: Training gradients uploaded with cryptographic proof
+- **On-Chain Tracking**: Agent registry and rewards system (deployed to Sui testnet)
+- **Live Metrics**: Real-time loss/accuracy improvements during training
 
 ---
 

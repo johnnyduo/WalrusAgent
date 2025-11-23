@@ -309,23 +309,33 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
           <div className="space-y-1">
             {!deltaBlobId.startsWith('local_') && (
               <>
+                <div className="text-[10px] text-gray-400 mt-2 mb-1">
+                  <strong>Blob ID:</strong> Unique identifier for your training data stored on Walrus Protocol
+                </div>
                 <a 
                   href={`https://walruscan.com/testnet/blob/${deltaBlobId}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-walrus-teal hover:underline text-xs block"
+                  title={`Blob ID: ${deltaBlobId} - Permanent decentralized storage of 41 gradient parameters`}
                 >
-                  🐋 View Training Data on Walrus →
+                  🐋 View Blob: {deltaBlobId.slice(0, 8)}...{deltaBlobId.slice(-6)} →
                 </a>
-                {isCertified && sealUrl && (
-                  <a 
-                    href={sealUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-green-400 hover:underline text-xs block"
-                  >
-                    🔏 Seal Certified - View Certificate →
-                  </a>
+                {isCertified && (
+                  <>
+                    <div className="text-[10px] text-gray-400 mt-2 mb-1">
+                      <strong>Seal Certification:</strong> Cryptographic proof that data is stored on Walrus
+                    </div>
+                    <a 
+                      href={sealUrl || `https://walruscan.com/testnet/blob/${deltaBlobId}?tab=certification`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-green-400 hover:underline text-xs block"
+                      title="View Walrus Seal certificate - cryptographic proof of 10-epoch storage availability on Walruscan"
+                    >
+                      🔏 View Seal Certificate on Walruscan →
+                    </a>
+                  </>
                 )}
               </>
             )}
@@ -574,14 +584,195 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
                             {trainingStep}
                           </p>
                           
-                          {/* Agent Pipeline Progress */}
-                          <div className="flex items-center justify-center gap-2 text-xs flex-wrap">
-                            <span className={`px-2 py-1 rounded transition-all ${trainingProgress < 30 ? 'bg-walrus-teal/20 text-walrus-teal border border-walrus-teal/40' : 'bg-gray-800 text-gray-500'}`}>🐋 Commander</span>
-                            <span className={`px-2 py-1 rounded transition-all ${trainingProgress >= 30 && trainingProgress < 50 ? 'bg-walrus-teal/20 text-walrus-teal border border-walrus-teal/40' : 'bg-gray-800 text-gray-500'}`}>📊 Eagleton</span>
-                            <span className={`px-2 py-1 rounded transition-all ${trainingProgress >= 50 && trainingProgress < 65 ? 'bg-walrus-teal/20 text-walrus-teal border border-walrus-teal/40' : 'bg-gray-800 text-gray-500'}`}>⚡ Reynard</span>
-                            <span className={`px-2 py-1 rounded transition-all ${trainingProgress >= 65 && trainingProgress < 70 ? 'bg-walrus-teal/20 text-walrus-teal border border-walrus-teal/40' : 'bg-gray-800 text-gray-500'}`}>🛡️ Ursus</span>
-                            <span className={`px-2 py-1 rounded transition-all ${trainingProgress >= 85 && trainingProgress < 95 ? 'bg-walrus-teal/20 text-walrus-teal border border-walrus-teal/40' : 'bg-gray-800 text-gray-500'}`}>🐦 Corvus</span>
-                            <span className={`px-2 py-1 rounded transition-all ${trainingProgress >= 95 ? 'bg-walrus-teal/20 text-walrus-teal border border-walrus-teal/40' : 'bg-gray-800 text-gray-500'}`}>🦊 Luna</span>
+                          {/* Multi-Agent Training Pipeline - Visual Flow */}
+                          <div className="bg-black/40 rounded-xl p-4 border border-walrus-teal/20">
+                            <div className="text-xs text-gray-400 text-center mb-3 font-mono uppercase tracking-wider">
+                              🤝 Multi-Agent Training Pipeline
+                            </div>
+                            
+                            {/* Agent Pipeline Grid */}
+                            <div className="grid grid-cols-3 gap-3">
+                              {/* Walrus Commander - Coordination */}
+                              <div className={`p-3 rounded-lg transition-all duration-300 border ${
+                                trainingProgress >= 0 && trainingProgress < 30 
+                                  ? 'bg-walrus-teal/20 border-walrus-teal shadow-lg shadow-walrus-teal/30 scale-105' 
+                                  : trainingProgress >= 30 
+                                    ? 'bg-green-500/10 border-green-500/30' 
+                                    : 'bg-gray-900 border-gray-700'
+                              }`}>
+                                <div className="text-center">
+                                  <div className="text-2xl mb-1">🐋</div>
+                                  <div className="text-[10px] font-mono font-bold text-white">Commander</div>
+                                  <div className="text-[9px] text-gray-400 mt-1">Coordinate</div>
+                                  {trainingProgress >= 0 && trainingProgress < 30 && (
+                                    <div className="mt-2 flex justify-center">
+                                      <div className="w-1.5 h-1.5 bg-walrus-teal rounded-full animate-pulse"></div>
+                                    </div>
+                                  )}
+                                  {trainingProgress >= 30 && <div className="text-green-400 text-xs mt-1">✓</div>}
+                                </div>
+                              </div>
+
+                              {/* Eagleton - Data Prep */}
+                              <div className={`p-3 rounded-lg transition-all duration-300 border ${
+                                trainingProgress >= 30 && trainingProgress < 50 
+                                  ? 'bg-blue-500/20 border-blue-400 shadow-lg shadow-blue-400/30 scale-105' 
+                                  : trainingProgress >= 50 
+                                    ? 'bg-green-500/10 border-green-500/30' 
+                                    : 'bg-gray-900 border-gray-700'
+                              }`}>
+                                <div className="text-center">
+                                  <div className="text-2xl mb-1">🦅</div>
+                                  <div className="text-[10px] font-mono font-bold text-white">Eagleton</div>
+                                  <div className="text-[9px] text-gray-400 mt-1">Data Prep</div>
+                                  {trainingProgress >= 30 && trainingProgress < 50 && (
+                                    <div className="mt-2 flex justify-center">
+                                      <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse"></div>
+                                    </div>
+                                  )}
+                                  {trainingProgress >= 50 && <div className="text-green-400 text-xs mt-1">✓</div>}
+                                </div>
+                              </div>
+
+                              {/* Athena - Architecture */}
+                              <div className={`p-3 rounded-lg transition-all duration-300 border ${
+                                trainingProgress >= 50 && trainingProgress < 55 
+                                  ? 'bg-purple-500/20 border-purple-400 shadow-lg shadow-purple-400/30 scale-105' 
+                                  : trainingProgress >= 55 
+                                    ? 'bg-green-500/10 border-green-500/30' 
+                                    : 'bg-gray-900 border-gray-700'
+                              }`}>
+                                <div className="text-center">
+                                  <div className="text-2xl mb-1">🦉</div>
+                                  <div className="text-[10px] font-mono font-bold text-white">Athena</div>
+                                  <div className="text-[9px] text-gray-400 mt-1">Architecture</div>
+                                  {trainingProgress >= 50 && trainingProgress < 55 && (
+                                    <div className="mt-2 flex justify-center">
+                                      <div className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-pulse"></div>
+                                    </div>
+                                  )}
+                                  {trainingProgress >= 55 && <div className="text-green-400 text-xs mt-1">✓</div>}
+                                </div>
+                              </div>
+
+                              {/* Reynard - Gradients */}
+                              <div className={`p-3 rounded-lg transition-all duration-300 border ${
+                                trainingProgress >= 55 && trainingProgress < 65 
+                                  ? 'bg-orange-500/20 border-orange-400 shadow-lg shadow-orange-400/30 scale-105' 
+                                  : trainingProgress >= 65 
+                                    ? 'bg-green-500/10 border-green-500/30' 
+                                    : 'bg-gray-900 border-gray-700'
+                              }`}>
+                                <div className="text-center">
+                                  <div className="text-2xl mb-1">🦊</div>
+                                  <div className="text-[10px] font-mono font-bold text-white">Reynard</div>
+                                  <div className="text-[9px] text-gray-400 mt-1">Gradients</div>
+                                  {trainingProgress >= 55 && trainingProgress < 65 && (
+                                    <div className="mt-2 flex justify-center gap-1">
+                                      <div className="w-1 h-1 bg-orange-400 rounded-full animate-bounce"></div>
+                                      <div className="w-1 h-1 bg-orange-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                                      <div className="w-1 h-1 bg-orange-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                                    </div>
+                                  )}
+                                  {trainingProgress >= 65 && <div className="text-green-400 text-xs mt-1">✓</div>}
+                                </div>
+                              </div>
+
+                              {/* Ursus - Validation */}
+                              <div className={`p-3 rounded-lg transition-all duration-300 border ${
+                                trainingProgress >= 65 && trainingProgress < 70 
+                                  ? 'bg-yellow-500/20 border-yellow-400 shadow-lg shadow-yellow-400/30 scale-105' 
+                                  : trainingProgress >= 70 
+                                    ? 'bg-green-500/10 border-green-500/30' 
+                                    : 'bg-gray-900 border-gray-700'
+                              }`}>
+                                <div className="text-center">
+                                  <div className="text-2xl mb-1">🐻</div>
+                                  <div className="text-[10px] font-mono font-bold text-white">Ursus</div>
+                                  <div className="text-[9px] text-gray-400 mt-1">Validate</div>
+                                  {trainingProgress >= 65 && trainingProgress < 70 && (
+                                    <div className="mt-2 flex justify-center">
+                                      <div className="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-pulse"></div>
+                                    </div>
+                                  )}
+                                  {trainingProgress >= 70 && <div className="text-green-400 text-xs mt-1">✓</div>}
+                                </div>
+                              </div>
+
+                              {/* Luna - Optimization */}
+                              <div className={`p-3 rounded-lg transition-all duration-300 border ${
+                                trainingProgress >= 70 && trainingProgress < 85 
+                                  ? 'bg-indigo-500/20 border-indigo-400 shadow-lg shadow-indigo-400/30 scale-105' 
+                                  : trainingProgress >= 85 
+                                    ? 'bg-green-500/10 border-green-500/30' 
+                                    : 'bg-gray-900 border-gray-700'
+                              }`}>
+                                <div className="text-center">
+                                  <div className="text-2xl mb-1">🐺</div>
+                                  <div className="text-[10px] font-mono font-bold text-white">Luna</div>
+                                  <div className="text-[9px] text-gray-400 mt-1">Optimize</div>
+                                  {trainingProgress >= 70 && trainingProgress < 85 && (
+                                    <div className="mt-2 flex justify-center">
+                                      <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-pulse"></div>
+                                    </div>
+                                  )}
+                                  {trainingProgress >= 85 && <div className="text-green-400 text-xs mt-1">✓</div>}
+                                </div>
+                              </div>
+
+                              {/* Corvus - Aggregation */}
+                              <div className={`p-3 rounded-lg transition-all duration-300 border ${
+                                trainingProgress >= 85 && trainingProgress < 95 
+                                  ? 'bg-teal-500/20 border-teal-400 shadow-lg shadow-teal-400/30 scale-105' 
+                                  : trainingProgress >= 95 
+                                    ? 'bg-green-500/10 border-green-500/30' 
+                                    : 'bg-gray-900 border-gray-700'
+                              }`}>
+                                <div className="text-center">
+                                  <div className="text-2xl mb-1">🐦</div>
+                                  <div className="text-[10px] font-mono font-bold text-white">Corvus</div>
+                                  <div className="text-[9px] text-gray-400 mt-1">Aggregate</div>
+                                  {trainingProgress >= 85 && trainingProgress < 95 && (
+                                    <div className="mt-2 flex justify-center">
+                                      <div className="w-1.5 h-1.5 bg-teal-400 rounded-full animate-pulse"></div>
+                                    </div>
+                                  )}
+                                  {trainingProgress >= 95 && <div className="text-green-400 text-xs mt-1">✓</div>}
+                                </div>
+                              </div>
+
+                              {/* Walrus Storage */}
+                              <div className={`p-3 rounded-lg transition-all duration-300 border col-span-3 ${
+                                trainingProgress >= 95 
+                                  ? 'bg-walrus-teal/20 border-walrus-teal shadow-lg shadow-walrus-teal/30' 
+                                  : 'bg-gray-900 border-gray-700'
+                              }`}>
+                                <div className="text-center">
+                                  <div className="text-2xl mb-1">🐋</div>
+                                  <div className="text-[10px] font-mono font-bold text-white">Walrus Protocol</div>
+                                  <div className="text-[9px] text-gray-400 mt-1">Seal Certification & Storage</div>
+                                  {trainingProgress >= 95 && (
+                                    <div className="mt-2 flex justify-center gap-1">
+                                      <div className="w-1 h-1 bg-walrus-teal rounded-full animate-ping"></div>
+                                      <div className="w-1 h-1 bg-walrus-teal rounded-full animate-ping" style={{animationDelay: '0.2s'}}></div>
+                                      <div className="w-1 h-1 bg-walrus-teal rounded-full animate-ping" style={{animationDelay: '0.4s'}}></div>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Pipeline Status */}
+                            <div className="mt-3 text-center text-[10px] text-gray-500 font-mono">
+                              {trainingProgress < 30 && "Initializing training coordination..."}
+                              {trainingProgress >= 30 && trainingProgress < 50 && "Preprocessing training batches..."}
+                              {trainingProgress >= 50 && trainingProgress < 55 && "Optimizing neural architecture..."}
+                              {trainingProgress >= 55 && trainingProgress < 65 && "Computing gradients with backpropagation..."}
+                              {trainingProgress >= 65 && trainingProgress < 70 && "Validating model quality..."}
+                              {trainingProgress >= 70 && trainingProgress < 85 && "Storing on Walrus with Seal..."}
+                              {trainingProgress >= 85 && trainingProgress < 95 && "Aggregating contributions..."}
+                              {trainingProgress >= 95 && "Certifying on Walrus Protocol..."}
+                            </div>
                           </div>
 
                           <div className="w-full max-w-md mx-auto bg-gray-800 rounded-full h-3 overflow-hidden">
@@ -633,10 +824,13 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
                   {/* Latest Training Blob */}
                   {stats?.lastBlobId && (
                     <div className="mt-4">
-                      <p className="text-xs text-gray-500 font-mono uppercase mb-2">Latest Training Data:</p>
+                      <p className="text-xs text-gray-500 font-mono uppercase mb-1">Latest Training Data:</p>
+                      <div className="text-[10px] text-gray-400 mb-2">
+                        <strong>Blob ID:</strong> Permanent storage address on Walrus
+                      </div>
                       <div className="flex items-center gap-2 p-2 bg-black/40 rounded border border-walrus-teal/20">
                         <span className="text-walrus-teal text-xs">🐋</span>
-                        <code className="text-xs text-gray-400 font-mono flex-1 truncate">
+                        <code className="text-xs text-gray-400 font-mono flex-1 truncate" title={stats.lastBlobId}>
                           {stats.lastBlobId.substring(0, 12)}...
                         </code>
                         <a 
@@ -644,6 +838,7 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-walrus-purple hover:text-walrus-teal text-xs transition-colors"
+                          title="View blob on Walruscan - cryptographically verified storage"
                         >
                           view →
                         </a>
@@ -651,8 +846,13 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
                     </div>
                   )}
                   
-                  <div className="mt-4 p-3 bg-walrus-teal/5 border border-walrus-teal/20 rounded text-xs text-gray-400">
-                    💡 All training data is stored on Walrus Protocol for decentralized, verifiable AI training
+                  <div className="mt-4 p-3 bg-walrus-teal/5 border border-walrus-teal/20 rounded text-xs text-gray-400 leading-relaxed space-y-2">
+                    <div>
+                      <strong className="text-white">🐋 Blob ID:</strong> A unique identifier for data stored on Walrus Protocol. Each training session generates a blob containing 41 gradient parameters.
+                    </div>
+                    <div>
+                      <strong className="text-white">🔏 Seal Certification:</strong> Cryptographic proof issued by Walrus validators that your data is stored across multiple nodes with 10-epoch availability guarantee. View certificate on Walruscan under the "Certification" tab.
+                    </div>
                   </div>
                 </div>
               </div>
@@ -715,6 +915,32 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
               <h3 className="text-white font-bold font-mono mb-4">
                 Training History
               </h3>
+              
+              {/* Explanation Box */}
+              <div className="bg-gradient-to-r from-walrus-teal/10 to-walrus-purple/10 border border-walrus-teal/30 rounded-lg p-4 text-xs space-y-2">
+                <div className="flex items-start gap-2">
+                  <span className="text-walrus-teal">🐋</span>
+                  <div>
+                    <strong className="text-white">Blob ID:</strong>
+                    <span className="text-gray-300"> Unique identifier for your training data on Walrus Protocol. Each blob contains 41 gradient parameters from neural network training.</span>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-green-400">🔏</span>
+                  <div>
+                    <strong className="text-white">Seal Certification:</strong>
+                    <span className="text-gray-300"> Cryptographic proof from Walrus validators guaranteeing your data is stored across multiple nodes for 10 epochs (~2 months). Click the Seal link to view the certificate on Walruscan.</span>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-walrus-purple">⛓️</span>
+                  <div>
+                    <strong className="text-white">Sui Transaction:</strong>
+                    <span className="text-gray-300"> On-chain record of your training contribution linked to the Walrus blob, earning you 0.001 SUI reward.</span>
+                  </div>
+                </div>
+              </div>
+              
               {(() => {
                 const contributions = getContributions(agentId);
                 return contributions.length > 0 ? (
@@ -747,24 +973,36 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
                           </div>
                         </div>
                         {contribution.deltaBlobId && (
-                          <a
-                            href={`https://walruscan.com/testnet/blob/${contribution.deltaBlobId}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-walrus-teal hover:underline text-xs block"
-                          >
-                            🐋 View on Walrus: {contribution.deltaBlobId.slice(0, 8)}...
-                          </a>
+                          <div className="space-y-1">
+                            <div className="text-[10px] text-gray-500">
+                              Training gradients stored on Walrus Protocol
+                            </div>
+                            <a
+                              href={`https://walruscan.com/testnet/blob/${contribution.deltaBlobId}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-walrus-teal hover:underline text-xs block"
+                              title={`Blob ID: ${contribution.deltaBlobId} - Cryptographically verified storage`}
+                            >
+                              🐋 Blob: {contribution.deltaBlobId.slice(0, 12)}...{contribution.deltaBlobId.slice(-8)}
+                            </a>
+                          </div>
                         )}
                         {contribution.txDigest && (
-                          <a
-                            href={getSuiExplorerUrl('transaction', contribution.txDigest)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-walrus-purple hover:underline text-xs block"
-                          >
-                            ⛓️ View TX: {contribution.txDigest.slice(0, 8)}...{contribution.txDigest.slice(-6)}
-                          </a>
+                          <div className="space-y-1">
+                            <div className="text-[10px] text-gray-500">
+                              Contribution recorded on Sui blockchain
+                            </div>
+                            <a
+                              href={getSuiExplorerUrl('transaction', contribution.txDigest)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-walrus-purple hover:underline text-xs block"
+                              title={`Transaction: ${contribution.txDigest}`}
+                            >
+                              ⛓️ Sui TX: {contribution.txDigest.slice(0, 8)}...{contribution.txDigest.slice(-6)}
+                            </a>
+                          </div>
                         )}
                       </div>
                     ))}

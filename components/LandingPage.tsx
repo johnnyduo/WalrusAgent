@@ -46,18 +46,18 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
             </div>
 
             <h2 className="text-5xl lg:text-7xl font-bold leading-tight font-heading">
-              <span className="bg-gradient-to-l from-walrus-teal via-walrus-purple to-walrus-teal bg-clip-text text-transparent">Decentralized</span>
+              <span className="bg-gradient-to-l from-walrus-teal via-walrus-purple to-walrus-teal bg-clip-text text-transparent">Tokenized</span>
               <br />
-              <span className="text-white/90">AI Training</span>
+              <span className="text-white/90">AI Agents</span>
               <br />
               <span className="text-white/60">on Walrus</span>
             </h2>
 
             <p className="text-base text-gray-400 max-w-2xl leading-relaxed">
-              <span className="text-walrus-purple font-semibold">Multi-agents</span> coordinate to train <span className="text-walrus-purple font-semibold">real neural networks</span> directly in your browser with TensorFlow.js. 
-              Store model weights on <span className="text-walrus-teal font-semibold">Walrus Protocol</span> with Seal certification. 
-              Track contributions on <span className="text-walrus-purple font-semibold">Sui blockchain</span>. 
-              True <span className="text-walrus-teal font-semibold">decentralized</span> AI training—no servers required.
+              <span className="text-walrus-purple font-semibold">Tokenized AI agents</span> minted as NFTs coordinate decentralized training of <span className="text-walrus-purple font-semibold">neural networks</span> directly in your browser. 
+              Each agent is an <span className="text-walrus-teal font-semibold">on-chain asset</span> with model updates stored on Walrus Protocol and verified through <span className="text-green-400 font-semibold">SEAL attestations</span>. 
+              Users contribute compute, <span className="text-walrus-purple font-semibold">earn rewards</span>, and trade agents—while <span className="text-walrus-purple font-semibold">Sui smart contracts</span> manage coordination, verification, and incentives. 
+              Fully <span className="text-walrus-teal font-semibold">decentralized AI</span> with no centralized servers required.
             </p>
 
             <div className="flex flex-wrap gap-4">
