@@ -22,18 +22,67 @@ export interface WalrusBlob {
 }
 
 class WalrusService {
-  private publisherUrl: string;
-  private aggregatorUrl: string;
+  private publishers: string[];
+  private aggregators: string[];
+  private currentPublisherIndex: number = 0;
 
   constructor() {
-    this.publisherUrl = WALRUS_CONFIG.publisher;
-    this.aggregatorUrl = WALRUS_CONFIG.aggregator;
+    this.publishers = WALRUS_CONFIG.publishers || [WALRUS_CONFIG.publisher];
+    this.aggregators = WALRUS_CONFIG.aggregators || [WALRUS_CONFIG.aggregator];
+  }
+
+  /**
+   * Try upload with fallback to other publishers
+   */
+  private async uploadWithFallback(blob: Blob, epochs: number): Promise<Response> {
+    const errors: string[] = [];
+    
+    // Try each publisher in sequence
+    for (let i = 0; i < this.publishers.length; i++) {
+      const publisherUrl = this.publishers[(this.currentPublisherIndex + i) % this.publishers.length];
+      
+      try {
+        console.log(`🐋 Attempting upload to: ${publisherUrl}`);
+        
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+        
+        const response = await fetch(`${publisherUrl}/v1/blobs?epochs=${epochs}`, {
+          method: 'PUT',
+          body: blob,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          signal: controller.signal,
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (response.ok) {
+          // Success! Update current publisher for next time
+          this.currentPublisherIndex = (this.currentPublisherIndex + i) % this.publishers.length;
+          console.log(`✅ Upload successful to: ${publisherUrl}`);
+          return response;
+        } else {
+          const error = `${publisherUrl}: ${response.status} ${response.statusText}`;
+          errors.push(error);
+          console.warn(`⚠️ ${error}`);
+        }
+      } catch (error: any) {
+        const errorMsg = `${publisherUrl}: ${error.name || 'Error'} - ${error.message}`;
+        errors.push(errorMsg);
+        console.warn(`⚠️ ${errorMsg}`);
+      }
+    }
+    
+    // All publishers failed
+    throw new Error(`All Walrus publishers failed:\n${errors.join('\n')}`);
   }
 
   /**
    * Upload data to Walrus
    * @param data - Data to upload (will be JSON stringified)
-   * @param epochs - Number of epochs to store (default: 1)
+   * @param epochs - Number of epochs to store (default: 5)
    * @returns Upload result with blobId and URL
    */
   async upload(data: any, epochs: number = WALRUS_CONFIG.epochs): Promise<WalrusUploadResult> {
@@ -46,35 +95,12 @@ class WalrusService {
         throw new Error(`Data size ${blob.size} exceeds maximum ${WALRUS_CONFIG.maxBlobSize} bytes`);
       }
 
-      // Upload to Walrus Publisher with timeout
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-      
-      const response = await fetch(`${this.publisherUrl}/v1/store?epochs=${epochs}`, {
-        method: 'PUT',
-        body: blob,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        signal: controller.signal,
-      });
-      
-      clearTimeout(timeoutId);
-
-      if (!response.ok) {
-        const errorText = await response.text().catch(() => 'No response body');
-        console.error('Walrus upload failed:', {
-          status: response.status,
-          statusText: response.statusText,
-          url: `${this.publisherUrl}/v1/store?epochs=${epochs}`,
-          error: errorText
-        });
-        throw new Error(`Walrus testnet unavailable (${response.status}). Using local fallback.`);
-      }
+      // Try upload with fallback (already handled in uploadWithFallback)
+      const response = await this.uploadWithFallback(blob, epochs);
 
       const result = await response.json();
       
-      // Walrus returns structure: { newlyCreated: { blobObject: { id, ... }, ... } } or { alreadyCertified: { ... } }
+      // Walrus returns structure: { newlyCreated: { blobObject: { blobId, ... }, ... } } or { alreadyCertified: { blobId, ... } }
       let blobId: string;
       let cost: string | undefined;
 
@@ -84,12 +110,16 @@ class WalrusService {
       } else if (result.alreadyCertified) {
         blobId = result.alreadyCertified.blobId;
       } else {
+        console.error('Unexpected Walrus response:', result);
         throw new Error('Unexpected Walrus response format');
       }
 
+      // Use first aggregator for blob URL
+      const aggregatorUrl = this.aggregators[0];
+      
       return {
         blobId,
-        url: `${this.aggregatorUrl}/v1/${blobId}`,
+        url: `${aggregatorUrl}/v1/blobs/${blobId}`,
         size: blob.size,
         epochs,
         cost,
@@ -104,24 +134,31 @@ class WalrusService {
   }
 
   /**
-   * Retrieve data from Walrus
+   * Retrieve data from Walrus with fallback aggregators
    * @param blobId - Blob ID to retrieve
    * @returns Parsed JSON data
    */
   async retrieve<T = any>(blobId: string): Promise<T> {
-    try {
-      const response = await fetch(`${this.aggregatorUrl}/v1/${blobId}`);
+    const errors: string[] = [];
+    
+    // Try each aggregator
+    for (const aggregatorUrl of this.aggregators) {
+      try {
+        const response = await fetch(`${aggregatorUrl}/v1/blobs/${blobId}`);
 
-      if (!response.ok) {
-        throw new Error(`Retrieve failed: ${response.status}`);
+        if (response.ok) {
+          const data = await response.json();
+          return data as T;
+        } else {
+          errors.push(`${aggregatorUrl}: ${response.status} ${response.statusText}`);
+        }
+      } catch (error: any) {
+        errors.push(`${aggregatorUrl}: ${error.message}`);
       }
-
-      const data = await response.json();
-      return data as T;
-    } catch (error) {
-      console.error('Walrus retrieve error:', error);
-      throw error;
     }
+    
+    console.error('All Walrus aggregators failed:', errors);
+    throw new Error(`Failed to retrieve blob from all aggregators:\n${errors.join('\n')}`);
   }
 
   /**

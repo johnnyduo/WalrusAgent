@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Brain, TrendingUp, Users, Zap, Database, Award, AlertCircle } from 'lucide-react';
+import { toast } from 'react-toastify';
 import { useTraining } from '../hooks/useTraining';
+import { useTrainingSubmit } from '../hooks/useTrainingSubmit';
 import { useSuiWallet } from '../hooks/useSuiWallet';
-import { CONTRACTS_DEPLOYED } from '../config/suiWalletConfig';
+import { CONTRACTS_DEPLOYED, getSuiExplorerUrl } from '../config/suiWalletConfig';
 
 interface TrainingDashboardProps {
   agentId: string;
@@ -17,8 +19,12 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
 }) => {
   const { address, isConnected } = useSuiWallet();
   const { startTraining, getTrainingStats, isTraining } = useTraining();
+  const { submitToChain, isSubmitting } = useTrainingSubmit();
   const [stats, setStats] = useState<ReturnType<typeof getTrainingStats> | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'contribute' | 'history'>('overview');
+  const [trainingProgress, setTrainingProgress] = useState(0);
+  const [trainingStep, setTrainingStep] = useState<string>('');
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     if (agentId) {
@@ -28,13 +34,104 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
   }, [agentId, getTrainingStats]);
 
   const handleStartTraining = async () => {
+    if (!address || !isConnected) {
+      toast.error('Please connect your wallet first');
+      return;
+    }
+
+    setIsProcessing(true);
+    setTrainingProgress(0);
+
     try {
+      // Step 1: Initialize training (10%)
+      setTrainingStep('🎯 Initializing training session...');
+      setTrainingProgress(10);
+      await new Promise(resolve => setTimeout(resolve, 800));
+
+      // Step 2: Generate training data (30%)
+      setTrainingStep('📊 Generating synthetic training data...');
+      setTrainingProgress(30);
+      const syntheticDelta = Array.from({ length: 100 }, () => Math.random() * 2 - 1);
+      await new Promise(resolve => setTimeout(resolve, 1200));
+
+      // Step 3: Compute gradients (50%)
+      setTrainingStep('🧮 Computing model gradients...');
+      setTrainingProgress(50);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Step 4: Store on local (mock Walrus) (70%)
+      setTrainingStep('🐋 Storing training delta locally...');
+      setTrainingProgress(70);
+      const deltaBlobId = `demo_delta_${agentId}_${Date.now()}`;
+      localStorage.setItem(`training_delta_${deltaBlobId}`, JSON.stringify(syntheticDelta));
+      await new Promise(resolve => setTimeout(resolve, 800));
+
+      // Step 5: Submit to blockchain (90%)
+      setTrainingStep('⛓️ Submitting contribution to Sui blockchain...');
+      setTrainingProgress(90);
+      
+      let txDigest: string;
+      if (CONTRACTS_DEPLOYED) {
+        // Real blockchain submission
+        txDigest = await submitToChain({
+          agentTokenId: agentId,
+          deltaBlobId: deltaBlobId,
+          epoch: (stats?.latestEpoch || 0) + 1,
+        });
+      } else {
+        // Demo mode - simulate transaction
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        txDigest = `demo_tx_${Date.now().toString(16)}`;
+        console.log('🎮 Demo Mode: Simulated transaction', txDigest);
+      }
+
+      // Step 6: Complete (100%)
+      setTrainingStep('✅ Training contribution recorded!');
+      setTrainingProgress(100);
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      // Update local stats
       await startTraining(agentId);
-      // Refresh stats
       const agentStats = getTrainingStats(agentId);
       setStats(agentStats);
+
+      // Show success
+      toast.success(
+        <div>
+          <div className="font-bold">✅ Training Contribution Submitted</div>
+          <div className="text-xs mt-1">
+            {CONTRACTS_DEPLOYED ? (
+              <a 
+                href={getSuiExplorerUrl('transaction', txDigest)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-walrus-teal hover:underline"
+              >
+                View on Explorer →
+              </a>
+            ) : (
+              'Demo mode - Deploy contracts for real rewards'
+            )}
+          </div>
+        </div>,
+        { autoClose: 5000 }
+      );
+
     } catch (error) {
       console.error('Training error:', error);
+      toast.error(
+        <div>
+          <div className="font-bold">❌ Training Failed</div>
+          <div className="text-xs mt-1">
+            {error instanceof Error ? error.message : 'Unable to submit training'}
+          </div>
+        </div>,
+        { autoClose: 5000 }
+      );
+    } finally {
+      setIsProcessing(false);
+      setTrainingProgress(0);
+      setTrainingStep('');
     }
   };
 
@@ -163,16 +260,36 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
                   </div>
                 ) : (
                   <div className="text-center py-8">
-                    <p className="text-gray-400 text-sm mb-4">
-                      No training data yet. Start training to contribute!
-                    </p>
-                    <button
-                      onClick={handleStartTraining}
-                      disabled={isTraining}
-                      className="px-8 py-3 bg-gradient-to-r from-walrus-teal to-walrus-purple text-black font-bold rounded-lg font-mono text-sm hover:scale-105 hover:shadow-lg hover:shadow-walrus-purple/50 transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none"
-                    >
-                      {isTraining ? '⚡ Initializing...' : '🚀 Start Training'}
-                    </button>
+                    {isProcessing ? (
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-center gap-3">
+                          <div className="w-8 h-8 border-4 border-walrus-teal/30 border-t-walrus-teal rounded-full animate-spin"></div>
+                          <span className="text-white font-mono text-sm">{trainingProgress}%</span>
+                        </div>
+                        <p className="text-walrus-teal text-sm font-mono animate-pulse">
+                          {trainingStep}
+                        </p>
+                        <div className="w-full max-w-md mx-auto bg-gray-800 rounded-full h-3 overflow-hidden">
+                          <div
+                            className="h-full bg-gradient-to-r from-walrus-teal via-walrus-purple to-walrus-teal transition-all duration-500 ease-out"
+                            style={{ width: `${trainingProgress}%` }}
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <p className="text-gray-400 text-sm mb-4">
+                          No training data yet. Start training to contribute!
+                        </p>
+                        <button
+                          onClick={handleStartTraining}
+                          disabled={isTraining || isSubmitting}
+                          className="px-8 py-3 bg-gradient-to-r from-walrus-teal to-walrus-purple text-black font-bold rounded-lg font-mono text-sm hover:scale-105 hover:shadow-lg hover:shadow-walrus-purple/50 transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none"
+                        >
+                          {isTraining || isSubmitting ? '⚡ Processing...' : '🚀 Start Training'}
+                        </button>
+                      </>
+                    )}
                   </div>
                 )}
               </div>

@@ -27,27 +27,47 @@ export const useTraining = (): UseTrainingReturn => {
       setIsTraining(true);
       setError(null);
 
-      // Generate synthetic dataset if none provided
+      // Demo Mode: Skip Walrus upload if contracts not deployed
       let blobId = datasetBlobId;
       if (!blobId) {
-        console.log('📦 Generating synthetic dataset...');
-        const syntheticData = {
-          inputs: Array.from({ length: 100 }, () => 
-            Array.from({ length: 10 }, () => Math.random())
-          ),
-          labels: Array.from({ length: 100 }, () => {
-            const label = Array(3).fill(0);
-            label[Math.floor(Math.random() * 3)] = 1;
-            return label;
-          })
-        };
+        if (!CONTRACTS_DEPLOYED) {
+          // Demo mode - use local simulated blob ID
+          console.log('🎮 Demo Mode: Simulating training without Walrus upload');
+          blobId = `demo_training_${agentId}_${Date.now()}`;
+          
+          // Store synthetic data locally
+          const syntheticData = {
+            inputs: Array.from({ length: 100 }, () => 
+              Array.from({ length: 10 }, () => Math.random())
+            ),
+            labels: Array.from({ length: 100 }, () => {
+              const label = Array(3).fill(0);
+              label[Math.floor(Math.random() * 3)] = 1;
+              return label;
+            })
+          };
+          localStorage.setItem(`training_dataset_${blobId}`, JSON.stringify(syntheticData));
+        } else {
+          // Production mode - upload to Walrus
+          console.log('📦 Generating synthetic dataset for Walrus...');
+          const syntheticData = {
+            inputs: Array.from({ length: 100 }, () => 
+              Array.from({ length: 10 }, () => Math.random())
+            ),
+            labels: Array.from({ length: 100 }, () => {
+              const label = Array(3).fill(0);
+              label[Math.floor(Math.random() * 3)] = 1;
+              return label;
+            })
+          };
 
-        blobId = await walrusService.uploadDatasetChunk(syntheticData.inputs, {
-          chunkId: 0,
-          totalChunks: 1,
-          datasetName: `${agentId}_synthetic`,
-          agentId
-        });
+          blobId = await walrusService.uploadDatasetChunk(syntheticData.inputs, {
+            chunkId: 0,
+            totalChunks: 1,
+            datasetName: `${agentId}_synthetic`,
+            agentId
+          });
+        }
       }
 
       // Create training task

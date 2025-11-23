@@ -214,6 +214,10 @@ const App: React.FC = () => {
   const [walrusBlobIds, setWalrusBlobIds] = useState<Record<string, string>>({});
   const hasLoadedAgentsRef = useRef<boolean>(false);
   const currentWalletRef = useRef<string | undefined>(undefined);
+  const operationModeRef = useRef<'auto' | 'manual'>((() => {
+    const saved = localStorage.getItem('operationMode');
+    return (saved === 'auto' || saved === 'manual') ? saved : 'manual';
+  })());
 
   // Load onChainAgents and activeAgents from localStorage when wallet connects/changes
   useEffect(() => {
@@ -303,9 +307,10 @@ const App: React.FC = () => {
   const [budgetSpent, setBudgetSpent] = useState<number>(0);
   const [pendingFundRequest, setPendingFundRequest] = useState<boolean>(false);
 
-  // Persist operation mode
+  // Persist operation mode and update ref
   useEffect(() => {
     localStorage.setItem('operationMode', operationMode);
+    operationModeRef.current = operationMode;
   }, [operationMode]);
 
   // --- Agent Task Progress Tracking ---
@@ -406,6 +411,8 @@ const App: React.FC = () => {
       console.log('💾 Stored agent transaction:', agentId, '→', txDigest);
       
       // Show toast notification with both Walrus and Sui links
+      const walrusBlobId = currentWalrusBlobIdRef.current;
+      
       toast.success(
         <div>
           <div className="font-bold">✅ Agent Registered Successfully!</div>
@@ -418,7 +425,20 @@ const App: React.FC = () => {
             >
               ⛓️ View Sui Transaction →
             </a>
+            {walrusBlobId && !walrusBlobId.startsWith('walrus_local_') && !walrusBlobId.startsWith('walrus_pending_') && (
+              <a 
+                href={`https://walrus-scan.io/testnet/blob/${walrusBlobId}`}
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-walrus-purple hover:underline text-xs block"
+              >
+                🐋 View Walrus Metadata →
+              </a>
+            )}
             <div className="text-xs text-gray-400 truncate">Tx: {txDigest.slice(0, 20)}...</div>
+            {walrusBlobId && (
+              <div className="text-xs text-gray-400 truncate">Blob: {walrusBlobId.slice(0, 20)}...</div>
+            )}
           </div>
         </div>,
         { autoClose: 10000 }
@@ -701,7 +721,7 @@ const App: React.FC = () => {
     }
     
     // In auto mode, only Commander can be manually toggled, others are controlled by Commander
-    if (operationMode === 'auto' && id !== 'a0') {
+    if (operationModeRef.current === 'auto' && id !== 'a0') {
       addLog('SYSTEM', '⚠️ Auto mode active: Only Commander can control agent activation');
       return;
     }
@@ -745,7 +765,7 @@ const App: React.FC = () => {
           <div className="font-bold">🐋 Uploading to Walrus</div>
           <div className="text-sm">{agent.name} - Storing metadata on decentralized storage</div>
         </div>,
-        { autoClose: 4000 }
+        { autoClose: 1500 }
       );
       
       try {
@@ -779,8 +799,15 @@ const App: React.FC = () => {
           toast.success(
             <div>
               <div className="font-bold">🐋 Decentralized Storage Complete</div>
-              <div className="text-xs mt-1 text-gray-300">
-                Agent metadata securely stored on Walrus Protocol
+              <div className="text-xs mt-1">
+                <a 
+                  href={`https://walrus-scan.io/testnet/blob/${walrusBlobId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-walrus-teal hover:underline"
+                >
+                  View on Walrus Scan →
+                </a>
               </div>
             </div>,
             { autoClose: 1500 }
@@ -942,7 +969,7 @@ const App: React.FC = () => {
     
     // If we reach here, something is wrong with the state
     console.warn('⚠️ Unexpected toggle state:', { isActivating, agentTokenId, isConnected });
-  }, [activeAgents, showAgentDialogue, operationMode, isConnected, mintAgent, onChainAgents, mintingAgents, deactivatingAgents, addLog]);
+  }, [activeAgents, showAgentDialogue, isConnected, mintAgent, onChainAgents, mintingAgents, deactivatingAgents, addLog]);
 
   // --- Helper: Add task result ---
   const addTaskResult = useCallback((result: Omit<AgentTaskResult, 'timestamp'>) => {

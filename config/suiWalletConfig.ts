@@ -23,11 +23,24 @@ export const suiClient = new SuiClient({
 
 // Walrus Protocol Configuration
 export const WALRUS_CONFIG = {
-  // Walrus Testnet Aggregator (for reading blobs)
-  aggregator: 'https://aggregator-devnet.walrus.space',
+  // Walrus Testnet Aggregators (for reading blobs) - Multiple for redundancy
+  aggregators: [
+    'https://aggregator.walrus-testnet.walrus.space',
+    'https://wal-aggregator-testnet.staketab.org',
+    'https://walrus-testnet-aggregator.nodeinfra.com',
+    'https://sm1-walrus-testnet-aggregator.stakesquid.com',
+  ],
+  aggregator: 'https://aggregator.walrus-testnet.walrus.space', // Primary
   
-  // Walrus Testnet Publisher (for writing blobs)
-  publisher: 'https://publisher-devnet.walrus.space',
+  // Walrus Testnet Publishers (for writing blobs) - Multiple for redundancy
+  publishers: [
+    'https://publisher.walrus-testnet.walrus.space',
+    'https://wal-publisher-testnet.staketab.org',
+    'https://walrus-testnet-publisher.nodeinfra.com',
+    'https://sm1-walrus-testnet-publisher.stakesquid.com',
+    'https://publisher.walrus-testnet.h2o-nodes.com',
+  ],
+  publisher: 'https://publisher.walrus-testnet.walrus.space', // Primary
   
   // Storage configuration
   epochs: 5, // Number of epochs to store (recommended: 5 for testnet)
@@ -122,7 +135,11 @@ export const getSuiExplorerUrl = (type: 'address' | 'object' | 'transaction', id
 };
 
 export const getWalrusExplorerUrl = (blobId: string): string => {
-  return `${WALRUS_CONFIG.aggregator}/v1/${blobId}`;
+  return `${WALRUS_CONFIG.aggregator}/v1/blobs/${blobId}`;
+};
+
+export const getWalrusScanUrl = (blobId: string): string => {
+  return `https://walrus-scan.io/testnet/blob/${blobId}`;
 };
 
 // Sui Wallet Kit Theme Configuration

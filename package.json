@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "deploy:cli": "./deploy.sh",
     "deploy:browser": "yarn tsx deploy-browser.ts",
+    "deploy:training": "./deploy-training.sh",
     "setup:walrus": "./setup-walrus.sh",
     "test:contracts": "./test-contracts.sh",
     "test:walrus": "yarn tsx test-walrus-api.ts",
