@@ -20,8 +20,14 @@ const LottieAvatar: React.FC<LottieAvatarProps> = ({
 }) => {
   const [animationData, setAnimationData] = React.useState<any>(null);
   const [error, setError] = React.useState<boolean>(false);
+  const isGif = animationPath.toLowerCase().endsWith('.gif');
 
   React.useEffect(() => {
+    // Skip loading JSON for GIF files
+    if (isGif) {
+      return;
+    }
+
     // Load the Lottie JSON file
     fetch(animationPath)
       .then(response => response.json())
@@ -30,7 +36,20 @@ const LottieAvatar: React.FC<LottieAvatarProps> = ({
         console.error('Failed to load Lottie animation:', err);
         setError(true);
       });
-  }, [animationPath]);
+  }, [animationPath, isGif]);
+
+  // If it's a GIF, render as img element
+  if (isGif) {
+    return (
+      <div className={className} style={{ width, height }}>
+        <img 
+          src={animationPath}
+          alt="Avatar"
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        />
+      </div>
+    );
+  }
 
   if (error || !animationData) {
     // Fallback to a placeholder or return null

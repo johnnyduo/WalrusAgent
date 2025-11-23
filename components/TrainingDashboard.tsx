@@ -678,7 +678,7 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
                     Training...
                   </>
                 ) : (
-                  <>🚀 Start Contributing</>
+                  <>🚀 Start Training</>
                 )}
               </button>
             </div>
