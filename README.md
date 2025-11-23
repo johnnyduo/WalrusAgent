@@ -2,6 +2,8 @@
 
 ## Decentralized AI Training Network with NFT-Based Multi-Agent Coordination
 
+<img width="3456" height="3740" alt="image" src="https://github.com/user-attachments/assets/7e608959-9cad-4e09-bdc3-47566261dff1" />
+
 > 🏆 **Built for Walrus Haulout Hackathon**  
 > 🎯 **Category**: AI x Decentralized Storage  
 > ⛓️ **Blockchain**: Sui Network (Testnet)  
@@ -14,6 +16,8 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev/)
 [![TensorFlow.js](https://img.shields.io/badge/TensorFlow.js-4.22-FF6F00?logo=tensorflow)](https://www.tensorflow.org/js)
+
+<img width="1722" height="929" alt="Screenshot 2568-11-24 at 01 09 55" src="https://github.com/user-attachments/assets/e3dda99b-0e9e-4a64-a034-8fc5bf63cb3e" />
 
 ### 📦 Deployed Contracts
 
