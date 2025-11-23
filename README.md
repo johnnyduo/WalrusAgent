@@ -853,39 +853,50 @@ walrus-agents/
 
 ## 🔮 Future Roadmap
 
-### Phase 1: MVP (Current) ✅
-- [x] Real neural network training
-- [x] Walrus Protocol integration
-- [x] Live metrics UI
-- [x] LocalStorage persistence
-- [x] Smart contracts written
+### Q4 2025 - Foundation ✅
+**Status**: Completed (November 2025)
+- [x] Smart contracts deployed on Sui Testnet
+- [x] Agent NFT minting with Walrus metadata storage
+- [x] Real neural network training (41-parameter model)
+- [x] Multi-agent coordination pipeline
+- [x] Seal certification integration
+- [x] Training dashboard with live metrics
 
-### Phase 2: Production Launch 🚀
-- [ ] Deploy contracts to Sui testnet
-- [ ] Enable on-chain contribution tracking
-- [ ] Implement token reward distribution
-- [ ] Add user profile pages
-- [ ] Leaderboard for top contributors
+### Q1 2026 - Mainnet Launch 🚀
+**Target**: January - March 2026
+- [ ] Deploy contracts to Sui Mainnet
+- [ ] Token reward distribution system
+- [ ] Enhanced training analytics dashboard
+- [ ] Agent marketplace (buy/sell/trade NFT agents)
+- [ ] Contributor leaderboard with rankings
+- [ ] Mobile-responsive training interface
 
-### Phase 3: Advanced Features 🔬
-- [ ] Multi-agent federated learning
-- [ ] Custom dataset upload
-- [ ] Model marketplace (buy/sell trained models)
-- [ ] GPU acceleration (WebGPU)
+### Q2 2026 - Advanced Features 🔬
+**Target**: April - June 2026
+- [ ] Multi-agent federated learning coordination
+- [ ] Custom dataset upload via Walrus
+- [ ] Model versioning and rollback capabilities
+- [ ] GPU acceleration with WebGPU
 - [ ] Privacy-preserving training (differential privacy)
+- [ ] Real-time agent collaboration visualization
 
-### Phase 4: Ecosystem Growth 🌍
+### Q3 2026 - Ecosystem Growth 🌍
+**Target**: July - September 2026
 - [ ] SDK for third-party integration
-- [ ] Cross-chain support (Ethereum, Solana)
-- [ ] Enterprise training dashboard
-- [ ] Academic partnerships
-- [ ] Grant program for researchers
+- [ ] Cross-chain bridge (Ethereum, Solana)
+- [ ] Enterprise training dashboard with team management
+- [ ] Academic partnerships and research grants
+- [ ] Developer documentation and tutorials
+- [ ] Community governance via DAO
 
----
-
-## 📄 License
-
-MIT License - see [LICENSE](LICENSE) file for details
+### Q4 2026 - Scale & Innovation 🌟
+**Target**: October - December 2026
+- [ ] Layer-2 scaling solution for high-volume training
+- [ ] AI model marketplace with revenue sharing
+- [ ] Advanced model architectures (transformers, CNNs)
+- [ ] Integration with Sui DeFi protocols
+- [ ] Global training competitions with prizes
+- [ ] White-label solutions for enterprises
 
 ---
 
@@ -1040,12 +1051,6 @@ WalrusAgent/
 
 ---
 
-## 📝 License
-
-MIT License - see [LICENSE](LICENSE) file for details.
-
----
-
 ## 🤝 Contributing
 
 We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
@@ -1059,15 +1064,6 @@ Areas where we'd love help:
 
 ---
 
-## 📞 Contact & Links
-
-- **GitHub**: [WalrusAgent Repository](https://github.com/yourusername/WalrusAgent)
-- **Twitter**: [@WalrusAgents](https://twitter.com/WalrusAgents) (placeholder)
-- **Discord**: [Join Community](https://discord.gg/walrus) (placeholder)
-- **Email**: hello@walrus.quest
-
----
-
 ## 🙏 Acknowledgments
 
 Built for **Walrus Haulout Hackathon** - AI x Data Track
@@ -1077,57 +1073,6 @@ Special thanks to:
 - **Walrus Team** - For decentralized storage innovation
 - **TensorFlow.js Team** - For making ML accessible in browsers
 - **Sui Developer Community** - For excellent documentation and support
-
----
-
-## 🎬 Demo Video Script (For Submission)
-
-### Introduction (30s)
-"Hi, I'm presenting WALRUS AGENTS - democratizing AI training using crowdsourced compute and Walrus Protocol storage on Sui blockchain."
-
-### Problem (30s)
-"AI training today is centralized, expensive, and opaque. Only big tech companies can afford GPU clusters. Developers have no way to contribute to or verify AI training."
-
-### Solution (60s)
-"WALRUS AGENTS enables anyone to train AI models directly in their browser using TensorFlow.js. All training data - model weights, deltas, embeddings - is stored on Walrus Protocol for permanent, verifiable access. Sui smart contracts coordinate contributions and distribute rewards."
-
-### Demo Flow (90s)
-1. "Connect Suiet Wallet to Sui testnet"
-2. "Register as Captain - mints agent NFT on-chain"
-3. "Open Training Dashboard - shows live training stats"
-4. "Click Start Training - TensorFlow.js trains in browser"
-5. "Submit Contribution - delta uploaded to Walrus"
-6. "View Market Data - live on-chain feeds power AI decisions"
-7. "Claim Rewards - earn SUI tokens for training"
-
-### Technical Highlights (45s)
-"Built with Sui Move smart contracts, Walrus Protocol storage, and TensorFlow.js for browser-based ML. Implements federated learning for privacy-preserving training. On-chain data from validators, prices, and network metrics becomes training features."
-
-### AI x Data Track Alignment (30s)
-"This project demonstrates AI leveraging on-chain data in multiple ways: training features from blockchain metrics, decentralized storage on Walrus, smart contract coordination, and democratized access to AI training infrastructure."
-
-### Closing (15s)
-"WALRUS AGENTS proves that decentralized, transparent, community-driven AI training is possible. Thank you!"
-
-**Total: ~5 minutes**
-
----
-
-## 📸 Screenshots
-
-### Landing Page
-![Landing Page](docs/screenshots/landing.png)
-
-### Training Dashboard
-![Training Dashboard](docs/screenshots/training-dashboard.png)
-
-### Market Data Widget
-![Market Data](docs/screenshots/market-data.png)
-
-### Agent Flow Canvas
-![Flow Canvas](docs/screenshots/flow-canvas.png)
-
----
 
 **Built with ❤️ for Walrus Haulout Hackathon**
 - **API Keys** - Gemini, Pyth, News API (all have free tiers)
@@ -1320,102 +1265,6 @@ VITE_SUI_RPC_URL=https://fullnode.testnet.sui.io:443
 
 ---
 
-## 🎯 Success Metrics & Impact
-
-### Quantitative Goals (6 Months)
-
-| Metric | Target | Impact |
-|--------|--------|--------|
-| **Agents Minted** | 10,000+ | New Sui accounts created |
-| **Monthly Active Users** | 5,000+ | Sustained network growth |
-| **Transactions/Day** | 100,000+ | Increased Sui TPS |
-| **Payment Volume** | $500K+ | SUI and stablecoin utility on Sui |
-| **Developer Integrations** | 50+ | Ecosystem expansion |
-
-### Qualitative Impact
-
-✅ **Establishes Sui as AI Infrastructure Leader**
-- First production-grade A2A marketplace with Walrus storage
-- Showcases network's speed/cost advantages for AI use cases
-- Attracts AI/ML developer community to Sui
-
-✅ **Drives Network Growth**
-- Every agent = new account + continuous transactions
-- Payment streams = sustained TPS increase
-- Cross-chain bridge = liquidity inflow
-
-✅ **Creates New Use Cases**
-- Autonomous trading bots with on-chain identity
-- AI-powered DeFi strategies with verifiable execution
-- Agent-to-agent service marketplaces
-
----
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**API Keys Not Working**
-```bash
-# Verify environment variables are loaded
-cat .env.local
-
-# Ensure VITE_ prefix for frontend variables
-VITE_GEMINI_API_KEY=abc123
-
-# Restart dev server after changes
-npm run dev
-```
-
-**Wallet Connection Issues**
-- Clear browser cache and reconnect
-- Ensure you're on Sui Testnet
-- Get free testnet SUI from [Sui Faucet](https://faucet.testnet.sui.io/)
-
-**Transactions Failing**
-- Check SUI balance (need ~0.1 SUI for gas)
-- Ensure sufficient SUI for transaction fees
-- Verify agent is minted on-chain first
-
-**No Agent Activity**
-- Activate at least 2 agents from sidebar
-- Wait 10-15 seconds for first intelligence cycle
-- Check console logs for API rate limits
-
-**Cleared localStorage and Lost Data?**
-```bash
-# BEFORE clearing localStorage, always backup:
-backupWalrusData()
-# Saves: agents, streams, results, connections
-
-# To restore after clearing:
-restoreWalrusData(yourBackupObject)
-
-# Lost stream IDs? View them:
-showAllStreams()
-
-# If completely lost, check Sui Explorer:
-# 1. Find your transactions on Suiscan
-# 2. Look for agent minting and contribution events
-# 3. Check object IDs for your agents
-```
-
-**⚠️ IMPORTANT: localStorage Clearing Impact**
-- ❌ **Withdrawals**: Stream IDs lost - can't withdraw without them
-- ❌ **Agent Data**: Token IDs lost - UI shows "Mint Agent" again
-- ❌ **Results Page**: All task history cleared
-- ✅ **On-Chain Data**: Agents and streams still exist on Sui blockchain
-- 💡 **Solution**: Always run `backupWalrusData()` before clearing browser data
-
-### Need Help?
-
-- 📖 Check `/docs` folder for detailed guides
-- 💬 Open GitHub issue: [github.com/johnnyduo/WalrusAgents/issues](https://github.com/johnnyduo/WalrusAgents/issues)
-- 📧 Email: [your-email]
-- 🐦 Twitter: [@YourHandle]
-
----
-
 ## 🌐 Deployment
 
 ### Vercel (Recommended)
@@ -1459,53 +1308,6 @@ in the Software without restriction...
 ```
 
 See [LICENSE](./LICENSE) for full text.
-
----
-
-## 🔗 Links & Resources
-
-### Live Application
-- 🌐 **Demo**: https://walrus.quest
-- 📹 **Video**: [YouTube Demo](https://youtu.be/szUqNZ0IRFs)
-
-### Smart Contracts
-- 🔍 **Agent Registry**: [Suiscan](https://suiscan.xyz/testnet) (See deployed-addresses.json)
-- 🔍 **Training Rewards**: [Suiscan](https://suiscan.xyz/testnet) (See deployed-addresses.json)
-- 📝 **Source Code**: [GitHub Move Contracts](./move/sources)
-
-### Documentation
-- 📖 **Technical Docs**: [Full Documentation](./docs)
-- 🎓 **Tutorial**: [Getting Started Guide](./docs/tutorial.md)
-- 🏗️ **Architecture**: [System Design](./docs/architecture.md)
-- 🔌 **API Reference**: [API Docs](./docs/api-reference.md)
-
-### Sui & Walrus Resources
-- 🌐 **Sui Portal**: https://sui.io/
-- 📚 **Sui Docs**: https://docs.sui.io/
-- 🔍 **Suiscan Explorer**: https://suiscan.xyz/testnet
-- 🗄️ **Walrus Docs**: https://docs.walrus.site/
-- 💧 **Sui Faucet**: https://faucet.testnet.sui.io/
-
-### Technology Partners
-- 🔮 **Pyth Network**: https://pyth.network/
-- 🤖 **Google Gemini**: https://ai.google.dev/
-- 🔗 **Reown (WalletConnect)**: https://reown.com/
-- 🌊 **Cetus DEX**: https://cetus.zone/
-- 🌀 **Turbos Finance**: https://turbos.finance/
-
----
-
-## 🙏 Acknowledgments
-
-Special thanks to:
-- **Mysten Labs** for building Sui and Walrus Protocol
-- **Walrus Team** for decentralized storage innovation
-- **Pyth Network** for reliable price feed infrastructure
-- **Google Gemini** for powerful AI capabilities
-- **TensorFlow.js Team** for making ML accessible in browsers
-- **Sui Developer Community** for excellent documentation and support
-
-Built with ❤️ for Walrus Haulout Hackathon - AI x Data Track
 
 ---
 
