@@ -41,7 +41,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
           <div className="flex-1 space-y-6">
             <div className="inline-block px-4 py-2 bg-gradient-to-r from-walrus-teal/10 to-walrus-purple/10 rounded-lg border border-walrus-purple/30 backdrop-blur-sm">
               <span className="text-xs font-mono uppercase tracking-wider text-walrus-purple">
-                🏆 Walrus Protocol Hackathon 2025 | AI x Data Track
+                🏆 Walrus Haulout Hackathon | AI x Data Track
               </span>
             </div>
 
@@ -94,15 +94,17 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
             </div>
           </div>
 
-          {/* Right - Lion Lottie */}
+          {/* Right - Walrus GIF */}
           <div className="flex-1 flex justify-center items-center">
             <div className="relative">
               <div className="absolute inset-0 bg-walrus-teal/10 rounded-full blur-3xl animate-pulse"></div>
               <div className="relative bg-black/40 rounded-xl p-8 backdrop-blur-sm border border-walrus-teal/20">
-                <LottieAvatar 
-                  animationPath="/lottie/Lion - Breath.json" 
-                  width={350} 
+                <img 
+                  src="https://media0.giphy.com/media/v1.Y2lkPTZjMDliOTUyaXF2MDBoMzdvajVvOG13M3ljYzkyenNveTY4ZXBlZG05a2c3cTdtcCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/XCPnjIUMT06ek/giphy.gif"
+                  alt="Walrus"
+                  width={350}
                   height={350}
+                  className="rounded-lg"
                 />
               </div>
             </div>
