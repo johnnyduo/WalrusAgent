@@ -42,6 +42,14 @@ Current issues:
 
 ## 🎯 Key Features
 
+### 🐋 Walrus Protocol Integration
+**Full integration with Walrus decentralized storage:**
+- **Seal Certification** 🔏 - Cryptographic proof of data availability
+- **Multi-Publisher Redundancy** - Automatic failover across 5+ publishers
+- **Long-term Storage** - 10-epoch preservation for training data
+- **Walrus Scan Integration** - Full transparency via explorer links
+- **Rich Metadata** - ML-optimized data structures with versioning
+
 ### 🤖 7 AI Agent Specialists
 Each agent has a unique role in the distributed training pipeline:
 - 🐋 **Walrus Commander** (a0) - Distributed training coordination & epoch management

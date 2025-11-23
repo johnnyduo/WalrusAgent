@@ -1,7 +1,7 @@
 [package]
 name = "walrus_agents"
 version = "1.0.0"
-edition = "2025.beta"
+edition = "2024.beta"
 
 [dependencies]
 Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/testnet" }

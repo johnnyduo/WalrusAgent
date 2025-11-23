@@ -43,28 +43,85 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
     setTrainingProgress(0);
 
     try {
-      // Step 1: Initialize training (10%)
-      setTrainingStep('🎯 Initializing training session...');
+      // Step 1: Initialize real TensorFlow.js model (10%)
+      setTrainingStep('🎯 Initializing TensorFlow.js model...');
       setTrainingProgress(10);
-      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      const { getGlobalModel } = await import('../services/tinyModelTraining');
+      const model = await getGlobalModel();
+      const summary = model.getModelSummary();
+      console.log('🧠 Model ready:', summary);
 
-      // Step 2: Generate training data (30%)
-      setTrainingStep('📊 Generating synthetic training data...');
+      // Step 2: Generate real training data (30%)
+      setTrainingStep(`📊 Training ${summary.architecture}...`);
       setTrainingProgress(30);
-      const syntheticDelta = Array.from({ length: 100 }, () => Math.random() * 2 - 1);
-      await new Promise(resolve => setTimeout(resolve, 1200));
 
-      // Step 3: Compute gradients (50%)
-      setTrainingStep('🧮 Computing model gradients...');
+      // Step 3: Actually train the model! (50%)
+      setTrainingStep('🧮 Computing gradients with backpropagation...');
       setTrainingProgress(50);
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const trainingResult = await model.trainOneEpoch(32, (progress) => {
+        const adjustedProgress = 50 + (progress / 100) * 20;
+        setTrainingProgress(Math.min(adjustedProgress, 69));
+      });
+      
+      console.log('✅ Training epoch complete:', {
+        loss: trainingResult.loss.toFixed(4),
+        accuracy: (trainingResult.accuracy * 100).toFixed(1) + '%',
+        deltaSize: trainingResult.deltaWeights.length,
+        computeTime: trainingResult.computeTime + 'ms',
+      });
 
-      // Step 4: Store on local (mock Walrus) (70%)
-      setTrainingStep('🐋 Storing training delta locally...');
+      // Step 4: Store REAL gradient deltas on Walrus with Seal certification (70%)
+      setTrainingStep('🐋 Uploading gradients to Walrus Protocol...');
       setTrainingProgress(70);
-      const deltaBlobId = `demo_delta_${agentId}_${Date.now()}`;
-      localStorage.setItem(`training_delta_${deltaBlobId}`, JSON.stringify(syntheticDelta));
-      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      let deltaBlobId: string;
+      let isCertified = false;
+      let sealUrl: string | undefined;
+      
+      try {
+        // Upload REAL training deltas to Walrus
+        const walrusService = (await import('../services/walrusService')).default;
+        const trainingData = {
+          agentId,
+          delta: trainingResult.deltaWeights, // REAL gradients from TensorFlow.js
+          epoch: (stats?.latestEpoch || 0) + 1,
+          contributor: address!,
+          metrics: {
+            loss: trainingResult.loss,
+            accuracy: trainingResult.accuracy,
+            computeTime: trainingResult.computeTime,
+            batchSize: 32,
+          },
+        };
+        
+        const uploadResult = await walrusService.uploadTrainingData(trainingData);
+        deltaBlobId = uploadResult.blobId;
+        isCertified = uploadResult.certified || false;
+        sealUrl = uploadResult.sealUrl;
+        
+        console.log('✅ Real training data uploaded to Walrus:', {
+          blobId: deltaBlobId,
+          certified: isCertified,
+          size: uploadResult.size,
+          epochs: uploadResult.epochs,
+          deltaCount: trainingResult.deltaWeights.length,
+          loss: trainingResult.loss,
+          accuracy: trainingResult.accuracy,
+        });
+      } catch (error) {
+        console.warn('⚠️ Walrus upload failed, using local fallback:', error);
+        deltaBlobId = `local_delta_${agentId}_${Date.now()}`;
+        const fallbackData = {
+          delta: trainingResult.deltaWeights,
+          metrics: {
+            loss: trainingResult.loss,
+            accuracy: trainingResult.accuracy,
+          },
+        };
+        localStorage.setItem(`training_delta_${deltaBlobId}`, JSON.stringify(fallbackData));
+      }
 
       // Step 5: Submit to blockchain (90%)
       setTrainingStep('⛓️ Submitting contribution to Sui blockchain...');
@@ -78,11 +135,12 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
           deltaBlobId: deltaBlobId,
           epoch: (stats?.latestEpoch || 0) + 1,
         });
+        console.log('✅ Training contribution recorded on-chain:', txDigest);
       } else {
         // Demo mode - simulate transaction
         await new Promise(resolve => setTimeout(resolve, 1500));
         txDigest = `demo_tx_${Date.now().toString(16)}`;
-        console.log('🎮 Demo Mode: Simulated transaction', txDigest);
+        console.log('⚠️ Demo Mode: Training contracts not deployed. Run: yarn deploy:training');
       }
 
       // Step 6: Complete (100%)
@@ -95,22 +153,51 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
       const agentStats = getTrainingStats(agentId);
       setStats(agentStats);
 
-      // Show success
+      // Show success with REAL training metrics and Walrus links
       toast.success(
         <div>
-          <div className="font-bold">✅ Training Contribution Submitted</div>
-          <div className="text-xs mt-1">
+          <div className="font-bold">✅ Training Epoch Complete!</div>
+          <div className="text-xs text-gray-300 mt-1 mb-2">
+            Loss: {trainingResult.loss.toFixed(4)} | Accuracy: {(trainingResult.accuracy * 100).toFixed(1)}% | {trainingResult.deltaWeights.length} gradients
+          </div>
+          <div className="space-y-1">
             {CONTRACTS_DEPLOYED ? (
-              <a 
-                href={getSuiExplorerUrl('transaction', txDigest)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-walrus-teal hover:underline"
-              >
-                View on Explorer →
-              </a>
+              <>
+                <a 
+                  href={getSuiExplorerUrl('transaction', txDigest)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-walrus-teal hover:underline text-xs block"
+                >
+                  ⛓️ View Sui Transaction →
+                </a>
+                {!deltaBlobId.startsWith('local_') && (
+                  <>
+                    <a 
+                      href={`https://walruscan.com/testnet/blob/${deltaBlobId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-walrus-purple hover:underline text-xs block"
+                    >
+                      🐋 View Training Data on Walrus →
+                    </a>
+                    {isCertified && sealUrl && (
+                      <a 
+                        href={sealUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-green-400 hover:underline text-xs block"
+                      >
+                        🔏 Seal Certified - View Certificate →
+                      </a>
+                    )}
+                  </>
+                )}
+              </>
             ) : (
-              'Demo mode - Deploy contracts for real rewards'
+              <div className="text-xs text-gray-400">
+                ⚠️ Demo mode - Deploy contracts: yarn deploy:training
+              </div>
             )}
           </div>
         </div>,
@@ -184,6 +271,33 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
         <div className="flex-1 overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-walrus-purple/30 scrollbar-track-transparent">
           {activeTab === 'overview' && (
             <div className="space-y-6">
+              {/* Walrus Features Banner */}
+              <div className="bg-gradient-to-r from-walrus-purple/10 to-walrus-teal/10 border border-walrus-purple/30 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <div className="text-2xl">🐋</div>
+                  <div className="flex-1">
+                    <h4 className="text-walrus-teal font-bold text-sm mb-1">Decentralized AI Training on Walrus</h4>
+                    <p className="text-gray-300 text-xs leading-relaxed">
+                      Training data stored on <strong>Walrus Protocol</strong> with:
+                    </p>
+                    <ul className="mt-2 space-y-1 text-xs text-gray-400">
+                      <li className="flex items-center gap-2">
+                        <span className="text-green-400">✓</span>
+                        <strong className="text-walrus-teal">Seal Certification</strong> - Cryptographic proof of data availability
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-green-400">✓</span>
+                        <strong className="text-walrus-purple">10-epoch storage</strong> - Long-term training data preservation
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-green-400">✓</span>
+                        <strong className="text-walrus-teal">4x redundancy</strong> - Guaranteed data availability
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
               {/* Contract Status Info */}
               {!CONTRACTS_DEPLOYED && (
                 <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-lg p-3 flex items-center gap-3">
