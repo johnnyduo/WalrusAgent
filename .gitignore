@@ -17,10 +17,16 @@ build/
 # ===========================
 .env
 .env.local
+.env.development
 .env.development.local
+.env.test
 .env.test.local
+.env.production
 .env.production.local
-*.env
+.env.*.local
+
+# Keep .env.example for documentation
+!.env.example
 
 # ===========================
 # Logs
