@@ -11,6 +11,8 @@ interface CaptainControlPanelProps {
   captainTokenId: number;
   showTraining?: boolean;
   onTrainingChange?: (show: boolean) => void;
+  trainingAgentId?: string;
+  trainingAgentName?: string;
 }
 
 export const CaptainControlPanel: React.FC<CaptainControlPanelProps> = ({
@@ -20,7 +22,9 @@ export const CaptainControlPanel: React.FC<CaptainControlPanelProps> = ({
   isCaptainRegistered,
   captainTokenId,
   showTraining,
-  onTrainingChange
+  onTrainingChange,
+  trainingAgentId,
+  trainingAgentName
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showTrainingDashboard, setShowTrainingDashboard] = useState(false);
@@ -28,6 +32,10 @@ export const CaptainControlPanel: React.FC<CaptainControlPanelProps> = ({
   // Use external control if provided, otherwise use internal state
   const isTrainingOpen = showTraining !== undefined ? showTraining : showTrainingDashboard;
   const setTrainingOpen = onTrainingChange || setShowTrainingDashboard;
+  
+  // Determine which agent to train
+  const agentToTrain = trainingAgentId || 'a0';
+  const agentToTrainName = trainingAgentName || 'Walrus Commander';
 
   return (
     <div className={`
@@ -90,11 +98,11 @@ export const CaptainControlPanel: React.FC<CaptainControlPanelProps> = ({
       </div>
 
       {/* Training Dashboard Modal - Rendered via Portal to escape parent stacking context */}
-      {showTrainingDashboard && isCaptainRegistered && createPortal(
+      {isTrainingOpen && createPortal(
         <TrainingDashboard
-          agentId={String(captainTokenId)}
-          agentName={`Captain #${captainTokenId}`}
-          onClose={() => setShowTrainingDashboard(false)}
+          agentId={agentToTrain}
+          agentName={agentToTrainName}
+          onClose={() => setTrainingOpen(false)}
         />,
         document.body
       )}

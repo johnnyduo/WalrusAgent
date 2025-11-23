@@ -214,6 +214,8 @@ const App: React.FC = () => {
   const [walrusBlobIds, setWalrusBlobIds] = useState<Record<string, string>>({});
   // Training dashboard control
   const [showTrainingDashboard, setShowTrainingDashboard] = useState(false);
+  const [trainingAgentId, setTrainingAgentId] = useState<string>('a0');
+  const [trainingAgentName, setTrainingAgentName] = useState<string>('Walrus Commander');
   const hasLoadedAgentsRef = useRef<boolean>(false);
   const currentWalletRef = useRef<string | undefined>(undefined);
   const operationModeRef = useRef<'auto' | 'manual'>((() => {
@@ -2247,6 +2249,14 @@ const App: React.FC = () => {
 
   // Handler for opening training dashboard
   const handleInitiateTraining = () => {
+    // Set the training agent to the currently selected agent
+    if (selectedAgentId) {
+      const agent = AGENTS.find(a => a.id === selectedAgentId);
+      if (agent) {
+        setTrainingAgentId(agent.id);
+        setTrainingAgentName(agent.name);
+      }
+    }
     setShowTrainingDashboard(true);
   };
 
@@ -2332,6 +2342,8 @@ const App: React.FC = () => {
               captainTokenId={getTokenIdAsNumber('a0')}
               showTraining={showTrainingDashboard}
               onTrainingChange={setShowTrainingDashboard}
+              trainingAgentId={trainingAgentId}
+              trainingAgentName={trainingAgentName}
             />
           </div>
           
