@@ -9,6 +9,8 @@ interface CaptainControlPanelProps {
   isConnected: boolean;
   isCaptainRegistered: boolean;
   captainTokenId: number;
+  showTraining?: boolean;
+  onTrainingChange?: (show: boolean) => void;
 }
 
 export const CaptainControlPanel: React.FC<CaptainControlPanelProps> = ({
@@ -16,10 +18,16 @@ export const CaptainControlPanel: React.FC<CaptainControlPanelProps> = ({
   onModeChange,
   isConnected,
   isCaptainRegistered,
-  captainTokenId
+  captainTokenId,
+  showTraining,
+  onTrainingChange
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showTrainingDashboard, setShowTrainingDashboard] = useState(false);
+  
+  // Use external control if provided, otherwise use internal state
+  const isTrainingOpen = showTraining !== undefined ? showTraining : showTrainingDashboard;
+  const setTrainingOpen = onTrainingChange || setShowTrainingDashboard;
 
   return (
     <div className={`

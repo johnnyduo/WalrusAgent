@@ -84,30 +84,16 @@ export const TOKENS = {
 export type TokenType = keyof typeof TOKENS;
 
 // Agent Contract Addresses (deployed on Sui Testnet)
-// Update these after deploying contracts
-let deployedAddresses: any = {};
-try {
-  deployedAddresses = require('../deployed-addresses.json');
-} catch {
-  // Use default values if file doesn't exist yet
-  deployedAddresses = {
-    packageId: '0x0',
-    contracts: {
-      agentRegistry: { sharedObjectId: '0x0' },
-      trainingRewards: { sharedObjectId: '0x0' }
-    }
-  };
-}
-
-export const AGENT_PACKAGE_ID = deployedAddresses.packageId || '0x0';
-export const AGENT_REGISTRY_ID = deployedAddresses.contracts?.agentRegistry?.sharedObjectId || '0x0';
-export const REWARD_POOL_ID = deployedAddresses.contracts?.trainingRewards?.sharedObjectId || '0x0';
+// ✅ DEPLOYED - November 23, 2025
+export const AGENT_PACKAGE_ID = '0x5784dcccc3c786420465afed5f820779e61d2f950e2bca6a943b58d0cc4fc0f6';
+export const AGENT_REGISTRY_ID = '0xf50fb987a2e47aa51996766f36ad8d497a10d5c271dec638fcd8c8955d8739b3';
+export const REWARD_POOL_ID = '0xcbe93ec27a9364f210216028f5fbdc86e016ed5cd9325ca94b09910569be59f0';
 
 // Your browser wallet address
 export const YOUR_WALLET = '0xce2162a53565ac45e6338efcac7318d83d69debe934498bb2f592cee1f0410c9';
 
 // Check if contracts are deployed
-export const CONTRACTS_DEPLOYED = AGENT_PACKAGE_ID !== '0x0' && AGENT_PACKAGE_ID !== '0x0000000000000000000000000000000000000000000000000000000000000000';
+export const CONTRACTS_DEPLOYED = true; // ✅ Contracts deployed to Sui testnet
 
 // Token Helper Functions
 export const formatTokenAmount = (amount: string | bigint, decimals: number): string => {

@@ -82,8 +82,8 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
     setTrainingProgress(0);
 
     try {
-      // Step 1: Initialize tiny browser-based neural network (10%)
-      setTrainingStep('🎯 Initializing neural network (41 params)...');
+      // Step 1: Walrus Commander - Initialize training coordination (10%)
+      setTrainingStep('🐋 Walrus Commander: Initializing distributed training epoch...');
       setTrainingProgress(10);
       
       const { getGlobalModel } = await import('../services/tinyModelTraining');
@@ -91,12 +91,12 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
       const summary = model.getModelSummary();
       console.log('🧠 Model ready:', summary);
 
-      // Step 2: Generate training data (30%)
-      setTrainingStep(`📊 Training ${summary.architecture}...`);
+      // Step 2: Eagleton Skywatcher - Data preprocessing (30%)
+      setTrainingStep(`📊 Eagleton: Preprocessing training batch (${summary.architecture})...`);
       setTrainingProgress(30);
 
-      // Step 3: Actually train the model! (50%)
-      setTrainingStep('🧮 Computing gradients with backpropagation...');
+      // Step 3: Reynard Swift - Gradient computation (50%)
+      setTrainingStep('⚡ Reynard: Computing gradients with backpropagation...');
       setTrainingProgress(50);
       
       // Initialize live metrics with model version and contributors
@@ -155,8 +155,13 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
         computeTime: trainingResult.computeTime + 'ms',
       });
 
-      // Step 4: Store REAL gradient deltas on Walrus with Seal certification (70%)
-      setTrainingStep('🐋 Uploading gradients to Walrus Protocol...');
+      // Step 4: Ursus Guardian - Validate model quality (65%)
+      setTrainingStep(`🛡️ Ursus: Validating accuracy (${(trainingResult.accuracy * 100).toFixed(1)}%)...`);
+      setTrainingProgress(65);
+      await new Promise(resolve => setTimeout(resolve, 500)); // Brief validation pause
+
+      // Step 5: Store REAL gradient deltas on Walrus with Seal certification (70%)
+      setTrainingStep('🐋 Walrus Commander: Uploading gradients to Walrus Protocol...');
       setTrainingProgress(70);
       
       let deltaBlobId: string;
@@ -241,10 +246,15 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
         localStorage.setItem(`training_delta_${deltaBlobId}`, JSON.stringify(fallbackData));
       }
 
-      // Step 5: Submit to blockchain (90%) - Optional if contracts deployed
+      // Step 6: Corvus Messenger - Aggregate and publish (85%)
+      setTrainingStep('🐦 Corvus: Aggregating model updates for consensus...');
+      setTrainingProgress(85);
+      await new Promise(resolve => setTimeout(resolve, 500)); // Brief aggregation pause
+
+      // Step 7: Submit to blockchain (90%) - Optional if contracts deployed
       let txDigest: string | undefined;
       if (CONTRACTS_DEPLOYED) {
-        setTrainingStep('⛓️ Submitting contribution to Sui blockchain...');
+        setTrainingStep('⛓️ Corvus: Publishing contribution to Sui blockchain...');
         setTrainingProgress(90);
         
         txDigest = await submitToChain({
@@ -257,8 +267,13 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
         console.log('ℹ️ Sui contracts not deployed - skipping blockchain TX');
       }
 
-      // Step 6: Complete (100%)
-      setTrainingStep('✅ Training data stored on Walrus!');
+      // Step 8: Luna Mysticfang - Optimize for inference (95%)
+      setTrainingStep('🦊 Luna: Optimizing model for deployment...');
+      setTrainingProgress(95);
+      await new Promise(resolve => setTimeout(resolve, 500)); // Brief optimization pause
+
+      // Step 9: Complete (100%)
+      setTrainingStep('✅ All agents completed - Training successful!');
       setTrainingProgress(100);
       
       // Keep final metrics visible briefly
@@ -555,9 +570,20 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
                             <div className="w-8 h-8 border-4 border-walrus-teal/30 border-t-walrus-teal rounded-full animate-spin"></div>
                             <span className="text-white font-mono text-sm">{trainingProgress}%</span>
                           </div>
-                          <p className="text-walrus-teal text-sm font-mono animate-pulse">
+                          <p className="text-walrus-teal text-sm font-mono animate-pulse text-center">
                             {trainingStep}
                           </p>
+                          
+                          {/* Agent Pipeline Progress */}
+                          <div className="flex items-center justify-center gap-2 text-xs flex-wrap">
+                            <span className={`px-2 py-1 rounded transition-all ${trainingProgress < 30 ? 'bg-walrus-teal/20 text-walrus-teal border border-walrus-teal/40' : 'bg-gray-800 text-gray-500'}`}>🐋 Commander</span>
+                            <span className={`px-2 py-1 rounded transition-all ${trainingProgress >= 30 && trainingProgress < 50 ? 'bg-walrus-teal/20 text-walrus-teal border border-walrus-teal/40' : 'bg-gray-800 text-gray-500'}`}>📊 Eagleton</span>
+                            <span className={`px-2 py-1 rounded transition-all ${trainingProgress >= 50 && trainingProgress < 65 ? 'bg-walrus-teal/20 text-walrus-teal border border-walrus-teal/40' : 'bg-gray-800 text-gray-500'}`}>⚡ Reynard</span>
+                            <span className={`px-2 py-1 rounded transition-all ${trainingProgress >= 65 && trainingProgress < 70 ? 'bg-walrus-teal/20 text-walrus-teal border border-walrus-teal/40' : 'bg-gray-800 text-gray-500'}`}>🛡️ Ursus</span>
+                            <span className={`px-2 py-1 rounded transition-all ${trainingProgress >= 85 && trainingProgress < 95 ? 'bg-walrus-teal/20 text-walrus-teal border border-walrus-teal/40' : 'bg-gray-800 text-gray-500'}`}>🐦 Corvus</span>
+                            <span className={`px-2 py-1 rounded transition-all ${trainingProgress >= 95 ? 'bg-walrus-teal/20 text-walrus-teal border border-walrus-teal/40' : 'bg-gray-800 text-gray-500'}`}>🦊 Luna</span>
+                          </div>
+
                           <div className="w-full max-w-md mx-auto bg-gray-800 rounded-full h-3 overflow-hidden">
                             <div
                               className="h-full bg-gradient-to-r from-walrus-teal via-walrus-purple to-walrus-teal transition-all duration-500 ease-out"

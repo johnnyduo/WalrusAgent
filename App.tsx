@@ -212,6 +212,8 @@ const App: React.FC = () => {
   const [onChainAgents, setOnChainAgents] = useState<Record<string, string>>({});
   // Walrus blob IDs for agent metadata storage
   const [walrusBlobIds, setWalrusBlobIds] = useState<Record<string, string>>({});
+  // Training dashboard control
+  const [showTrainingDashboard, setShowTrainingDashboard] = useState(false);
   const hasLoadedAgentsRef = useRef<boolean>(false);
   const currentWalletRef = useRef<string | undefined>(undefined);
   const operationModeRef = useRef<'auto' | 'manual'>((() => {
@@ -2218,8 +2220,45 @@ const App: React.FC = () => {
     return () => clearInterval(dialogueInterval);
   }, [activeAgents, showAgentDialogue]);
 
+  // Handler for when an agent is successfully minted
+  const handleAgentMinted = (agentId: string, suiObjectId: string, walrusBlobId: string) => {
+    if (!address) return;
+    
+    console.log('✅ Agent minted callback:', { agentId, suiObjectId, walrusBlobId });
+    
+    // Update onChainAgents state with the object ID
+    setOnChainAgents(prev => {
+      const updated = { ...prev, [agentId]: suiObjectId };
+      const walletKey = `onChainAgents_${address.toLowerCase()}`;
+      localStorage.setItem(walletKey, JSON.stringify(updated));
+      return updated;
+    });
+    
+    // Update walrusBlobIds state
+    setWalrusBlobIds(prev => {
+      const updated = { ...prev, [agentId]: walrusBlobId };
+      const blobKey = `walrusBlobIds_${address.toLowerCase()}`;
+      localStorage.setItem(blobKey, JSON.stringify(updated));
+      return updated;
+    });
+    
+    addLog('SYSTEM', `✅ Agent ${agentId} registered: Walrus blob ${walrusBlobId.slice(0, 8)}... + Object ${suiObjectId.slice(0, 8)}...`);
+  };
+
+  // Handler for opening training dashboard
+  const handleInitiateTraining = () => {
+    setShowTrainingDashboard(true);
+  };
+
   // --- Render ---
   const selectedAgent = selectedAgentId ? AGENTS.find(a => a.id === selectedAgentId) || null : null;
+  
+  // Enrich selectedAgent with on-chain data
+  const enrichedAgent = selectedAgent ? {
+    ...selectedAgent,
+    suiObjectId: onChainAgents[selectedAgent.id],
+    walrusBlobId: walrusBlobIds[selectedAgent.id]
+  } : null;
 
   // Show results page if requested
   if (showResultsPage) {
@@ -2291,6 +2330,8 @@ const App: React.FC = () => {
               isConnected={isConnected}
               isCaptainRegistered={!!onChainAgents['a0']}
               captainTokenId={getTokenIdAsNumber('a0')}
+              showTraining={showTrainingDashboard}
+              onTrainingChange={setShowTrainingDashboard}
             />
           </div>
           
@@ -2334,9 +2375,11 @@ const App: React.FC = () => {
 
         {/* Right Sidebar: Details Panel (Conditional) */}
         <AgentDetailPanel 
-          agent={selectedAgent} 
+          agent={enrichedAgent} 
           onClose={() => setSelectedAgentId(null)}
-          onChainTokenId={selectedAgent ? getTokenIdAsNumber(selectedAgent.id) || undefined : undefined}
+          onChainTokenId={enrichedAgent ? getTokenIdAsNumber(enrichedAgent.id) || undefined : undefined}
+          onAgentMinted={handleAgentMinted}
+          onInitiateTraining={handleInitiateTraining}
         />
 
       </div>

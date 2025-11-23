@@ -15,11 +15,12 @@ export interface AgentMetadata {
 }
 
 export interface UseMintAgentReturn {
-  mintAgent: (metadata: AgentMetadata) => Promise<string>;
+  mintAgent: (metadata: AgentMetadata) => Promise<{ suiTxDigest: string; suiObjectId: string; walrusBlobId: string }>;
   isPending: boolean;
   isSuccess: boolean;
   error: Error | null;
   txDigest: string | null;
+  walrusBlobId: string | null;
 }
 
 /**
@@ -33,8 +34,9 @@ export const useMintAgent = (): UseMintAgentReturn => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [txDigest, setTxDigest] = useState<string | null>(null);
+  const [walrusBlobId, setWalrusBlobId] = useState<string | null>(null);
 
-  const mintAgent = async (metadata: AgentMetadata): Promise<string> => {
+  const mintAgent = async (metadata: AgentMetadata): Promise<{ suiTxDigest: string; walrusBlobId: string }> => {
     try {
       setIsPending(true);
       setError(null);
@@ -46,6 +48,7 @@ export const useMintAgent = (): UseMintAgentReturn => {
         console.log('📤 Uploading agent metadata to Walrus...');
         metadataBlobId = await walrusService.uploadAgentMetadata(metadata);
         console.log('✅ Metadata uploaded to Walrus, BlobId:', metadataBlobId);
+        setWalrusBlobId(metadataBlobId);
       } catch (walrusError: any) {
         console.warn('⚠️ Walrus upload failed, using local storage fallback:', walrusError.message);
         // Store metadata locally as fallback
@@ -53,6 +56,7 @@ export const useMintAgent = (): UseMintAgentReturn => {
         const metadataWithId = { ...metadata, uploadedAt: Date.now(), version: '1.0' };
         localStorage.setItem(`agent_metadata_${localId}`, JSON.stringify(metadataWithId));
         metadataBlobId = localId;
+        setWalrusBlobId(localId);
         console.log('💾 Metadata stored locally:', localId);
       }
 
@@ -61,102 +65,95 @@ export const useMintAgent = (): UseMintAgentReturn => {
       
       console.log('🔍 Contract check:', { AGENT_PACKAGE_ID, AGENT_REGISTRY_ID });
       console.log('🔍 Wallet state:', { address, hasSignFunction: !!signAndExecuteTransactionBlock });
-      console.log('🔍 If condition check:', {
-        notPackageId: !AGENT_PACKAGE_ID,
-        notRegistryId: !AGENT_REGISTRY_ID,
-        packageIdValue: AGENT_PACKAGE_ID,
-        registryIdValue: AGENT_REGISTRY_ID,
-        condition: (!AGENT_PACKAGE_ID || !AGENT_REGISTRY_ID)
-      });
       
-      if (AGENT_PACKAGE_ID === '0x0' || AGENT_REGISTRY_ID === '0x0') {
-        console.warn('⚠️ Agent contracts not deployed yet, creating test transaction');
-        
-        // Check if wallet is properly connected
-        if (!address) {
-          console.error('❌ No wallet address available');
-          throw new Error('Wallet not connected. Please connect your wallet first.');
-        }
-        
-        if (!signAndExecuteTransactionBlock) {
-          console.error('❌ signAndExecuteTransactionBlock not available');
-          throw new Error('Wallet functions not available. Please reconnect your wallet.');
-        }
-        
-        console.log('📝 Creating transaction for address:', address);
-        
-        // Create a minimal transaction (0.0001 SUI transfer to self) to get real tx digest
-        // This proves the agent is registered on-chain with minimal gas cost
-        const [coin] = tx.splitCoins(tx.gas, [tx.pure(100000)]); // 0.0001 SUI
-        tx.transferObjects([coin], tx.pure(address));
-        
-        console.log('🔐 Requesting wallet signature...');
-        
-        try {
-          const result = await signAndExecuteTransactionBlock({
-            transactionBlock: tx,
-          });
-          
-          console.log('📦 Wallet response:', JSON.stringify(result, null, 2));
-          
-          // Validate the result
-          if (!result || !result.digest) {
-            console.error('❌ Invalid response from wallet - no digest:', result);
-            throw new Error('Transaction failed: No digest returned from wallet. Transaction may have been cancelled.');
-          }
-          
-          console.log('✅ Agent registered with test tx on Sui!', result.digest);
-          console.log('🔗 View on explorer:', `https://suiscan.xyz/testnet/tx/${result.digest}`);
-          
-          setTxDigest(result.digest);
-          setIsSuccess(true);
-          setIsPending(false);
-          return result.digest;
-        } catch (txError: any) {
-          console.error('❌ Transaction failed:', txError);
-          // Fallback to local mode if user rejects
-          if (txError.message?.includes('rejected') || txError.message?.includes('cancelled') || txError.code === 4001) {
-            console.warn('⚠️ User rejected transaction, using local mode');
-            setTxDigest(metadataBlobId);
-            setIsSuccess(true);
-            setIsPending(false);
-            return metadataBlobId;
-          }
-          throw txError;
-        }
+      // Check if wallet is properly connected
+      if (!address) {
+        console.error('❌ No wallet address available');
+        throw new Error('Wallet not connected. Please connect your wallet first.');
       }
       
-      // When contracts are deployed, use this:
-      // tx.moveCall({
-      //   target: `${AGENT_PACKAGE_ID}::agent::mint`,
-      //   arguments: [
-      //     tx.object(AGENT_REGISTRY_ID),
-      //     tx.pure(metadata.name),
-      //     tx.pure(metadata.role),
-      //     tx.pure(metadataBlobId),
-      //   ],
-      // });
+      if (!signAndExecuteTransactionBlock) {
+        console.error('❌ signAndExecuteTransactionBlock not available');
+        throw new Error('Wallet functions not available. Please reconnect your wallet.');
+      }
 
-      // For now, this code path won't be reached
-      console.log('⚠️ Should not reach here - contracts check above');
-      setTxDigest(metadataBlobId);
-      setIsSuccess(true);
-      setIsPending(false);
-      return metadataBlobId;
+      // Call the actual mint_agent function on the deployed contract
+      console.log('📝 Calling mint_agent on contract:', AGENT_PACKAGE_ID);
+      
+      try {
+        // mint_agent returns an Agent object that needs to be transferred
+        const [agent] = tx.moveCall({
+          target: `${AGENT_PACKAGE_ID}::agent_registry::mint_agent`,
+          arguments: [
+            tx.object(AGENT_REGISTRY_ID),
+            tx.pure(Array.from(new TextEncoder().encode(metadata.name))),
+            tx.pure(Array.from(new TextEncoder().encode(metadata.role))),
+            tx.pure(Array.from(new TextEncoder().encode(metadataBlobId))),
+          ],
+        });
+        
+        // Transfer the Agent NFT to the sender
+        tx.transferObjects([agent], tx.pure(address));
 
-      // Uncomment when Move contracts are ready:
-      /*
-      const result = await signAndExecuteTransactionBlock({
-        transactionBlock: tx,
-      });
-
-      console.log('✅ Agent minted on Sui!', result.digest);
-      setTxDigest(result.digest);
-      setIsSuccess(true);
-      setIsPending(false);
-
-      return result.digest;
-      */
+        console.log('🔐 Requesting wallet signature for mint_agent...');
+        
+        const result = await signAndExecuteTransactionBlock({
+          transactionBlock: tx,
+          options: {
+            showEffects: true,
+            showObjectChanges: true,
+          },
+        });
+        
+        console.log('📦 Mint result:', JSON.stringify(result, null, 2));
+        
+        // Validate the result
+        if (!result || !result.digest) {
+          console.error('❌ Invalid response from wallet - no digest:', result);
+          throw new Error('Transaction failed: No digest returned from wallet.');
+        }
+        
+        // Extract the created Agent object ID from transaction effects
+        let agentObjectId = result.digest; // fallback to tx digest
+        if (result.effects?.created && result.effects.created.length > 0) {
+          // Find the Agent object (should be the first created object)
+          const createdAgent = result.effects.created[0];
+          agentObjectId = createdAgent.reference?.objectId || result.digest;
+          console.log('🎯 Created Agent Object ID:', agentObjectId);
+        } else if (result.objectChanges) {
+          // Alternative: check objectChanges for created objects
+          const created = result.objectChanges.find((change: any) => change.type === 'created');
+          if (created && created.objectId) {
+            agentObjectId = created.objectId;
+            console.log('🎯 Created Agent Object ID (from objectChanges):', agentObjectId);
+          }
+        }
+        
+        console.log('✅ Agent minted on Sui!', result.digest);
+        console.log('🔗 View on explorer:', `https://suiscan.xyz/testnet/tx/${result.digest}`);
+        console.log('📦 Agent Object ID:', agentObjectId);
+        
+        setTxDigest(result.digest);
+        setIsSuccess(true);
+        setIsPending(false);
+        return { 
+          suiTxDigest: result.digest, 
+          suiObjectId: agentObjectId,
+          walrusBlobId: metadataBlobId 
+        };
+        
+      } catch (txError: any) {
+        console.error('❌ Transaction failed:', txError);
+        
+        // User rejected or other error - handle gracefully
+        if (txError.message?.includes('rejected') || txError.message?.includes('cancelled') || txError.code === 4001) {
+          console.warn('⚠️ User rejected transaction');
+          throw new Error('Transaction cancelled by user');
+        }
+        
+        // Re-throw the error
+        throw txError;
+      }
     } catch (err) {
       setError(err as Error);
       setIsPending(false);
@@ -170,6 +167,7 @@ export const useMintAgent = (): UseMintAgentReturn => {
     isSuccess,
     error,
     txDigest,
+    walrusBlobId,
   };
 };
 
