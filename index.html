@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ASLAN AGENTS - Decentralized AI Training on Walrus</title>
+    
+    <!-- Walrus Protocol Inspired Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/reactflow/dist/style.css" rel="stylesheet" />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              walrus: {
+                teal: '#99efe4',
+                purple: '#cfb0ff',
+                dark: '#0a0a0a',
+                glow: 'rgba(153, 239, 228, 0.3)',
+                'purple-glow': 'rgba(207, 176, 255, 0.3)',
+              },
+              glass: {
+                base: 'rgba(10, 10, 10, 0.7)',
+                border: 'rgba(153, 239, 228, 0.2)',
+                'purple-border': 'rgba(207, 176, 255, 0.2)',
+              }
+            },
+            fontFamily: {
+              sans: ['Space Grotesk', 'system-ui', '-apple-system', 'sans-serif'],
+              mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+              display: ['Space Grotesk', 'system-ui', 'sans-serif'],
+            },
+            animation: {
+              'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'pulse-purple': 'pulse-purple 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'stream-flow': 'stream-flow 1s linear infinite',
+              'fade-in': 'fade-in 0.3s ease-out',
+              'bounce-in': 'bounce-in 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+            },
+            keyframes: {
+              'pulse-glow': {
+                '0%, 100%': { boxShadow: '0 0 5px #99efe4' },
+                '50%': { boxShadow: '0 0 20px #99efe4' },
+              },
+              'pulse-purple': {
+                '0%, 100%': { boxShadow: '0 0 5px #cfb0ff' },
+                '50%': { boxShadow: '0 0 20px #cfb0ff' },
+              },
+              'stream-flow': {
+                '0%': { strokeDashoffset: '20' },
+                '100%': { strokeDashoffset: '0' },
+              },
+              'fade-in': {
+                '0%': { opacity: '0' },
+                '100%': { opacity: '1' },
+              },
+              'bounce-in': {
+                '0%': { transform: 'scale(0.3)', opacity: '0' },
+                '50%': { transform: 'scale(1.05)' },
+                '70%': { transform: 'scale(0.9)' },
+                '100%': { transform: 'scale(1)', opacity: '1' },
+              }
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+      * {
+        scroll-behavior: smooth;
+      }
+      
+      body {
+        background-color: #050505;
+        color: #e2e8f0;
+        overflow: hidden;
+        font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+      }
+
+      /* Walrus Protocol Typography */
+      h1, h2, h3, h4, h5, h6 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+
+      code, pre, .font-mono {
+        font-family: 'JetBrains Mono', ui-monospace, monospace;
+        font-variant-ligatures: common-ligatures;
+      }
+      
+      @keyframes spin-slow {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      .animate-spin-slow {
+        animation: spin-slow 3s linear infinite;
+      }
+      /* Custom scrollbar for the cyber feel */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0a0a0a;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #1f2937;
+        border-radius: 3px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #43FF4D;
+      }
+      
+      /* ReactFlow Customization for Neon Theme */
+      .react-flow__node {
+        border: none !important;
+      }
+      .react-flow__edge-path {
+        stroke: #1f2937;
+        stroke-width: 2;
+        transition: stroke 0.3s ease, stroke-width 0.3s ease;
+      }
+      /* Animated flowing edge with moving dashed pattern */
+      .react-flow__edge.animated .react-flow__edge-path {
+        stroke: #43FF4D;
+        stroke-width: 3;
+        stroke-dasharray: 10 5;
+        animation: dash-flow 1.5s linear infinite;
+        filter: drop-shadow(0 0 4px #43FF4D);
+      }
+      .react-flow__edge.streaming-flow .react-flow__edge-path {
+        stroke: #43FF4D;
+        stroke-width: 4;
+        stroke-dasharray: 12 6;
+        animation: dash-flow 0.8s linear infinite;
+        filter: drop-shadow(0 0 10px #43FF4D) drop-shadow(0 0 20px rgba(67, 255, 77, 0.5));
+      }
+      /* Flowing animation for dashed lines */
+      @keyframes dash-flow {
+        0% {
+          stroke-dashoffset: 0;
+        }
+        100% {
+          stroke-dashoffset: -30;
+        }
+      }
+      @keyframes pulse-stroke {
+        0%, 100% { stroke-opacity: 0.6; }
+        50% { stroke-opacity: 1; }
+      }
+      .react-flow__handle {
+        width: 10px;
+        height: 10px;
+        background: #43FF4D;
+        border: 2px solid #000;
+        transition: all 0.3s ease;
+      }
+      .react-flow__handle:hover {
+        width: 14px;
+        height: 14px;
+        box-shadow: 0 0 10px #43FF4D;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.554.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "reactflow": "https://aistudiocdn.com/reactflow@^11.11.4"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
