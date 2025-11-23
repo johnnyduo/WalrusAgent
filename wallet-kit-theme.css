@@ -12,6 +12,20 @@
   aria-hidden: false !important;
 }
 
+/* Hide broken wallet icons that fail to load */
+.wkit-select-option img[src=""],
+.wkit-select-option img:not([src]),
+.wkit-select-option img[src*="spacecywallet"] {
+  display: none !important;
+}
+
+/* Add fallback styling for wallet items with missing icons */
+.wkit-select-option:has(img[src=""]),
+.wkit-select-option:has(img:not([src])),
+.wkit-select-option:has(img[src*="spacecywallet"]) {
+  padding-left: 1rem !important;
+}
+
 /* Wallet Kit Button Wrapper */
 .wallet-kit-button-wrapper button {
   border: none !important;
