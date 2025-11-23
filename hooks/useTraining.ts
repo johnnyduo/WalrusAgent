@@ -10,6 +10,7 @@ export interface UseTrainingReturn {
   submitContribution: (agentId: string, delta: number[], epoch: number) => Promise<string>;
   aggregateEpoch: (agentId: string, epoch: number) => Promise<string>;
   getTrainingStats: (agentId: string) => ReturnType<typeof trainingService.getTrainingStats>;
+  recordTrainingSession: (agentId: string, contributorAddress: string, blobId: string, metrics: { accuracy: number; loss: number; epoch: number }) => void;
   isTraining: boolean;
   error: Error | null;
 }

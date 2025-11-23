@@ -34,12 +34,16 @@ export const useTrainingSubmit = (): UseTrainingSubmitReturn => {
       // Convert deltaBlobId to bytes
       const blobIdBytes = Array.from(new TextEncoder().encode(submission.deltaBlobId));
 
+      // Generate deterministic agent object ID from agentTokenId string
+      // Pad the agentId string to 32 bytes (64 hex chars) for Sui object ID
+      const agentIdPadded = '0x' + submission.agentTokenId.padEnd(64, '0');
+
       // Call record_contribution function
       tx.moveCall({
         target: `${AGENT_PACKAGE_ID}::training_rewards::record_contribution`,
         arguments: [
           tx.object(REWARD_POOL_ID), // pool
-          tx.pure.id(submission.agentTokenId), // agent_id
+          tx.pure.id(agentIdPadded), // agent_id (deterministic object ID)
           tx.pure.vector('u8', blobIdBytes), // delta_blob_id
           tx.pure.u64(submission.epoch), // epoch
         ],

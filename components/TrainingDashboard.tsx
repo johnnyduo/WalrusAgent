@@ -131,7 +131,7 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
           // Update global stats preview during training
           setStats(prev => prev ? {
             ...prev,
-            totalAccuracy: Math.max(prev.totalAccuracy, batchMetrics.accuracy * 100),
+            latestAccuracy: Math.max(prev.latestAccuracy, batchMetrics.accuracy),
           } : prev);
         }
       });

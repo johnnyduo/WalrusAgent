@@ -1,24 +1,22 @@
 {
   "network": "testnet",
-  "deployedAt": "",
-  "deployer": "0xce2162a53565ac45e6338efcac7318d83d69debe934498bb2f592cee1f0410c9",
-  "packageId": "0x0",
+  "deployedAt": "2025-11-23T15:18:03Z",
+  "deployer": "0xbf9cf662405b0ddcb7ffb02d8779e48b49def5468e87004ba4ab16edd62fedb7",
+  "packageId": "0x5784dcccc3c786420465afed5f820779e61d2f950e2bca6a943b58d0cc4fc0f6",
   "contracts": {
     "agentRegistry": {
-      "moduleId": "0x0::agent_registry",
-      "sharedObjectId": "0x0",
-      "note": "NOT DEPLOYED - Using direct Sui object creation"
+      "moduleId": "0x5784dcccc3c786420465afed5f820779e61d2f950e2bca6a943b58d0cc4fc0f6::agent_registry",
+      "sharedObjectId": "0xf50fb987a2e47aa51996766f36ad8d497a10d5c271dec638fcd8c8955d8739b3"
     },
     "trainingRewards": {
-      "moduleId": "0x0::training_rewards",
-      "sharedObjectId": "0x0",
-      "note": "NOT DEPLOYED - Run: yarn deploy:training"
+      "moduleId": "0x5784dcccc3c786420465afed5f820779e61d2f950e2bca6a943b58d0cc4fc0f6::training_rewards",
+      "sharedObjectId": "0xcbe93ec27a9364f210216028f5fbdc86e016ed5cd9325ca94b09910569be59f0"
     }
   },
   "explorer": {
-    "package": "https://suiscan.xyz/testnet/object/0x0",
-    "registry": "https://suiscan.xyz/testnet/object/0x0",
-    "pool": "https://suiscan.xyz/testnet/object/0x0"
+    "package": "https://suiscan.xyz/testnet/object/0x5784dcccc3c786420465afed5f820779e61d2f950e2bca6a943b58d0cc4fc0f6",
+    "registry": "https://suiscan.xyz/testnet/object/0xf50fb987a2e47aa51996766f36ad8d497a10d5c271dec638fcd8c8955d8739b3",
+    "pool": "https://suiscan.xyz/testnet/object/0xcbe93ec27a9364f210216028f5fbdc86e016ed5cd9325ca94b09910569be59f0"
   },
   "successfulRegistrations": {
     "note": "Agents registered via browser wallet (stored in localStorage)",
@@ -37,9 +35,9 @@
     "systemObject": "0x98ebc47370603fe81d9e15491b2f1443d619d1dab720d586e429ed233e1255c1"
   },
   "deploymentInstructions": {
-    "step1": "yarn deploy:training",
-    "step2": "Fund reward pool with SUI",
-    "step3": "Update packageId and contract addresses in this file",
-    "step4": "Extract addresses from browser: node extract-addresses.js"
+    "step1": "✅ DEPLOYED - Contracts are live on testnet",
+    "step2": "Fund reward pool: bash scripts/fund-pool.sh",
+    "step3": "Test in UI: Training contributions will be recorded on-chain",
+    "transactionDigest": "EV7nzeeVcHnDF7aWzf2syb2Kzxkr9ooyYyNPE7tPedib"
   }
 }
