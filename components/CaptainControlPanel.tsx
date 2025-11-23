@@ -87,7 +87,7 @@ export const CaptainControlPanel: React.FC<CaptainControlPanelProps> = ({
         {/* Training Button - Only show when registered */}
         {isCaptainRegistered && isConnected && (
           <button
-            onClick={() => setShowTrainingDashboard(true)}
+            onClick={() => setTrainingOpen(true)}
             className="flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-walrus-teal/20 to-walrus-purple/20 hover:from-walrus-teal/30 hover:to-walrus-purple/30 border border-walrus-purple/30 rounded-md text-[10px] font-mono font-bold transition-all text-walrus-teal"
             title="Open Training Dashboard"
           >

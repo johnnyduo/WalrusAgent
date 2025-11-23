@@ -131,22 +131,80 @@ Browser (TensorFlow.js) → Walrus Protocol → Sui Blockchain
      Storage               Verification           Records
 ```
 
-### Data Flow
+### Complete End-to-End Flow
 
-1. **Training Phase**
-   ```
-   Browser → TensorFlow.js → Train Model → Extract Gradients
-   ```
+#### 1. **Agent Registration Flow**
+```
+User clicks "REGISTER AGENT"
+    ↓
+1. Upload metadata to Walrus
+   - Agent name, role, description, capabilities
+   - Returns: Walrus Blob ID (e.g., zUJ7BpeH3H8G...5-vTdDo8)
+    ↓
+2. Mint Agent NFT on Sui
+   - Call: agent_registry::mint_agent(registry, name, role, blob_id)
+   - Transaction creates Agent object
+   - Returns: Sui Object ID (e.g., 0xBuewHaajoM...)
+    ↓
+3. Update UI
+   - Display Agent Object ID in "On-Chain Identity" section
+   - Display Walrus Blob ID in "Registration Details"
+   - Show links to Suiscan and Walruscan explorers
+   - Save to localStorage with wallet address as key
+    ↓
+✅ Agent registered and ready for training!
+```
 
-2. **Storage Phase**
-   ```
-   Gradients → Walrus SDK → Publishers → Seal Certification → Blob ID
-   ```
+#### 2. **Training Contribution Flow**
+```
+User clicks "INITIATE TRAINING" or "Train" button
+    ↓
+1. Local Training (1-2 seconds)
+   - TensorFlow.js trains 41-parameter neural network
+   - 10 epochs × 100 samples
+   - Live metrics: loss ↓, accuracy ↑
+   - Extract model weights/gradients
+    ↓
+2. Upload to Walrus (2-4 seconds)
+   - Package: weights + metadata (version, accuracy, timestamp)
+   - Walrus SDK uploads to 5 publishers with failover
+   - Seal certification for 10 epochs
+   - Returns: Gradient Blob ID
+    ↓
+3. Record on Sui (Optional, 3-5 seconds)
+   - Call: training_rewards::record_contribution(pool, agent_id, blob_id, epoch)
+   - Creates TrainingContribution object
+   - Allocates 0.001 SUI reward
+   - Emits ContributionRecorded event
+   - Returns: Transaction digest
+    ↓
+4. Persist Results
+   - Save to localStorage: {walletAddress}_{agentId}_contributions
+   - Display in Training History with blob links
+   - Update agent's training_contributions count
+    ↓
+✅ Training contribution complete and verifiable!
+```
 
-3. **Verification Phase** (Optional)
-   ```
-   Blob ID → Sui Smart Contract → Record Contribution → Emit Event
-   ```
+#### 3. **Verification Flow**
+```
+Anyone can verify training history:
+    ↓
+1. Query Sui Blockchain
+   - Get Agent object by Object ID
+   - Read: metadata_blob_id, training_contributions, performance_score
+    ↓
+2. Retrieve from Walrus
+   - Fetch agent metadata: walruscan.com/blob/{metadata_blob_id}
+   - Fetch training gradients: walruscan.com/blob/{gradient_blob_id}
+    ↓
+3. Verify Integrity
+   - Check Seal certification (cryptographic proof)
+   - Validate epoch range (10 epochs = ~2 months storage)
+   - Cross-reference with ContributionRecorded events
+    ↓
+✅ Fully transparent and verifiable training history!
+```
 
 4. **Retrieval Phase**
    ```
@@ -204,32 +262,46 @@ Each agent has a unique role in the distributed training pipeline:
 - 🐦 **Corvus Messenger** (a6) - Federated aggregation & consensus
 
 ### ⛓️ Sui Blockchain Integration
-**Smart Contracts (Ready for Deployment):**
+**Smart Contracts (DEPLOYED ✅):**
 
 1. **Agent Registry** (`move/sources/agent_registry.move`)
    ```move
-   public entry fun register_agent(
-     name: String,
-     specialty: String,
-     model_type: String,
-     initial_accuracy: u64
-   )
+   public fun mint_agent(
+     registry: &mut AgentRegistry,
+     name: vector<u8>,
+     role: vector<u8>,
+     metadata_blob_id: vector<u8>,
+     ctx: &mut TxContext
+   ): Agent
    ```
-   - Store agent profiles as on-chain objects
-   - Track model versions and training history
-   - Update performance scores after each training session
+   - Mints Agent NFTs with metadata stored on Walrus
+   - Tracks agent profiles as on-chain objects with unique Object IDs
+   - References Walrus blob IDs for agent metadata
+   - Emits `AgentCreated` events with timestamp
+   - Tracks model versions and training contributions
+   - Registry Object: `0xf50fb987a2e47aa51996766f36ad8d497a10d5c271dec638fcd8c8955d8739b3`
 
 2. **Training Rewards** (`move/sources/training_rewards.move`)
    ```move
-   public entry fun record_contribution(
+   public fun record_contribution(
+     pool: &mut RewardPool,
      agent_id: ID,
-     delta_blob_id: String,
-     improvement_score: u64
-   )
+     delta_blob_id: vector<u8>,
+     epoch: u64,
+     ctx: &mut TxContext
+   ): ID
    ```
-   - Record training contributions with Walrus blob IDs
-   - Calculate rewards based on model improvement
-   - Distribute SUI tokens from reward pool
+   - Records training contributions with Walrus blob IDs
+   - Creates TrainingContribution objects with rewards
+   - Base reward: 0.001 SUI per contribution
+   - Emits `ContributionRecorded` events
+   - Supports reward claiming mechanism
+   - Reward Pool: `0xcbe93ec27a9364f210216028f5fbdc86e016ed5cd9325ca94b09910569be59f0`
+
+**Integration Flow:**
+1. **Agent Registration**: Upload metadata to Walrus → Mint NFT on Sui → Store Object ID
+2. **Training Session**: Train model → Upload gradients to Walrus → Record contribution on-chain
+3. **Verification**: Query Sui for agent Object ID → Retrieve metadata from Walrus blob
 
 ### 📊 Production UI Features
 - **React 19** - Latest concurrent rendering features
@@ -396,7 +468,22 @@ console.log(result);
 // }
 ```
 
-**Phase 3: Persistence (instant)**
+**Phase 3: On-Chain Recording (Optional, 3-5 seconds)**
+```typescript
+// 7. Record contribution on Sui blockchain (optional)
+const txDigest = await submitToChain({
+  agentTokenId: agentId,
+  deltaBlobId: result.blobId,
+  epoch: currentEpoch
+});
+
+// 8. Transaction calls training_rewards::record_contribution
+// Creates TrainingContribution object
+// Emits ContributionRecorded event
+// Marks contribution for 0.001 SUI reward
+```
+
+**Phase 4: Persistence (instant)**
 ```typescript
 // 7. Save to localStorage
 const session = {
@@ -580,29 +667,27 @@ Users can verify:
 
 **Key Functions**:
 ```move
-// Register new agent with Walrus metadata
-public entry fun register_agent(
-  name: String,
-  specialty: String,
-  model_type: String,
-  initial_accuracy: u64,
-  metadata_blob_id: String  // Walrus blob ID
+// Mint new agent NFT with Walrus metadata
+public fun mint_agent(
+  registry: &mut AgentRegistry,
+  name: vector<u8>,
+  role: vector<u8>,
+  metadata_blob_id: vector<u8>,
+  ctx: &mut TxContext
+): Agent  // Returns Agent object to be transferred
+
+// Update agent model after training
+public fun update_model(
+  agent: &mut Agent,
+  new_weights_blob_id: vector<u8>,
+  ctx: &mut TxContext
 )
 
-// Update agent after training session
-public entry fun update_agent_stats(
+// Update agent performance score
+public fun update_performance(
   agent: &mut Agent,
-  new_accuracy: u64,
-  new_model_version: u64,
-  model_blob_id: String  // New weights on Walrus
-)
-
-// Record training contribution
-public entry fun record_contribution(
-  agent: &mut Agent,
-  contributor: address,
-  delta_blob_id: String,  // Gradient blob ID
-  improvement_score: u64
+  new_score: u64,
+  ctx: &mut TxContext
 )
 ```
 
@@ -611,13 +696,21 @@ public entry fun record_contribution(
 struct Agent has key, store {
   id: UID,
   name: String,
-  specialty: String,
-  model_type: String,
-  current_accuracy: u64,
+  role: String,
+  owner: address,
+  metadata_blob_id: String,           // Walrus blob for metadata
   model_version: u64,
-  total_contributions: u64,
-  metadata_blob_id: String,  // Walrus blob
-  created_at: u64
+  current_weights_blob_id: String,    // Walrus blob for weights
+  training_contributions: u64,
+  performance_score: u64,
+  created_at: u64,
+  updated_at: u64
+}
+
+struct AgentRegistry has key {
+  id: UID,
+  total_agents: u64,
+  active_agents: u64
 }
 ```
 
@@ -627,36 +720,62 @@ struct Agent has key, store {
 
 **Key Functions**:
 ```move
-// Fund the reward pool
-public entry fun fund_pool(
+// Record training contribution with Walrus blob
+public fun record_contribution(
+  pool: &mut RewardPool,
+  agent_id: ID,
+  delta_blob_id: vector<u8>,
+  epoch: u64,
+  ctx: &mut TxContext
+): ID  // Returns TrainingContribution object ID
+
+// Claim earned reward
+public fun claim_reward(
+  contribution: &mut TrainingContribution,
+  ctx: &mut TxContext
+): Coin<SUI>
+
+// Fund the reward pool (admin only)
+public fun fund_pool(
+  _admin_cap: &RewardAdminCap,
   pool: &mut RewardPool,
   payment: Coin<SUI>
 )
 
-// Record contribution and calculate reward
-public entry fun record_contribution(
+// Update reward rate (admin only)
+public fun update_reward_rate(
+  _admin_cap: &RewardAdminCap,
   pool: &mut RewardPool,
+  new_rate: u64
+)
+```
+
+**Data Structures**:
+```move
+struct TrainingContribution has key, store {
+  id: UID,
   agent_id: ID,
   contributor: address,
-  delta_blob_id: String,
-  improvement_score: u64
-): u64  // Returns reward amount
+  delta_blob_id: String,      // Walrus blob with gradients
+  epoch: u64,
+  reward_amount: u64,
+  claimed: bool,
+  timestamp: u64
+}
 
-// Claim accumulated rewards
-public entry fun claim_rewards(
-  pool: &mut RewardPool,
-  contributor: address,
-  ctx: &mut TxContext
-): Coin<SUI>
+struct RewardPool has key {
+  id: UID,
+  balance: Balance<SUI>,
+  total_contributions: u64,
+  total_rewards_claimed: u64,
+  reward_per_contribution: u64  // 1_000_000 = 0.001 SUI
+}
 ```
 
-**Reward Calculation**:
-```move
-// Base reward + improvement bonus
-let base_reward = 1_000_000;  // 0.001 SUI
-let improvement_bonus = improvement_score * 10_000;
-let total_reward = base_reward + improvement_bonus;
-```
+**Reward System**:
+- Base reward: **0.001 SUI** per training contribution
+- Rewards claimable after contribution is recorded
+- Pool managed by admin with RewardAdminCap
 
 **Deployment Status**: ✅ **DEPLOYED TO SUI TESTNET**
 - Package: `0x5784dcccc3c786420465afed5f820779e61d2f950e2bca6a943b58d0cc4fc0f6`
