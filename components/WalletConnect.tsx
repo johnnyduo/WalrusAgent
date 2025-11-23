@@ -78,14 +78,21 @@ const WalletConnectComponent: React.FC = () => {
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setShowTokens(!showTokens)}
-              className="flex items-center gap-1 bg-black/40 px-2 py-1 rounded-md border border-white/10 hover:border-walrus-teal/30 transition-all"
+              className="flex items-center gap-2 bg-black/40 px-2 py-1 rounded-md border border-white/10 hover:border-walrus-teal/30 transition-all"
               title="View token balances"
               aria-expanded={showTokens}
               aria-haspopup="true"
             >
               <Coins size={11} className="text-walrus-teal" />
-              <span className="text-white/50 text-[10px] font-mono">SUI:</span>
-              <span className="text-white font-bold text-xs font-mono">{suiBalance}</span>
+              <div className="flex items-center gap-1">
+                <span className="text-white/50 text-[10px] font-mono">WAL:</span>
+                <span className="text-walrus-teal font-bold text-xs font-mono">{parseFloat(walBalance).toFixed(2)}</span>
+              </div>
+              <div className="w-px h-3 bg-white/20"></div>
+              <div className="flex items-center gap-1">
+                <span className="text-white/50 text-[10px] font-mono">SUI:</span>
+                <span className="text-white font-bold text-xs font-mono">{suiBalance}</span>
+              </div>
             </button>
             
             {/* Token Dropdown */}
@@ -132,33 +139,13 @@ const WalletConnectComponent: React.FC = () => {
             </a>
           )}
 
-          {/* Connected Address - Compact */}
-          <div className="flex items-center gap-1.5 bg-gradient-to-r from-walrus-teal/10 to-walrus-purple/10 px-2 py-1 rounded-md border border-walrus-purple/30 shadow-sm">
-            <Wallet size={11} className="text-walrus-purple" />
-            <span className="text-walrus-purple font-bold text-[10px] font-mono">
-              {address.slice(0, 4)}...{address.slice(-4)}
-            </span>
-          </div>
-          
-          {/* Contract Status - Only show icon when not deployed */}
-          {!CONTRACTS_DEPLOYED && (
-            <button
-              onClick={() => window.open('DEPLOY_YOUR_WALLET.md', '_blank')}
-              className="flex items-center gap-1 bg-yellow-500/10 hover:bg-yellow-500/20 px-2 py-1 rounded-md border border-yellow-500/30 transition-all group"
-              title="Deploy Contracts"
-            >
-              <AlertCircle size={11} className="text-yellow-400" />
-              <span className="text-yellow-400 font-bold text-[10px]">Deploy</span>
-            </button>
-          )}
-
           {/* Use Suiet Wallet Kit's ConnectButton for disconnect - styled to match theme */}
-          <div className="wallet-kit-button-wrapper" role="group" aria-label="Wallet controls">
+          <div className="wallet-kit-button-wrapper relative z-[60]" role="group" aria-label="Wallet controls">
             <ConnectButton key={`wallet-${address}`} />
           </div>
         </>
       ) : (
-        <div className="wallet-kit-button-wrapper" role="group" aria-label="Connect wallet">
+        <div className="wallet-kit-button-wrapper relative z-[60]" role="group" aria-label="Connect wallet">
           <ConnectButton key="wallet-connect">
             <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-walrus-teal to-walrus-purple hover:from-walrus-teal/90 hover:to-walrus-purple/90 text-black font-bold text-xs rounded-lg transition-all duration-300 cursor-pointer shadow-lg hover:shadow-walrus-purple-glow hover:scale-105 active:scale-95">
               <Wallet size={14} />

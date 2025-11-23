@@ -108,7 +108,7 @@ export class TinyAgentModel {
    */
   async trainOneEpoch(
     batchSize: number = 32,
-    onProgress?: (progress: number) => void
+    onProgress?: (progress: number, metrics?: { loss: number; accuracy: number }) => void
   ): Promise<TrainingResult> {
     if (!this.model) {
       throw new Error('Model not initialized');
@@ -116,26 +116,31 @@ export class TinyAgentModel {
 
     const startTime = Date.now();
 
-    // Generate training data
-    const { features, labels } = this.generateTrainingData(batchSize);
-
     // Store weights before training
     const weightsBefore = await this.getWeightsAsArray();
 
-    // Train for 1 epoch
-    const history = await this.model.fit(features, labels, {
+    // Generate training data
+    const trainingData = this.generateTrainingData(batchSize);
+
+    // Train for 1 epoch with real-time metrics
+    const history = await this.model.fit(trainingData.features, trainingData.labels, {
       epochs: 1,
       batchSize: 8,
       verbose: 0,
       callbacks: {
         onBatchEnd: (batch, logs) => {
-          if (onProgress) {
-            const progress = (batch / (batchSize / 8)) * 100;
-            onProgress(Math.min(progress, 100));
+          if (onProgress && logs) {
+            const progress = ((batch + 1) / (batchSize / 8)) * 100;
+            onProgress(Math.min(progress, 100), {
+              loss: logs.loss as number,
+              accuracy: (logs.acc as number) || 0.5,
+            });
           }
         },
       },
     });
+
+    const loss = history.history.loss[0] as number;
 
     // Get weights after training
     const weightsAfter = await this.getWeightsAsArray();
@@ -151,11 +156,13 @@ export class TinyAgentModel {
       validationData.features,
       validationData.labels
     ) as tf.Scalar[];
-    const accuracy = (await evalResult[1].data())[0];
+    
+    const accData = await evalResult[1].data();
+    const accuracy = accData[0] || 0;
 
     // Clean up tensors
-    features.dispose();
-    labels.dispose();
+    trainingData.features.dispose();
+    trainingData.labels.dispose();
     validationData.features.dispose();
     validationData.labels.dispose();
     evalResult.forEach((t) => t.dispose());
@@ -163,8 +170,8 @@ export class TinyAgentModel {
     const computeTime = Date.now() - startTime;
 
     return {
-      loss: history.history.loss[0] as number,
-      accuracy: accuracy || 0,
+      loss,
+      accuracy,
       weights: weightsAfter,
       deltaWeights,
       epoch: 0,
@@ -179,14 +186,16 @@ export class TinyAgentModel {
     if (!this.model) return [];
 
     const weights = this.model.getWeights();
-    const arrays = await Promise.all(weights.map((w) => w.data()));
-    const flat = arrays.reduce(
-      (acc, arr) => acc.concat(Array.from(arr)),
-      [] as number[]
+    const arrays = await Promise.all(
+      weights.map(async (w) => {
+        const data = await w.data();
+        return Array.from(data);
+      })
     );
+    const flat = arrays.reduce((acc, arr) => acc.concat(arr), [] as number[]);
 
-    // Dispose weight tensors
-    weights.forEach((w) => w.dispose());
+    // Don't dispose - these are references to model's internal weights
+    // They will be disposed when model is disposed
 
     return flat;
   }
@@ -220,14 +229,11 @@ export class TinyAgentModel {
   ): Promise<number> {
     if (!this.model) return 0.5;
 
-    const input = tf.tensor2d([[trustScore, taskComplexity, networkLatency]]);
-    const prediction = this.model.predict(input) as tf.Tensor;
-    const result = (await prediction.data())[0];
-
-    input.dispose();
-    prediction.dispose();
-
-    return result;
+    return tf.tidy(() => {
+      const input = tf.tensor2d([[trustScore, taskComplexity, networkLatency]]);
+      const prediction = this.model!.predict(input) as tf.Tensor;
+      return prediction.dataSync()[0];
+    });
   }
 
   /**

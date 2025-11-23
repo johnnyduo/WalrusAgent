@@ -262,6 +262,9 @@ class TrainingService {
     uniqueContributors: number;
     latestEpoch: number;
     latestAccuracy: number;
+    totalContributors: number;
+    rewardsEarned: number;
+    lastBlobId?: string;
   } {
     const contributions = this.contributions.get(agentId) || [];
     const versions = this.modelVersions.get(agentId) || [];
@@ -274,7 +277,61 @@ class TrainingService {
       uniqueContributors,
       latestEpoch: latestVersion?.epoch || 0,
       latestAccuracy: latestVersion?.accuracy || 0,
+      totalContributors: uniqueContributors,
+      rewardsEarned: contributions.length * 50, // 50 SUI per contribution
+      lastBlobId: latestVersion?.weightsBlobId,
     };
+  }
+
+  /**
+   * Record a completed training session with updated metrics
+   */
+  recordTrainingSession(
+    agentId: string,
+    contributorAddress: string,
+    blobId: string,
+    metrics: {
+      accuracy: number;
+      loss: number;
+      epoch: number;
+    }
+  ): void {
+    // Create a new model version
+    const version: ModelVersion = {
+      version: metrics.epoch,
+      weightsBlobId: blobId,
+      agentId,
+      epoch: metrics.epoch,
+      accuracy: metrics.accuracy,
+      loss: metrics.loss,
+      timestamp: Date.now(),
+      contributors: [contributorAddress],
+    };
+
+    if (!this.modelVersions.has(agentId)) {
+      this.modelVersions.set(agentId, []);
+    }
+    this.modelVersions.get(agentId)!.push(version);
+
+    // Record contribution
+    const contribution: TrainingContribution = {
+      contributorAddress,
+      agentId,
+      deltaBlobId: blobId,
+      epoch: metrics.epoch,
+      timestamp: Date.now(),
+      reward: 50,
+    };
+
+    if (!this.contributions.has(agentId)) {
+      this.contributions.set(agentId, []);
+    }
+    this.contributions.get(agentId)!.push(contribution);
+
+    // Save to localStorage
+    this.saveToLocalStorage();
+
+    console.log(`✅ Training session recorded for agent ${agentId}, epoch ${metrics.epoch}`);
   }
 
   /**

@@ -148,11 +148,21 @@ export const useTraining = (): UseTrainingReturn => {
     return trainingService.getTrainingStats(agentId);
   }, []);
 
+  const recordTrainingSession = useCallback((
+    agentId: string,
+    contributorAddress: string,
+    blobId: string,
+    metrics: { accuracy: number; loss: number; epoch: number }
+  ) => {
+    trainingService.recordTrainingSession(agentId, contributorAddress, blobId, metrics);
+  }, []);
+
   return {
     startTraining,
     submitContribution,
     aggregateEpoch,
     getTrainingStats,
+    recordTrainingSession,
     isTraining,
     error
   };
