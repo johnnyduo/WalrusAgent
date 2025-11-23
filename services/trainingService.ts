@@ -12,6 +12,7 @@ export interface TrainingContribution {
   epoch: number;
   timestamp: number;
   reward?: number;
+  txDigest?: string; // Sui transaction digest
 }
 
 export interface ModelVersion {
@@ -294,6 +295,7 @@ class TrainingService {
       accuracy: number;
       loss: number;
       epoch: number;
+      txDigest?: string;
     }
   ): void {
     // Create a new model version
@@ -321,6 +323,7 @@ class TrainingService {
       epoch: metrics.epoch,
       timestamp: Date.now(),
       reward: 50,
+      txDigest: metrics.txDigest,
     };
 
     if (!this.contributions.has(agentId)) {

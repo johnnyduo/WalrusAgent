@@ -10,7 +10,8 @@ export interface UseTrainingReturn {
   submitContribution: (agentId: string, delta: number[], epoch: number) => Promise<string>;
   aggregateEpoch: (agentId: string, epoch: number) => Promise<string>;
   getTrainingStats: (agentId: string) => ReturnType<typeof trainingService.getTrainingStats>;
-  recordTrainingSession: (agentId: string, contributorAddress: string, blobId: string, metrics: { accuracy: number; loss: number; epoch: number }) => void;
+  getContributions: (agentId: string) => ReturnType<typeof trainingService.getContributions>;
+  recordTrainingSession: (agentId: string, contributorAddress: string, blobId: string, metrics: { accuracy: number; loss: number; epoch: number; txDigest?: string }) => void;
   isTraining: boolean;
   error: Error | null;
 }
@@ -153,9 +154,13 @@ export const useTraining = (): UseTrainingReturn => {
     agentId: string,
     contributorAddress: string,
     blobId: string,
-    metrics: { accuracy: number; loss: number; epoch: number }
+    metrics: { accuracy: number; loss: number; epoch: number; txDigest?: string }
   ) => {
     trainingService.recordTrainingSession(agentId, contributorAddress, blobId, metrics);
+  }, []);
+
+  const getContributions = useCallback((agentId: string) => {
+    return trainingService.getContributions(agentId);
   }, []);
 
   return {
@@ -163,6 +168,7 @@ export const useTraining = (): UseTrainingReturn => {
     submitContribution,
     aggregateEpoch,
     getTrainingStats,
+    getContributions,
     recordTrainingSession,
     isTraining,
     error

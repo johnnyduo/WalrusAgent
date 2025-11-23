@@ -18,7 +18,7 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
   onClose
 }) => {
   const { address, isConnected } = useSuiWallet();
-  const { startTraining, getTrainingStats, recordTrainingSession, isTraining } = useTraining();
+  const { startTraining, getTrainingStats, getContributions, recordTrainingSession, isTraining } = useTraining();
   const { submitToChain, isSubmitting } = useTrainingSubmit();
   const [stats, setStats] = useState<ReturnType<typeof getTrainingStats> | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'contribute' | 'history'>('overview');
@@ -273,6 +273,7 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
           accuracy: trainingResult.accuracy,
           loss: trainingResult.loss,
           epoch: (stats?.latestEpoch || 0) + 1,
+          txDigest: txDigest,
         }
       );
 
@@ -642,12 +643,43 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
                 Contribute compute power directly from your browser to train AI models collaboratively.
                 Your contributions are tracked on Walrus.
               </p>
+              
+              {/* Show progress when training */}
+              {(isTraining || isSubmitting || isProcessing) && (
+                <div className="mb-6 space-y-3">
+                  <div className="flex items-center justify-center gap-3">
+                    <div className="w-2 h-2 bg-walrus-teal rounded-full animate-pulse"></div>
+                    <div className="w-2 h-2 bg-walrus-purple rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
+                    <div className="w-2 h-2 bg-walrus-teal rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
+                  </div>
+                  <p className="text-sm text-gray-400 font-mono">
+                    {trainingStep || 'Initializing training...'}
+                  </p>
+                  <div className="w-full max-w-md mx-auto bg-gray-800 rounded-full h-3 overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-walrus-teal via-walrus-purple to-walrus-teal transition-all duration-500 ease-out animate-pulse"
+                      style={{ width: `${trainingProgress}%` }}
+                    />
+                  </div>
+                  <p className="text-xs text-walrus-teal font-mono">{trainingProgress}% Complete</p>
+                </div>
+              )}
+
               <button
                 onClick={handleStartTraining}
-                disabled={isTraining || !isConnected}
-                className="px-10 py-4 bg-gradient-to-r from-walrus-teal to-walrus-purple text-black font-bold rounded-xl font-mono hover:scale-105 hover:shadow-2xl hover:shadow-walrus-purple/50 transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none text-base"
+                disabled={isTraining || isSubmitting || isProcessing || !isConnected}
+                className="px-10 py-4 bg-gradient-to-r from-walrus-teal to-walrus-purple text-black font-bold rounded-xl font-mono hover:scale-105 hover:shadow-2xl hover:shadow-walrus-purple/50 transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none text-base flex items-center gap-3 mx-auto"
               >
-                {!isConnected ? '🔗 Connect Wallet First' : isTraining ? '⚡ Training...' : '🚀 Start Contributing'}
+                {!isConnected ? (
+                  <>🔗 Connect Wallet First</>
+                ) : isTraining || isSubmitting || isProcessing ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                    Training...
+                  </>
+                ) : (
+                  <>🚀 Start Contributing</>
+                )}
               </button>
             </div>
           )}
@@ -657,41 +689,66 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
               <h3 className="text-white font-bold font-mono mb-4">
                 Training History
               </h3>
-              {stats && stats.totalContributions > 0 ? (
-                <div className="space-y-2">
-                  {Array.from({ length: Math.min(stats.totalContributions, 5) }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="bg-black/40 border border-white/10 rounded p-4 flex items-center justify-between"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-walrus-purple/20 rounded flex items-center justify-center">
-                          <span className="text-walrus-purple font-bold text-xs">
-                            #{stats.totalContributions - i}
-                          </span>
+              {(() => {
+                const contributions = getContributions(agentId);
+                return contributions.length > 0 ? (
+                  <div className="space-y-2">
+                    {contributions.slice().reverse().slice(0, 10).map((contribution, i) => (
+                      <div
+                        key={contribution.timestamp}
+                        className="bg-black/40 border border-white/10 rounded p-4 space-y-2"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 bg-walrus-purple/20 rounded flex items-center justify-center">
+                              <span className="text-walrus-purple font-bold text-xs">
+                                #{contributions.length - i}
+                              </span>
+                            </div>
+                            <div>
+                              <p className="text-white text-sm font-mono">
+                                Epoch {contribution.epoch}
+                              </p>
+                              <p className="text-gray-400 text-xs">
+                                {new Date(contribution.timestamp).toLocaleString()}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-walrus-teal text-xs font-bold">
+                              {contribution.txDigest ? '⛓️ On-Chain' : '💾 Local'}
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-white text-sm font-mono">
-                            Contribution #{stats.totalContributions - i}
-                          </p>
-                          <p className="text-gray-400 text-xs">
-                            Epoch {Math.floor((stats.totalContributions - i) / 10)}
-                          </p>
-                        </div>
+                        {contribution.deltaBlobId && (
+                          <a
+                            href={`https://walruscan.com/testnet/blob/${contribution.deltaBlobId}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-walrus-teal hover:underline text-xs block"
+                          >
+                            🐋 View on Walrus: {contribution.deltaBlobId.slice(0, 8)}...
+                          </a>
+                        )}
+                        {contribution.txDigest && (
+                          <a
+                            href={getSuiExplorerUrl('transaction', contribution.txDigest)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-walrus-purple hover:underline text-xs block"
+                          >
+                            ⛓️ View TX: {contribution.txDigest.slice(0, 8)}...{contribution.txDigest.slice(-6)}
+                          </a>
+                        )}
                       </div>
-                      <div className="text-right">
-                        <p className="text-walrus-teal text-xs font-bold">
-                          Tracked
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-12 text-gray-400">
-                  No training history yet
-                </div>
-              )}
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 text-gray-400">
+                    No training history yet
+                  </div>
+                );
+              })()}
             </div>
           )}
         </div>
