@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useSuiWallet } from '../hooks/useSuiWallet';
 import { useTokenBalances } from '../hooks/useTokenBalances';
 import { ConnectButton } from '@suiet/wallet-kit';
@@ -12,16 +13,34 @@ const WalletConnectComponent: React.FC = () => {
   const [mounted, setMounted] = useState(false);
   const [showTokens, setShowTokens] = useState(false);
   const [suiBalance, setSuiBalance] = useState<string>('0.0000');
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, right: 0 });
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  // Update dropdown position when showing
+  useEffect(() => {
+    if (showTokens && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setDropdownPosition({
+        top: rect.bottom + 4,
+        right: window.innerWidth - rect.right
+      });
+    }
+  }, [showTokens]);
+
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current && 
+        !dropdownRef.current.contains(event.target as Node) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target as Node)
+      ) {
         setShowTokens(false);
       }
     };
@@ -75,8 +94,9 @@ const WalletConnectComponent: React.FC = () => {
       {isConnected && address ? (
         <>
           {/* Token Balances Dropdown */}
-          <div className="relative" ref={dropdownRef}>
+          <div className="relative">
             <button
+              ref={buttonRef}
               onClick={() => setShowTokens(!showTokens)}
               className="flex items-center gap-2 bg-black/40 px-2 py-1 rounded-md border border-white/10 hover:border-walrus-teal/30 transition-all"
               title="View token balances"
@@ -94,36 +114,44 @@ const WalletConnectComponent: React.FC = () => {
                 <span className="text-white font-bold text-xs font-mono">{suiBalance}</span>
               </div>
             </button>
-            
-            {/* Token Dropdown */}
-            {showTokens && (
-              <div 
-                className="absolute top-full right-0 mt-1 bg-black/95 border border-walrus-teal/30 rounded-lg shadow-xl backdrop-blur-xl min-w-[140px] z-50"
-                role="menu"
-                aria-label="Token balances"
-              >
-                <div className="p-2 space-y-1">
-                  <div className="text-[9px] text-walrus-teal/70 font-mono uppercase px-1">Balances</div>
-                  <div className="flex items-center justify-between px-1 py-0.5" role="menuitem">
-                    <span className="text-white/50 text-[10px] font-mono">SUI:</span>
-                    <span className="text-white font-bold text-[10px] font-mono">{suiBalance}</span>
-                  </div>
-                  <div className="flex items-center justify-between px-1 py-0.5" role="menuitem">
-                    <span className="text-white/50 text-[10px] font-mono">USDC:</span>
-                    <span className={`font-bold text-[10px] font-mono ${hasUSDC ? 'text-green-400' : 'text-white/30'}`}>
-                      {parseFloat(usdcBalance).toFixed(2)}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between px-1 py-0.5" role="menuitem">
-                    <span className="text-white/50 text-[10px] font-mono">WAL:</span>
-                    <span className={`font-bold text-[10px] font-mono ${hasWAL ? 'text-walrus-teal' : 'text-white/30'}`}>
-                      {parseFloat(walBalance).toFixed(2)}
-                    </span>
-                  </div>
+          </div>
+          
+          {/* Token Dropdown - Rendered via Portal */}
+          {showTokens && mounted && createPortal(
+            <div 
+              ref={dropdownRef}
+              style={{
+                position: 'fixed',
+                top: `${dropdownPosition.top}px`,
+                right: `${dropdownPosition.right}px`,
+                zIndex: 2147483647
+              }}
+              className="bg-black/95 border border-walrus-teal/30 rounded-lg shadow-2xl backdrop-blur-xl min-w-[140px] pointer-events-auto"
+              role="menu"
+              aria-label="Token balances"
+            >
+              <div className="p-2 space-y-1">
+                <div className="text-[9px] text-walrus-teal/70 font-mono uppercase px-1">Balances</div>
+                <div className="flex items-center justify-between px-1 py-0.5" role="menuitem">
+                  <span className="text-white/50 text-[10px] font-mono">SUI:</span>
+                  <span className="text-white font-bold text-[10px] font-mono">{suiBalance}</span>
+                </div>
+                <div className="flex items-center justify-between px-1 py-0.5" role="menuitem">
+                  <span className="text-white/50 text-[10px] font-mono">USDC:</span>
+                  <span className={`font-bold text-[10px] font-mono ${hasUSDC ? 'text-green-400' : 'text-white/30'}`}>
+                    {parseFloat(usdcBalance).toFixed(2)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between px-1 py-0.5" role="menuitem">
+                  <span className="text-white/50 text-[10px] font-mono">WAL:</span>
+                  <span className={`font-bold text-[10px] font-mono ${hasWAL ? 'text-walrus-teal' : 'text-white/30'}`}>
+                    {parseFloat(walBalance).toFixed(2)}
+                  </span>
                 </div>
               </div>
-            )}
-          </div>
+            </div>,
+            document.body
+          )}
 
           {/* Faucet Button - Compact, show when balance is 0 */}
           {hasZeroBalance && (

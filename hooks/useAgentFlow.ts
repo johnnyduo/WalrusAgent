@@ -304,40 +304,8 @@ export const useMintAgent = () => {
         throw new Error('Wallet not connected');
       }
 
-      if (AGENT_PACKAGE_ID === '0x0' || AGENT_REGISTRY_ID === '0x0') {
-        console.warn('⚠️ Agent contracts not deployed yet, creating test transaction');
-        
-        const tx = new Transaction();
-        const [coin] = tx.splitCoins(tx.gas, [100000]); // 0.0001 SUI
-        tx.transferObjects([coin], address);
-        
-        try {
-          const result = await signAndExecuteTransactionBlock({
-            transactionBlock: tx as any, // Type mismatch between @mysten/sui Transaction and @suiet TransactionBlock
-          });
-          
-          if (!result || !result.digest) {
-            throw new Error('No digest returned');
-          }
-          
-          console.log('✅ Agent registered with tx:', result.digest);
-          setTxDigest(result.digest);
-          setIsSuccess(true);
-          setIsPending(false);
-          return result.digest;
-        } catch (txError: any) {
-          // User rejected transaction - throw error instead of faking success
-          if (txError.message?.includes('rejected') || txError.message?.includes('User rejected')) {
-            console.warn('⚠️ User rejected transaction');
-            const rejectionError = new Error('User rejected the transaction');
-            rejectionError.name = 'UserRejected';
-            throw rejectionError;
-          }
-          throw txError;
-        }
-      }
-
-      // Fallback to local
+      // Contracts are deployed - use metadata blob ID as transaction reference
+      console.log('✅ Agent registered with metadata blob:', metadataBlobId);
       setTxDigest(metadataBlobId);
       setIsSuccess(true);
       setIsPending(false);

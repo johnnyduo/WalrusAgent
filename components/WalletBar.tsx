@@ -115,7 +115,7 @@ const WalletBar: React.FC<WalletBarProps> = ({ onLogoClick }) => {
     setTotalBalance(display);
   }, [streamBalances, totalBalance]);
   return (
-    <div className="relative h-14 bg-gradient-to-r from-black/95 via-walrus-teal/5 to-black/90 backdrop-blur-2xl border-b border-walrus-teal/20 flex items-center px-4 justify-between z-50 sticky top-0 shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+    <div className="relative h-14 bg-gradient-to-r from-black/95 via-walrus-teal/5 to-black/90 backdrop-blur-2xl border-b border-walrus-teal/20 flex items-center px-4 justify-between z-[100] sticky top-0 shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
         {/* Ocean Wave Overlay */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-10">
           <div className="absolute inset-0 bg-gradient-to-r from-walrus-purple/20 via-walrus-teal/20 to-transparent animate-wave"></div>
