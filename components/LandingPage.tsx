@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layers, Zap, Shield, Network, ArrowRight, Activity, Cpu } from 'lucide-react';
+import { Layers, Zap, Shield, Network, ArrowRight, Activity, Cpu, Brain, Database, GitBranch } from 'lucide-react';
 import LottieAvatar from './LottieAvatar';
 
 interface LandingPageProps {
@@ -41,23 +41,23 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
           <div className="flex-1 space-y-6">
             <div className="inline-block px-4 py-2 bg-gradient-to-r from-walrus-teal/10 to-walrus-purple/10 rounded-lg border border-walrus-purple/30 backdrop-blur-sm">
               <span className="text-xs font-mono uppercase tracking-wider text-walrus-purple">
-                🧠 Decentralized AI Training on Walrus
+                🏆 Walrus Protocol Hackathon 2024 | AI x Data Track
               </span>
             </div>
 
             <h2 className="text-5xl lg:text-7xl font-bold leading-tight font-heading">
-              <span className="bg-gradient-to-l from-walrus-teal via-walrus-purple to-walrus-teal bg-clip-text text-transparent">WALRUS</span>
+              <span className="bg-gradient-to-l from-walrus-teal via-walrus-purple to-walrus-teal bg-clip-text text-transparent">Decentralized</span>
               <br />
-              <span className="text-white/90">AI Agents</span>
+              <span className="text-white/90">AI Training</span>
               <br />
-              <span className="text-white/60">Network</span>
+              <span className="text-white/60">on Walrus</span>
             </h2>
 
             <p className="text-base text-gray-400 max-w-2xl leading-relaxed">
-              Deploy autonomous AI agents that <span className="text-walrus-purple font-semibold">train collaboratively</span> across 
-              distributed compute, store model updates on <span className="text-walrus-teal font-semibold">Walrus</span>, and 
-              coordinate via <span className="text-walrus-purple font-semibold">Sui Move</span> smart contracts. 
-              True decentralized AI training without centralized servers.
+              Train <span className="text-walrus-purple font-semibold">real neural networks</span> directly in your browser with TensorFlow.js. 
+              Store model weights on <span className="text-walrus-teal font-semibold">Walrus Protocol</span> with Seal certification. 
+              Verify contributions on <span className="text-walrus-purple font-semibold">Sui blockchain</span>. 
+              Earn <span className="text-walrus-teal font-semibold">token rewards</span> for your compute power. True decentralized AI training—no servers required.
             </p>
 
             <div className="flex flex-wrap gap-4">
@@ -80,16 +80,16 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
             {/* Stats */}
             <div className="flex gap-8 pt-6 font-mono">
               <div>
-                <div className="text-2xl font-bold text-walrus-teal">7</div>
-                <div className="text-xs text-gray-500 uppercase tracking-wider">Agents</div>
+                <div className="text-2xl font-bold text-walrus-teal">41</div>
+                <div className="text-xs text-gray-500 uppercase tracking-wider">Parameters</div>
               </div>
               <div>
-                <div className="text-2xl font-bold text-walrus-teal">∞</div>
-                <div className="text-xs text-gray-500 uppercase tracking-wider">Tasks</div>
+                <div className="text-2xl font-bold text-walrus-teal">3-6s</div>
+                <div className="text-xs text-gray-500 uppercase tracking-wider">Training</div>
               </div>
               <div>
-                <div className="text-2xl font-bold text-walrus-teal">24/7</div>
-                <div className="text-xs text-gray-500 uppercase tracking-wider">Active</div>
+                <div className="text-2xl font-bold text-walrus-teal">10</div>
+                <div className="text-xs text-gray-500 uppercase tracking-wider">Epochs</div>
               </div>
             </div>
           </div>
@@ -112,90 +112,90 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
         {/* Features Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-20 px-6 max-w-7xl mx-auto">
           <FeatureCard
-            icon={<Network className="text-walrus-teal" size={24} />}
-            title="Multi-Agent System"
-            description="7 specialized agents working in harmony"
+            icon={<Brain className="text-walrus-teal" size={24} />}
+            title="Real ML Training"
+            description="41-parameter neural network with backpropagation"
           />
           <FeatureCard
             icon={<Shield className="text-walrus-teal" size={24} />}
-            title="EIP-8004 Compatible"
-            description="Tokenized agents with on-chain verification"
+            title="Seal Certification"
+            description="Cryptographic proof on every Walrus upload"
           />
           <FeatureCard
-            icon={<Zap className="text-walrus-teal" size={24} />}
-            title="Real-Time Trading"
-            description="Autonomous market analysis and execution"
+            icon={<Database className="text-walrus-teal" size={24} />}
+            title="10-Epoch Storage"
+            description="Permanent model weights on Walrus Protocol"
           />
           <FeatureCard
-            icon={<Cpu className="text-walrus-teal" size={24} />}
-            title="AI-Powered"
-            description="Gemini AI driven decision making"
+            icon={<GitBranch className="text-walrus-teal" size={24} />}
+            title="Federated Learning"
+            description="Aggregate gradients from multiple contributors"
           />
         </div>
 
         {/* Agent Showcase */}
         <div className="text-center mb-8 px-6 max-w-7xl mx-auto">
-          <h3 className="text-2xl font-bold mb-2 font-mono text-walrus-teal uppercase tracking-wider">Agent Deck</h3>
-          <p className="text-gray-500 text-sm font-mono uppercase tracking-wider">7 Specialized AI Agents</p>
+          <h3 className="text-2xl font-bold mb-2 font-mono text-walrus-teal uppercase tracking-wider">Training Pipeline</h3>
+          <p className="text-gray-500 text-sm font-mono uppercase tracking-wider">7 Specialized AI Agents for Distributed Training</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 px-6 mb-20 max-w-7xl mx-auto">
           <AgentPreview 
             name="Walrus Commander" 
-            role="Commander" 
+            role="Coordinator" 
             avatar="/lottie/Lion - Breath.json"
-            ability="Supreme orchestrator coordinating all agents and strategic decisions"
+            ability="Distributed training coordination & epoch management across the network"
           />
           <AgentPreview 
             name="Eagleton Skywatcher" 
-            role="Navigator" 
+            role="Preprocessor" 
             avatar="/lottie/running pigeon.json"
-            ability="Market intelligence specialist tracking real-time prices across 15,000+ tokens"
+            ability="Data preprocessing & feature engineering for optimal model input"
           />
           <AgentPreview 
             name="Athena Nightwing" 
-            role="Archivist" 
+            role="Architect" 
             avatar="/lottie/Duo Attack.json"
-            ability="Sentiment analysis expert aggregating news and detecting market-moving events"
+            ability="Model architecture design & hyperparameter optimization"
           />
           <AgentPreview 
             name="Reynard Swift" 
-            role="Merchant" 
+            role="Trainer" 
             avatar="/lottie/Happy Unicorn Dog.json"
-            ability="DEX executor monitoring signals and swapping SUI/USDC on Cetus"
+            ability="Gradient computation & backpropagation with TensorFlow.js"
           />
           <AgentPreview 
             name="Ursus Guardian" 
-            role="Sentinel" 
+            role="Validator" 
             avatar="/lottie/Cute bear dancing.json"
-            ability="Risk manager calculating volatility and protecting capital with stop-loss triggers"
+            ability="Model validation & quality assurance with accuracy thresholds"
           />
           <AgentPreview 
             name="Luna Mysticfang" 
-            role="Oracle" 
+            role="Optimizer" 
             avatar="/lottie/happy fox.json"
-            ability="Technical analyst using AI for chart patterns and trading signal generation"
+            ability="Inference optimization & model quantization for deployment"
           />
           <AgentPreview 
             name="Corvus Messenger" 
-            role="Glitch" 
+            role="Aggregator" 
             avatar="/lottie/Dragon.json"
-            ability="Alert system detecting breaking news, whale movements, and instant notifications"
+            ability="Federated aggregation & consensus of gradient updates"
           />
         </div>
 
         {/* Footer CTA */}
         <div className="my-16 text-center px-6 pb-20 max-w-7xl mx-auto">
           <div className="inline-block p-8 bg-black/40 rounded-xl backdrop-blur-sm border border-walrus-teal/20">
-            <h3 className="text-2xl font-bold mb-3 font-mono text-walrus-teal uppercase tracking-wider">Ready to Deploy?</h3>
+            <h3 className="text-2xl font-bold mb-3 font-mono text-walrus-teal uppercase tracking-wider">Start Training Now</h3>
             <p className="text-gray-400 mb-6 max-w-2xl mx-auto font-mono text-sm">
-              Experience autonomous AI agents on Sui Network with Walrus Storage
+              Train real neural networks in your browser. Store on Walrus. Earn rewards on Sui.
             </p>
             <button
               onClick={onLaunchApp}
               className="px-8 py-3 bg-walrus-teal text-black rounded font-bold text-sm font-mono uppercase tracking-wider hover:shadow-[0_0_20px_rgba(153,239,228,0.5)] transition-all duration-300 flex items-center gap-2 mx-auto"
             >
-              <Zap size={16} /> Launch App Now
+              <Brain size={16} /> Launch Training Dashboard
             </button>
           </div>
         </div>

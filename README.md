@@ -15,9 +15,19 @@
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev/)
 [![TensorFlow.js](https://img.shields.io/badge/TensorFlow.js-4.22-FF6F00?logo=tensorflow)](https://www.tensorflow.org/js)
 
+### 📦 Deployed Contracts
+
+**Network**: Sui Testnet  
+**Package ID**: `0x0` (Not yet deployed - contracts ready)  
+**Deployer**: `0xce2162a53565ac45e6338efcac7318d83d69debe934498bb2f592cee1f0410c9`
+
+**Walrus Protocol**:  
+🐋 Aggregator: `https://aggregator.walrus-testnet.walrus.space`  
+🐋 Publisher: `https://publisher.walrus-testnet.walrus.space`  
+🐋 System Object: `0x98ebc47370603fe81d9e15491b2f1443d619d1dab720d586e429ed233e1255c1`
+
 🔗 **Live Demo**: [Deploy on Vercel]  
-📚 **Docs**: [Complete Technical Documentation](./docs)  
-🐋 **Walrus Testnet**: [walruscan.com/testnet](https://walruscan.com/testnet)  
+🐋 **Walrus Scan**: [walruscan.com/testnet](https://walruscan.com/testnet)  
 🔗 **Sui Explorer**: [suiscan.xyz/testnet](https://suiscan.xyz/testnet)
 
 ---
@@ -873,16 +883,6 @@ WAL: 100.00 | SUI: 5.2345
 
 ---
 
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for:
-- Code of conduct
-- Development setup
-- Pull request process
-- Issue reporting
-
----
-
 ## 📄 License
 
 MIT License - see [LICENSE](LICENSE) file for details
@@ -892,36 +892,11 @@ MIT License - see [LICENSE](LICENSE) file for details
 ## 🏆 Hackathon Submission
 
 **Track**: AI x Data  
-**Team**: [Your Team Name]  
-**Contact**: [Your Email]  
-**Demo**: [Live URL]  
-**Video**: [YouTube URL]  
+**Repository**: [github.com/johnnyduo/WalrusAgent](https://github.com/johnnyduo/WalrusAgent)  
+**Network**: Sui Testnet  
+**Deployer**: `0xce2162a53565ac45e6338efcac7318d83d69debe934498bb2f592cee1f0410c9`
 
-**Built with ❤️ for the Walrus Protocol Hackathon**
-
----
-
-## 📞 Support & Contact
-
-- **Documentation**: This README
-- **Issues**: [GitHub Issues](https://github.com/yourusername/walrus-agents/issues)
-- **Discord**: [Join our server](#)
-- **Twitter**: [@walrusagents](#)
-
----
-
-## 🙏 Acknowledgments
-
-- **Mysten Labs** - For building Sui and Walrus Protocol
-- **TensorFlow.js Team** - For browser-based ML framework
-- **Suiet Wallet** - For excellent wallet integration
-- **Walrus Community** - For support and feedback
-
----
-
-**⭐ Star this repo if you find it useful!**
-
-**🐋 Built for the Walrus Protocol Hackathon 2024**
+**Built with ❤️ for the Walrus Protocol Hackathon 2024** 🐋
 
 3. **Blockchain-Coordinated AI**
    - Sui smart contracts manage agent registry and contributions
