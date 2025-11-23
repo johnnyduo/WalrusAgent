@@ -427,7 +427,7 @@ const App: React.FC = () => {
             </a>
             {walrusBlobId && !walrusBlobId.startsWith('walrus_local_') && !walrusBlobId.startsWith('walrus_pending_') && (
               <a 
-                href={`https://walrus-scan.io/testnet/blob/${walrusBlobId}`}
+                href={`https://walruscan.com/testnet/blob/${walrusBlobId}`}
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-walrus-purple hover:underline text-xs block"
@@ -801,7 +801,7 @@ const App: React.FC = () => {
               <div className="font-bold">🐋 Decentralized Storage Complete</div>
               <div className="text-xs mt-1">
                 <a 
-                  href={`https://walrus-scan.io/testnet/blob/${walrusBlobId}`}
+                  href={`https://walruscan.com/testnet/blob/${walrusBlobId}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-walrus-teal hover:underline"

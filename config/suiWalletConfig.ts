@@ -139,7 +139,11 @@ export const getWalrusExplorerUrl = (blobId: string): string => {
 };
 
 export const getWalrusScanUrl = (blobId: string): string => {
-  return `https://walrus-scan.io/testnet/blob/${blobId}`;
+  return `https://walruscan.com/testnet/blob/${blobId}`;
+};
+
+export const getWalrusScanAccountUrl = (address: string): string => {
+  return `https://walruscan.com/testnet/account/${address}/blobs`;
 };
 
 // Sui Wallet Kit Theme Configuration

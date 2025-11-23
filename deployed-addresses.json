@@ -33,7 +33,7 @@
     "note": "Walrus testnet with multiple endpoints for redundancy",
     "aggregator": "https://aggregator.walrus-testnet.walrus.space",
     "publisher": "https://publisher.walrus-testnet.walrus.space",
-    "explorer": "https://walrus-scan.io/testnet",
+    "explorer": "https://walruscan.com/testnet",
     "systemObject": "0x98ebc47370603fe81d9e15491b2f1443d619d1dab720d586e429ed233e1255c1"
   },
   "deploymentInstructions": {
