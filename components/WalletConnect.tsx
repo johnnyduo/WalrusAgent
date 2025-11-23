@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useSuiWallet } from '../hooks/useSuiWallet';
+import { useTokenBalances } from '../hooks/useTokenBalances';
 import { ConnectButton } from '@suiet/wallet-kit';
 import { suiClient, CONTRACTS_DEPLOYED } from '../config/suiWalletConfig';
-import { Wallet, Droplet, AlertCircle, CheckCircle } from 'lucide-react';
+import { Wallet, Droplet, AlertCircle, CheckCircle, Coins } from 'lucide-react';
 
 export const WalletConnect: React.FC = () => {
   const { address, isConnected } = useSuiWallet();
+  const { balances, isLoading } = useTokenBalances();
   const [mounted, setMounted] = useState(false);
+  const [showTokens, setShowTokens] = useState(false);
   const [suiBalance, setSuiBalance] = useState<string>('0.0000');
 
   useEffect(() => {
@@ -45,58 +48,87 @@ export const WalletConnect: React.FC = () => {
 
   const hasZeroBalance = parseFloat(suiBalance) === 0;
 
-  return (
-    <div className="flex items-center gap-3">
-      {/* Contract Deployment Status */}
-      <div className={`flex items-center gap-2 px-3 py-1 rounded border text-xs ${
-        CONTRACTS_DEPLOYED 
-          ? 'bg-green-500/10 border-green-500/30 text-green-400' 
-          : 'bg-yellow-500/10 border-yellow-500/30 text-yellow-400'
-      }`}>
-        {CONTRACTS_DEPLOYED ? (
-          <>
-            <CheckCircle size={12} />
-            <span className="font-mono">Contracts Live</span>
-          </>
-        ) : (
-          <>
-            <AlertCircle size={12} />
-            <span className="font-mono">Deploy Contracts</span>
-          </>
-        )}
-      </div>
+  // Get token balances
+  const usdcBalance = balances.USDC?.balance || '0';
+  const walBalance = balances.WAL?.balance || '0';
+  const hasUSDC = parseFloat(usdcBalance) > 0;
+  const hasWAL = parseFloat(walBalance) > 0;
 
+  return (
+    <div className="flex items-center gap-2">
       {isConnected && address ? (
         <>
-          {/* SUI Balance */}
-          <div className="flex items-center gap-2 bg-white/5 px-3 py-1 rounded border border-white/10">
-            <span className="text-gray-400 text-xs font-mono">SUI:</span>
-            <span className="text-white font-bold text-xs font-mono">
-              {suiBalance}
-            </span>
+          {/* Token Balances Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setShowTokens(!showTokens)}
+              className="flex items-center gap-1 bg-black/40 px-2 py-1 rounded-md border border-white/10 hover:border-walrus-teal/30 transition-all"
+              title="View token balances"
+            >
+              <Coins size={11} className="text-walrus-teal" />
+              <span className="text-white/50 text-[10px] font-mono">SUI:</span>
+              <span className="text-white font-bold text-xs font-mono">{suiBalance}</span>
+            </button>
+            
+            {/* Token Dropdown */}
+            {showTokens && (
+              <div className="absolute top-full right-0 mt-1 bg-black/95 border border-walrus-teal/30 rounded-lg shadow-xl backdrop-blur-xl min-w-[140px] z-50">
+                <div className="p-2 space-y-1">
+                  <div className="text-[9px] text-walrus-teal/70 font-mono uppercase px-1">Balances</div>
+                  <div className="flex items-center justify-between px-1 py-0.5">
+                    <span className="text-white/50 text-[10px] font-mono">SUI:</span>
+                    <span className="text-white font-bold text-[10px] font-mono">{suiBalance}</span>
+                  </div>
+                  <div className="flex items-center justify-between px-1 py-0.5">
+                    <span className="text-white/50 text-[10px] font-mono">USDC:</span>
+                    <span className={`font-bold text-[10px] font-mono ${hasUSDC ? 'text-green-400' : 'text-white/30'}`}>
+                      {parseFloat(usdcBalance).toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between px-1 py-0.5">
+                    <span className="text-white/50 text-[10px] font-mono">WAL:</span>
+                    <span className={`font-bold text-[10px] font-mono ${hasWAL ? 'text-walrus-teal' : 'text-white/30'}`}>
+                      {parseFloat(walBalance).toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* Faucet Button - Show when balance is 0 */}
+          {/* Faucet Button - Compact, show when balance is 0 */}
           {hasZeroBalance && (
             <a
-              href="https://faucet.testnet.sui.io"
+              href="https://faucet.sui.io/?address=0xce2162a53565ac45e6338efcac7318d83d69debe934498bb2f592cee1f0410c9"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 bg-blue-500/10 hover:bg-blue-500/20 px-3 py-1 rounded border border-blue-500/30 transition-colors group"
+              className="flex items-center gap-1 bg-blue-500/10 hover:bg-blue-500/20 px-2 py-1 rounded-md border border-blue-500/30 transition-all group"
               title="Get free testnet SUI"
             >
-              <Droplet size={14} className="text-blue-400 group-hover:animate-bounce" />
-              <span className="text-blue-400 font-bold text-xs">Get SUI</span>
+              <Droplet size={11} className="text-blue-400 group-hover:animate-bounce" />
+              <span className="text-blue-400 font-bold text-[10px]">Faucet</span>
             </a>
           )}
 
-          {/* Connected Address */}
-          <div className="flex items-center gap-2 bg-gradient-to-r from-walrus-teal/10 to-walrus-purple/10 px-3 py-1 rounded border border-walrus-purple/30">
-            <Wallet size={14} className="text-walrus-purple" />
-            <span className="text-walrus-purple font-bold text-xs">
-              {address.slice(0, 6)}...{address.slice(-4)}
+          {/* Connected Address - Compact */}
+          <div className="flex items-center gap-1.5 bg-gradient-to-r from-walrus-teal/10 to-walrus-purple/10 px-2 py-1 rounded-md border border-walrus-purple/30 shadow-sm">
+            <Wallet size={11} className="text-walrus-purple" />
+            <span className="text-walrus-purple font-bold text-[10px] font-mono">
+              {address.slice(0, 4)}...{address.slice(-4)}
             </span>
           </div>
+          
+          {/* Contract Status - Only show icon when not deployed */}
+          {!CONTRACTS_DEPLOYED && (
+            <button
+              onClick={() => window.open('DEPLOY_YOUR_WALLET.md', '_blank')}
+              className="flex items-center gap-1 bg-yellow-500/10 hover:bg-yellow-500/20 px-2 py-1 rounded-md border border-yellow-500/30 transition-all group"
+              title="Deploy Contracts"
+            >
+              <AlertCircle size={11} className="text-yellow-400" />
+              <span className="text-yellow-400 font-bold text-[10px]">Deploy</span>
+            </button>
+          )}
 
           {/* Use Suiet Wallet Kit's ConnectButton for disconnect */}
           <ConnectButton />

@@ -115,54 +115,48 @@ const WalletBar: React.FC<WalletBarProps> = ({ onLogoClick }) => {
     setTotalBalance(display);
   }, [streamBalances, totalBalance]);
   return (
-    <div className="relative h-12 bg-gradient-to-r from-black/95 via-walrus-teal/5 to-black/95 backdrop-blur-xl border-b border-walrus-teal/20 flex items-center px-6 justify-between z-50 sticky top-0 shadow-lg overflow-hidden">
-        {/* Ocean Wave Effect */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
-          <div className="absolute top-0 left-0 right-0 h-full bg-gradient-to-b from-walrus-purple/10 to-transparent"></div>
+    <div className="relative h-14 bg-gradient-to-r from-black/95 via-walrus-teal/5 to-black/90 backdrop-blur-2xl border-b border-walrus-teal/20 flex items-center px-4 justify-between z-50 sticky top-0 shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+        {/* Ocean Wave Overlay */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-10">
+          <div className="absolute inset-0 bg-gradient-to-r from-walrus-purple/20 via-walrus-teal/20 to-transparent animate-wave"></div>
         </div>
-        <div className="relative flex items-center gap-4 z-10">
+        
+        {/* Left: Logo */}
+        <div className="relative z-10 flex items-center">
             <h1 
-              className={`text-walrus-teal font-bold font-mono tracking-wider flex items-center gap-2 ${onLogoClick ? 'cursor-pointer hover:text-walrus-teal/80 transition-colors' : ''}`}
+              className={`text-walrus-teal font-bold font-mono text-sm tracking-wider flex items-center gap-2 ${onLogoClick ? 'cursor-pointer hover:text-walrus-teal/80 transition-colors' : ''}`}
               onClick={onLogoClick}
             >
-                <Layers size={18} /> WALRUS AGENTS <span className="text-white/40 text-xs font-normal">v1.0.4-beta</span>
+                <Layers size={16} className="drop-shadow-glow" /> 
+                WALRUS AGENTS 
+                <span className="text-white/30 text-[10px] font-normal ml-1">v1.0.4</span>
             </h1>
         </div>
 
-        <div className="flex items-center gap-4 font-mono text-xs">
+        {/* Right: Wallet & Balance */}
+        <div className="relative z-10 flex items-center gap-2">
             {/* Invisible stream balance trackers */}
             {streamIds.map(id => (
               <StreamBalanceTracker key={id} streamId={id} onBalanceUpdate={handleBalanceUpdate} />
             ))}
             
-            <div className={`flex items-center gap-2 px-3 py-1 rounded border transition-all duration-300 ${
-              parseFloat(totalBalance) > 0
-                ? isUpdating
-                  ? 'bg-walrus-teal/30 border-walrus-teal/60 shadow-[0_0_20px_rgba(153,239,228,0.4)]'
-                  : 'bg-walrus-teal/10 border-walrus-teal/30 shadow-[0_0_10px_rgba(153,239,228,0.2)]'
-                : 'bg-gray-500/10 border-gray-500/30'
-            }`}>
-                <TrendingUp 
-                  size={12} 
-                  className={`transition-all duration-300 ${
-                    parseFloat(totalBalance) > 0 
-                      ? isUpdating 
-                        ? 'text-walrus-teal scale-110' 
-                        : 'text-walrus-teal' 
-                      : 'text-gray-500'
-                  }`} 
-                />
-                <span className={`transition-all duration-300 ${
-                  parseFloat(totalBalance) > 0 ? 'text-walrus-purple/70' : 'text-gray-500/70'
-                }`}>WALRUS BALANCE:</span>
-                <span className={`font-bold transition-all duration-300 ${
-                  parseFloat(totalBalance) > 0 
-                    ? isUpdating 
-                      ? 'text-walrus-teal scale-105' 
-                      : 'text-walrus-teal' 
-                    : 'text-gray-500'
-                }`}>{totalBalance} USDC</span>
-            </div>
+            {/* Compact Balance Display - Only show if > 0 */}
+            {parseFloat(totalBalance) > 0 && (
+              <div className={`flex items-center gap-1.5 px-2 py-1 rounded-md border transition-all duration-300 ${
+                isUpdating
+                  ? 'bg-walrus-teal/20 border-walrus-teal/50 shadow-[0_0_12px_rgba(153,239,228,0.4)]'
+                  : 'bg-walrus-teal/10 border-walrus-teal/30'
+              }`}>
+                  <TrendingUp 
+                    size={11} 
+                    className={`transition-all duration-300 text-walrus-teal ${isUpdating ? 'scale-110' : ''}`} 
+                  />
+                  <span className="text-[10px] text-white/60 font-mono">BAL:</span>
+                  <span className={`text-xs font-bold font-mono transition-all duration-300 text-walrus-teal ${
+                    isUpdating ? 'scale-105' : ''
+                  }`}>{totalBalance}</span>
+              </div>
+            )}
 
             <WalletConnect />
         </div>
