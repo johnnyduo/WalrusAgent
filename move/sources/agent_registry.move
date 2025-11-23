@@ -1,6 +1,6 @@
-/// Aslan Agents - Agent Registry Module
+/// Walrus Agents - Agent Registry Module
 /// Manages AI agent NFTs on Sui blockchain
-module aslan_agents::agent_registry {
+module walrus_agents::agent_registry {
     use sui::object::{Self, UID, ID};
     use sui::tx_context::{Self, TxContext};
     use sui::transfer;

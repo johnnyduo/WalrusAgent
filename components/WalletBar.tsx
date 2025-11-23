@@ -125,7 +125,7 @@ const WalletBar: React.FC<WalletBarProps> = ({ onLogoClick }) => {
               className={`text-walrus-teal font-bold font-mono tracking-wider flex items-center gap-2 ${onLogoClick ? 'cursor-pointer hover:text-walrus-teal/80 transition-colors' : ''}`}
               onClick={onLogoClick}
             >
-                <Layers size={18} /> ASLAN AGENTS <span className="text-white/40 text-xs font-normal">v1.0.4-beta</span>
+                <Layers size={18} /> WALRUS AGENTS <span className="text-white/40 text-xs font-normal">v1.0.4-beta</span>
             </h1>
         </div>
 

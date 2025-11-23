@@ -47,7 +47,7 @@ if (typeof window !== 'undefined') {
   };
   
   // Helper: Backup all important data before clearing localStorage
-  (window as any).backupAslanData = () => {
+  (window as any).backupWalrusData = () => {
     const backup = {
       onChainAgents: {},
       userStreams: localStorage.getItem('userStreams'),
@@ -72,7 +72,7 @@ if (typeof window !== 'undefined') {
   };
   
   // Helper: Restore from backup
-  (window as any).restoreAslanData = (backup: any) => {
+  (window as any).restoreWalrusData = (backup: any) => {
     if (!backup || typeof backup !== 'object') {
       console.error('❌ Invalid backup data');
       return;
@@ -254,7 +254,7 @@ const App: React.FC = () => {
   // --- Initialization: Check API Status ---
   useEffect(() => {
     const checkAPIs = async () => {
-      addLog('SYSTEM', '🚀 ASLAN AGENTS Grid Initializing...');
+      addLog('SYSTEM', '🚀 WALRUS AGENTS Grid Initializing...');
       addLog('SYSTEM', '💡 TIP: Run testAPIs() in browser console to verify all API connections');
       
       // Quick API availability check
@@ -453,7 +453,7 @@ const App: React.FC = () => {
           "⚔️ Commander ready. Connect me to specialists for coordinated operations.",
           "🎯 Standing by. I require tactical support—activate and connect agents to begin.",
           "📡 Systems online. Build my network to unlock full command capabilities.",
-          "🌟 Commander Aslan reporting. I coordinate better with a connected squad—let's assemble the team."
+          "🌟 Walrus Commander reporting. I coordinate better with a connected squad—let's assemble the team."
         ];
         selectedDialogue = recruitmentMessages[Math.floor(Math.random() * recruitmentMessages.length)];
       } else if (isCaptain && hasTeam) {
@@ -497,11 +497,11 @@ const App: React.FC = () => {
         if (!connectedToCaptain && context === 'greeting') {
           // Agent introduction - incentivize connecting to Captain
           const introMessages = {
-            a1: "🦅 Eagle eyes ready. Connect me to Commander Aslan for tactical reconnaissance.",
+            a1: "🦅 Eagle eyes ready. Connect me to Walrus Commander for tactical reconnaissance.",
             a2: "📚 Archives indexed. Link me to Commander for strategic intelligence support.",
             a3: "💰 Market sensors calibrated. Awaiting Commander's trading directives.",
             a4: "🛡️ Security protocols active. Connect to Command for perimeter coordination.",
-            a5: "🔮 Predictive models online. I serve best under Commander Aslan's strategy.",
+            a5: "🔮 Predictive models online. I serve best under Walrus Commander's strategy.",
             a6: "📨 Communication arrays ready. Link me to Command for intel relay."
           };
           selectedDialogue = introMessages[agentId as keyof typeof introMessages] || dialogues[0];
@@ -905,7 +905,7 @@ const App: React.FC = () => {
     if (!abilities) return;
 
     try {
-      // a0 - Aslan (Commander): Strategic coordination with varied tasks
+      // a0 - Walrus Commander: Strategic coordination with varied tasks
       if (agentId === 'a0') {
         const commanderTasks = [
           {

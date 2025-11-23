@@ -6,7 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy:cli": "./deploy.sh",
+    "deploy:browser": "yarn tsx deploy-browser.ts",
+    "setup:walrus": "./setup-walrus.sh",
+    "test:contracts": "./test-contracts.sh",
+    "test:walrus": "yarn tsx test-walrus-api.ts",
+    "deploy:all": "./deploy.sh && ./setup-walrus.sh"
   },
   "dependencies": {
     "@google/genai": "^1.30.0",
@@ -30,6 +36,7 @@
     "@types/react": "^19.2.6",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.0.0",
+    "tsx": "^4.20.6",
     "typescript": "~5.8.2",
     "vite": "^6.2.0"
   },

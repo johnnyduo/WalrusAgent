@@ -1,6 +1,6 @@
-/// Aslan Agents - Training Rewards Module
+/// Walrus Agents - Training Rewards Module
 /// Manages rewards for training contributions
-module aslan_agents::training_rewards {
+module walrus_agents::training_rewards {
     use sui::object::{Self, UID, ID};
     use sui::tx_context::{Self, TxContext};
     use sui::transfer;

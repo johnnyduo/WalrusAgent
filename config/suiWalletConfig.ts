@@ -35,15 +35,30 @@ export const WALRUS_CONFIG = {
 };
 
 // Agent Contract Addresses (deployed on Sui Testnet)
-// Update these after deploying via Sui Explorer - see DEPLOY_GUIDE.md
-import deployedAddresses from '../deployed-addresses.json';
+// Update these after deploying contracts
+let deployedAddresses: any = {};
+try {
+  deployedAddresses = require('../deployed-addresses.json');
+} catch {
+  // Use default values if file doesn't exist yet
+  deployedAddresses = {
+    packageId: '0x0',
+    contracts: {
+      agentRegistry: { sharedObjectId: '0x0' },
+      trainingRewards: { sharedObjectId: '0x0' }
+    }
+  };
+}
 
-export const AGENT_PACKAGE_ID = deployedAddresses.packageId;
-export const AGENT_REGISTRY_ID = deployedAddresses.agentRegistryId;
-export const REWARD_POOL_ID = deployedAddresses.rewardPoolId;
+export const AGENT_PACKAGE_ID = deployedAddresses.packageId || '0x0';
+export const AGENT_REGISTRY_ID = deployedAddresses.contracts?.agentRegistry?.sharedObjectId || '0x0';
+export const REWARD_POOL_ID = deployedAddresses.contracts?.trainingRewards?.sharedObjectId || '0x0';
+
+// Your browser wallet address
+export const YOUR_WALLET = '0xce2162a53565ac45e6338efcac7318d83d69debe934498bb2f592cee1f0410c9';
 
 // Check if contracts are deployed
-export const CONTRACTS_DEPLOYED = AGENT_PACKAGE_ID !== '0x0000000000000000000000000000000000000000000000000000000000000000';
+export const CONTRACTS_DEPLOYED = AGENT_PACKAGE_ID !== '0x0' && AGENT_PACKAGE_ID !== '0x0000000000000000000000000000000000000000000000000000000000000000';
 
 // Helper functions
 export const getSuiExplorerUrl = (type: 'address' | 'object' | 'transaction', id: string): string => {

@@ -93,7 +93,7 @@ export class DialogueGenerator {
         "⚔️ Commander ready. Connect me to specialists for coordinated operations.",
         "🎯 Standing by. I require tactical support—activate and connect agents to begin.",
         "📡 Systems online. Build my network to unlock full command capabilities.",
-        "🌟 Commander Aslan reporting. I coordinate better with a connected squad—let's assemble the team.",
+        "🌟 Walrus Commander reporting. I coordinate better with a connected squad—let's assemble the team.",
         "👑 The kingdom awaits our wisdom. Summon the specialists to begin operations."
       ];
       return recruitmentMessages[Math.floor(Math.random() * recruitmentMessages.length)];
@@ -185,11 +185,11 @@ export class DialogueGenerator {
     // Greeting - connection incentive
     if (dialogueContext === 'greeting' && !connectedToCaptain) {
       const introMessages: Record<string, string> = {
-        a1: "🦅 Eagle eyes ready. Connect me to Commander Aslan for tactical reconnaissance.",
+        a1: "🦅 Eagle eyes ready. Connect me to Walrus Commander for tactical reconnaissance.",
         a2: "📚 Archives indexed. Link me to Commander for strategic intelligence support.",
         a3: "💰 Market sensors calibrated. Awaiting Commander's trading directives.",
         a4: "🛡️ Security protocols active. Connect to Command for perimeter coordination.",
-        a5: "🔮 Predictive models online. I serve best under Commander Aslan's strategy.",
+        a5: "🔮 Predictive models online. I serve best under Walrus Commander's strategy.",
         a6: "📨 Communication arrays ready. Link me to Command for intel relay."
       };
       return introMessages[agent.id] || dialogues[0];
@@ -207,7 +207,7 @@ export class DialogueGenerator {
     }
 
     if (connectedToCaptain && dialogueContext === 'analyzing') {
-      return `🔍 ${agent.role} analysis in progress. Will report findings to Commander Aslan shortly.`;
+      return `🔍 ${agent.role} analysis in progress. Will report findings to Walrus Commander shortly.`;
     }
 
     // Context-based standard dialogues

@@ -324,7 +324,7 @@ sui client call \
   --package <PACKAGE_ID> \
   --module agent_registry \
   --function mint_agent \
-  --args <REGISTRY_OBJECT> "Aslan Commander" "Captain" "<WALRUS_BLOB_ID>" \
+  --args <REGISTRY_OBJECT> "Walrus Commander" "Captain" "<WALRUS_BLOB_ID>" \
   --gas-budget 10000000
 ```
 
@@ -518,9 +518,9 @@ Areas where we'd love help:
 ## 📞 Contact & Links
 
 - **GitHub**: [WalrusAgent Repository](https://github.com/yourusername/WalrusAgent)
-- **Twitter**: [@AslanAgents](https://twitter.com/AslanAgents) (placeholder)
-- **Discord**: [Join Community](https://discord.gg/aslan) (placeholder)
-- **Email**: hello@aslan.quest
+- **Twitter**: [@WalrusAgents](https://twitter.com/WalrusAgents) (placeholder)
+- **Discord**: [Join Community](https://discord.gg/walrus) (placeholder)
+- **Email**: hello@walrus.quest
 
 ---
 
@@ -539,13 +539,13 @@ Special thanks to:
 ## 🎬 Demo Video Script (For Submission)
 
 ### Introduction (30s)
-"Hi, I'm presenting ASLAN AGENTS - democratizing AI training using crowdsourced compute and Walrus Protocol storage on Sui blockchain."
+"Hi, I'm presenting WALRUS AGENTS - democratizing AI training using crowdsourced compute and Walrus Protocol storage on Sui blockchain."
 
 ### Problem (30s)
 "AI training today is centralized, expensive, and opaque. Only big tech companies can afford GPU clusters. Developers have no way to contribute to or verify AI training."
 
 ### Solution (60s)
-"ASLAN AGENTS enables anyone to train AI models directly in their browser using TensorFlow.js. All training data - model weights, deltas, embeddings - is stored on Walrus Protocol for permanent, verifiable access. Sui smart contracts coordinate contributions and distribute rewards."
+"WALRUS AGENTS enables anyone to train AI models directly in their browser using TensorFlow.js. All training data - model weights, deltas, embeddings - is stored on Walrus Protocol for permanent, verifiable access. Sui smart contracts coordinate contributions and distribute rewards."
 
 ### Demo Flow (90s)
 1. "Connect Suiet Wallet to Sui testnet"
@@ -563,7 +563,7 @@ Special thanks to:
 "This project demonstrates AI leveraging on-chain data in multiple ways: training features from blockchain metrics, decentralized storage on Walrus, smart contract coordination, and democratized access to AI training infrastructure."
 
 ### Closing (15s)
-"ASLAN AGENTS proves that decentralized, transparent, community-driven AI training is possible. Thank you!"
+"WALRUS AGENTS proves that decentralized, transparent, community-driven AI training is possible. Thank you!"
 
 **Total: ~5 minutes**
 
@@ -592,8 +592,8 @@ Special thanks to:
 
 ```bash
 # Clone repository
-git clone https://github.com/johnnyduo/AslanAgents.git
-cd AslanAgents
+git clone https://github.com/johnnyduo/WalrusAgents.git
+cd WalrusAgents
 
 # Install dependencies
 yarn install
@@ -760,7 +760,7 @@ VITE_SUI_RPC_URL=https://fullnode.testnet.sui.io:443
 
 ### Competitive Advantage
 
-| Feature | Aslan Agents | Fetch.ai | AutoGPT | SingularityNet |
+| Feature | Walrus Agents | Fetch.ai | AutoGPT | SingularityNet |
 |---------|-----------|----------|---------|----------------|
 | **On-Chain Agents** | ✅ Sui Move NFT | ❌ Off-chain | ❌ Off-chain | ✅ Custom chain |
 | **Micro-Payments** | ✅ Payment streams | ❌ Batch only | ❌ None | ✅ AGI token |
@@ -813,7 +813,7 @@ VITE_SUI_RPC_URL=https://fullnode.testnet.sui.io:443
 
 **agent_registry.move** (Sui Move smart contract)
 ```move
-module aslan::agent_registry {
+module walrus_agents::agent_registry {
     struct AgentData has key, store {
         id: UID,
         name: String,
@@ -847,7 +847,7 @@ module aslan::agent_registry {
 
 **training_rewards.move** (Sui Move smart contract)
 ```move
-module aslan::training_rewards {
+module walrus_agents::training_rewards {
     struct Contribution has key, store {
         id: UID,
         agent_id: ID,
@@ -939,7 +939,7 @@ Cetus/Turbos    →     DEX Activity   →      Swap Execution
 ## 📁 Project Structure
 
 ```
-AslanAgents/
+WalrusAgents/
 ├── 📱 Frontend
 │   ├── App.tsx                      # Main app with agent orchestration
 │   ├── components/
@@ -1058,11 +1058,11 @@ npm run dev
 **Cleared localStorage and Lost Data?**
 ```bash
 # BEFORE clearing localStorage, always backup:
-backupAslanData()
+backupWalrusData()
 # Saves: agents, streams, results, connections
 
 # To restore after clearing:
-restoreAslanData(yourBackupObject)
+restoreWalrusData(yourBackupObject)
 
 # Lost stream IDs? View them:
 showAllStreams()
@@ -1078,12 +1078,12 @@ showAllStreams()
 - ❌ **Agent Data**: Token IDs lost - UI shows "Mint Agent" again
 - ❌ **Results Page**: All task history cleared
 - ✅ **On-Chain Data**: Agents and streams still exist on Sui blockchain
-- 💡 **Solution**: Always run `backupAslanData()` before clearing browser data
+- 💡 **Solution**: Always run `backupWalrusData()` before clearing browser data
 
 ### Need Help?
 
 - 📖 Check `/docs` folder for detailed guides
-- 💬 Open GitHub issue: [github.com/johnnyduo/AslanAgents/issues](https://github.com/johnnyduo/AslanAgents/issues)
+- 💬 Open GitHub issue: [github.com/johnnyduo/WalrusAgents/issues](https://github.com/johnnyduo/WalrusAgents/issues)
 - 📧 Email: [your-email]
 - 🐦 Twitter: [@YourHandle]
 
@@ -1124,7 +1124,7 @@ Remember to set all `VITE_*` environment variables in your hosting platform's da
 **MIT License** - Free for commercial and personal use
 
 ```
-Copyright (c) 2025 Aslan Agents Team
+Copyright (c) 2025 Walrus Agents Team
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -1138,7 +1138,7 @@ See [LICENSE](./LICENSE) for full text.
 ## 🔗 Links & Resources
 
 ### Live Application
-- 🌐 **Demo**: https://aslan.quest
+- 🌐 **Demo**: https://walrus.quest
 - 📹 **Video**: [YouTube Demo](https://youtu.be/szUqNZ0IRFs)
 
 ### Smart Contracts
@@ -1186,6 +1186,6 @@ Built with ❤️ for Walrus Haulout Hackathon - AI x Data Track
 
 **⭐ Star us on GitHub if you find this project helpful!**
 
-[Live Demo](https://aslan.quest) • [Documentation](./docs) • [Report Bug](https://github.com/johnnyduo/AslanAgents/issues) • [Request Feature](https://github.com/johnnyduo/AslanAgents/issues)
+[Live Demo](https://walrus.quest) • [Documentation](./docs) • [Report Bug](https://github.com/johnnyduo/WalrusAgents/issues) • [Request Feature](https://github.com/johnnyduo/WalrusAgents/issues)
 
 </div>

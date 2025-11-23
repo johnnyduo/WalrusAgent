@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# ASLAN AGENTS Quick Setup Script
+# WALRUS AGENTS Quick Setup Script
 # This script helps you set up the project quickly
 
-echo "🦁 ASLAN AGENTS Quick Setup"
+echo "🐋 WALRUS AGENTS Quick Setup"
 echo "========================"
 echo ""
 

@@ -141,7 +141,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 px-6 mb-20 max-w-7xl mx-auto">
           <AgentPreview 
-            name="Aslan the Great" 
+            name="Walrus Commander" 
             role="Commander" 
             avatar="/lottie/Lion - Breath.json"
             ability="Supreme orchestrator coordinating all agents and strategic decisions"

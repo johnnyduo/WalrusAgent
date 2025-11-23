@@ -1,5 +1,5 @@
 [package]
-name = "aslan_agents"
+name = "walrus_agents"
 version = "1.0.0"
 edition = "2025.beta"
 
@@ -7,4 +7,4 @@ edition = "2025.beta"
 Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/testnet" }
 
 [addresses]
-aslan_agents = "0x0"
+walrus_agents = "0x0"

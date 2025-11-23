@@ -25,7 +25,7 @@ interface CacheEntry<T> {
 }
 
 class SmartCache {
-  private prefix = 'aslan_cache_';
+  private prefix = 'walrus_cache_';
 
   set<T>(key: string, data: T, ttlSeconds: number = 300): void {
     try {
@@ -1021,10 +1021,10 @@ export const apiUtils = {
 
   // Get cache stats
   getCacheStats() {
-    const keys = Object.keys(localStorage).filter(k => k.startsWith('aslan_cache_'));
+    const keys = Object.keys(localStorage).filter(k => k.startsWith('walrus_cache_'));
     return {
       totalEntries: keys.length,
-      keys: keys.map(k => k.replace('aslan_cache_', ''))
+      keys: keys.map(k => k.replace('walrus_cache_', ''))
     };
   },
 

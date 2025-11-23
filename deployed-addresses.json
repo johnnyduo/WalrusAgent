@@ -1,7 +1,22 @@
 {
   "network": "testnet",
-  "packageId": "0x0000000000000000000000000000000000000000000000000000000000000000",
-  "agentRegistryId": "0x0000000000000000000000000000000000000000000000000000000000000000",
-  "rewardPoolId": "0x0000000000000000000000000000000000000000000000000000000000000000",
-  "note": "Update these addresses after deploying contracts via Sui Explorer"
+  "deployedAt": "",
+  "deployer": "0xce2162a53565ac45e6338efcac7318d83d69debe934498bb2f592cee1f0410c9",
+  "packageId": "0x0",
+  "contracts": {
+    "agentRegistry": {
+      "moduleId": "0x0::agent_registry",
+      "sharedObjectId": "0x0"
+    },
+    "trainingRewards": {
+      "moduleId": "0x0::training_rewards",
+      "sharedObjectId": "0x0"
+    }
+  },
+  "explorer": {
+    "package": "https://suiscan.xyz/testnet/object/0x0",
+    "registry": "https://suiscan.xyz/testnet/object/0x0",
+    "pool": "https://suiscan.xyz/testnet/object/0x0"
+  },
+  "note": "Deploy contracts by running: yarn deploy:browser"
 }

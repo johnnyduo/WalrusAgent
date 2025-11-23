@@ -44,7 +44,7 @@ They want projects that show:
 
 ---
 
-# 🦁 **Step 2 — Reimagine “Aslan Agents” for the Walrus Protocol**
+# 🐋 **Step 2 — Reimagine "Walrus Agents" for the Walrus Protocol**
 
 We're redesigning it to:
 
@@ -76,11 +76,11 @@ We're redesigning it to:
 
 ---
 
-# 🧠 **Step 3 — New Positioning: Aslan Agents (Walrus Edition)**
+# 🧠 **Step 3 — New Positioning: Walrus Agents (Walrus Edition)**
 
 New summary:
 
-> **Aslan Agents is a fully decentralized AI agent collective that trains, evolves, and coordinates using the Walrus protocol on Sui.**
+> **Walrus Agents is a fully decentralized AI agent collective that trains, evolves, and coordinates using the Walrus protocol on Sui.**
 > Agents access on-chain data, update their local models collaboratively, store snapshots on Walrus, and use Sui Move contracts for coordination, incentives, and governance.
 
 This is 100% aligned with **AI x Data** track.
@@ -173,7 +173,7 @@ This becomes a **living on-chain ecosystem of evolving AI agents**.
 
 # 🧩 **Step 5 — Final Project Direction (100% aligned with AI x Data Track)**
 
-# 🌟 **Project: Aslan Agents — Decentralized AI Factions on Walrus + Sui**
+# 🌟 **Project: Walrus Agents — Decentralized AI Factions on Walrus + Sui**
 
 ### **Core Idea**
 
@@ -293,7 +293,7 @@ Here is your technology stack:
 
 This hits all criteria:
 
-> **Aslan Agents transforms AI into a decentralized, evolving multi-agent civilization powered by Walrus and Sui.**
+> **Walrus Agents transforms AI into a decentralized, evolving multi-agent civilization powered by Walrus and Sui.**
 > Users contribute compute to train agent species, store model updates on Walrus, verify inference with SEAL, and watch the agents collaborate, adapt, and evolve through on-chain data.
 
 ---
