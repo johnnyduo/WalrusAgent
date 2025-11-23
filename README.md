@@ -55,8 +55,8 @@
 
 ✅ **Transparent** - All training data is cryptographically verified on Walrus  
 ✅ **Accessible** - Anyone can train models directly in their browser  
-✅ **Rewarded** - Contributors earn tokens for their compute contributions  
-✅ **Verifiable** - Every training session is recorded on Sui blockchain  
+✅ **Tracked** - Contributions are persisted locally and verifiable on-chain  
+✅ **Verifiable** - Every training session links to Walrus blobs  
 ✅ **Permanent** - Training data is preserved with 10-epoch storage
 
 ### What Makes This Special?
@@ -87,17 +87,16 @@ Current AI training is:
 ```
 Browser (TensorFlow.js) → Walrus Protocol → Sui Blockchain
         ↓                       ↓                ↓
-   Real Training         Permanent Storage    Verified Record
-   41 Parameters         Seal Certified       Token Rewards
+   Real Training         Permanent Storage    Contribution Tracking
+   41 Parameters         Seal Certified       Verified Records
 ```
 
 **How It Works:**
 1. 🧠 **Train** - Run real neural network training in your browser (1-2 seconds)
 2. 🐋 **Store** - Upload gradients to Walrus with Seal certification (~2-4 seconds)
-3. ⛓️ **Verify** - Record contribution on Sui blockchain (optional)
-4. 💰 **Earn** - Receive token rewards for your contribution
+3. ⛓️ **Verify** - Track contribution with localStorage persistence
 
-**Result:** A fully decentralized, transparent, and incentivized AI training network where every participant can contribute and verify
+**Result:** A fully decentralized and transparent AI training network where every participant can contribute and verify
 
 ---
 

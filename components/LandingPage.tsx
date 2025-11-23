@@ -56,8 +56,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
             <p className="text-base text-gray-400 max-w-2xl leading-relaxed">
               Train <span className="text-walrus-purple font-semibold">real neural networks</span> directly in your browser with TensorFlow.js. 
               Store model weights on <span className="text-walrus-teal font-semibold">Walrus Protocol</span> with Seal certification. 
-              Verify contributions on <span className="text-walrus-purple font-semibold">Sui blockchain</span>. 
-              Earn <span className="text-walrus-teal font-semibold">token rewards</span> for your compute power. True decentralized AI training—no servers required.
+              Track contributions on <span className="text-walrus-purple font-semibold">Sui blockchain</span>. 
+              True decentralized AI training—no servers required.
             </p>
 
             <div className="flex flex-wrap gap-4">
@@ -191,7 +191,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
           <div className="inline-block p-8 bg-black/40 rounded-xl backdrop-blur-sm border border-walrus-teal/20">
             <h3 className="text-2xl font-bold mb-3 font-mono text-walrus-teal uppercase tracking-wider">Start Training Now</h3>
             <p className="text-gray-400 mb-6 max-w-2xl mx-auto font-mono text-sm">
-              Train real neural networks in your browser. Store on Walrus. Earn rewards on Sui.
+              Train real neural networks in your browser. Store on Walrus. Verify on Sui.
             </p>
             <button
               onClick={onLaunchApp}

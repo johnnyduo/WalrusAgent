@@ -1,7 +1,7 @@
 // Hook for submitting training contributions to Sui blockchain
 import { useState, useCallback } from 'react';
 import { Transaction } from '@mysten/sui/transactions';
-import { useSuiWallet } from './useSuiWallet';
+import { useWallet } from '@suiet/wallet-kit';
 import { AGENT_PACKAGE_ID, REWARD_POOL_ID } from '../config/suiWalletConfig';
 
 export interface TrainingSubmission {
@@ -17,7 +17,7 @@ export interface UseTrainingSubmitReturn {
 }
 
 export const useTrainingSubmit = (): UseTrainingSubmitReturn => {
-  const { signAndExecute } = useSuiWallet();
+  const wallet = useWallet();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -45,9 +45,9 @@ export const useTrainingSubmit = (): UseTrainingSubmitReturn => {
         ],
       });
 
-      // Execute transaction
-      const result = await signAndExecute({
-        transaction: tx,
+      // Execute transaction using Suiet wallet
+      const result = await wallet.signAndExecuteTransactionBlock({
+        transactionBlock: tx as any, // Suiet expects TransactionBlock but we have Transaction
       });
 
       if (!result?.digest) {
@@ -65,7 +65,7 @@ export const useTrainingSubmit = (): UseTrainingSubmitReturn => {
       setIsSubmitting(false);
       throw error;
     }
-  }, [signAndExecute]);
+  }, [wallet]);
 
   return {
     submitToChain,

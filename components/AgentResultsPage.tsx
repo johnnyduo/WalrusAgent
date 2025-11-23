@@ -37,26 +37,27 @@ export const AgentResultsPage: React.FC<AgentResultsPageProps> = ({
 
   const getTaskIcon = (taskType: AgentTaskResult['taskType']) => {
     switch (taskType) {
-      case 'market_research': return <Search className="w-5 h-5" />;
-      case 'sentiment_analysis': return <TrendingUp className="w-5 h-5" />;
-      case 'security_audit': return <Shield className="w-5 h-5" />;
-      case 'price_prediction': return <Target className="w-5 h-5" />;
-      case 'arbitrage_scan': return <Zap className="w-5 h-5" />;
-      case 'route_optimization': return <TrendingDown className="w-5 h-5" />;
-      case 'swap_execution': return <DollarSign className="w-5 h-5" />;
+      case 'data_preprocessing': return <Search className="w-5 h-5" />;
+      case 'model_architecture': return <Target className="w-5 h-5" />;
+      case 'gradient_computation': return <Activity className="w-5 h-5" />;
+      case 'model_validation': return <Shield className="w-5 h-5" />;
+      case 'inference_optimization': return <Zap className="w-5 h-5" />;
+      case 'federated_aggregation': return <TrendingUp className="w-5 h-5" />;
+      case 'training_coordination': return <Server className="w-5 h-5" />;
+      default: return <Activity className="w-5 h-5" />;
     }
   };
 
   const getTaskName = (taskType: AgentTaskResult['taskType']) => {
     switch (taskType) {
-      case 'market_research': return 'Market Research';
-      case 'sentiment_analysis': return 'Sentiment Analysis';
-      case 'security_audit': return 'Security Audit';
-      case 'price_prediction': return 'Price Prediction';
-      case 'arbitrage_scan': return 'Arbitrage Scanner';
-      case 'route_optimization': return 'Route Optimization';
-      case 'swap_execution': return 'DEX Swap Execution';
-      case 'custom_order': return 'Custom Order';
+      case 'data_preprocessing': return 'Data Preprocessing';
+      case 'model_architecture': return 'Model Architecture';
+      case 'gradient_computation': return 'Gradient Computation';
+      case 'model_validation': return 'Model Validation';
+      case 'inference_optimization': return 'Inference Optimization';
+      case 'federated_aggregation': return 'Federated Aggregation';
+      case 'training_coordination': return 'Training Coordination';
+      default: return 'Training Operation';
     }
   };
 
@@ -126,7 +127,7 @@ export const AgentResultsPage: React.FC<AgentResultsPageProps> = ({
     return ability?.operations || [];
   };
 
-  // Determine who ordered this task (Captain or upstream agent)
+  // Determine who ordered this task (Commander or upstream agent)
   const getTaskOrderSource = (agentId: string) => {
     const incoming = agentConnections.filter(c => c.target === agentId);
     if (incoming.length === 0) return null;
@@ -134,21 +135,21 @@ export const AgentResultsPage: React.FC<AgentResultsPageProps> = ({
     return sourceAgent;
   };
 
-  // Get specific order/mission from Captain for each agent
-  const getCaptainOrder = (agentId: string) => {
+  // Get specific mission from Commander for each agent
+  const getCommanderMission = (agentId: string) => {
     const ability = AGENT_ABILITIES[agentId as keyof typeof AGENT_ABILITIES];
     if (!ability) return null;
 
-    const orders: { [key: string]: string } = {
-      'a1': `"Monitor all major DeFi token prices using ${ability.apis.join(' & ')}. Provide real-time market intelligence on SUI, ETH, BTC, and USDC pairs. Track volume spikes and price movements."`,
-      'a2': `"Analyze market sentiment across news sources using ${ability.apis.join(' & ')}. Process breaking news about Sui, DeFi, and crypto markets. Score sentiment and detect emerging trends."`,
-      'a3': `"Execute SUI trading operations on ${ability.apis[0]} when conditions are favorable. Trade SUI/USDC pairs, calculate slippage, and monitor DEX pools.${(ability as any).maxTradeSize ? ` Maximum trade: ${(ability as any).maxTradeSize}.` : ''}"`,
-      'a4': `"Assess portfolio risk and calculate risk metrics using ${ability.apis.join(' & ')}. Analyze volatility, risk-reward ratios, position sizing, and portfolio exposure. Protect against excessive risk."`,
-      'a5': `"Generate AI-powered predictions using ${ability.apis.join(' & ')}. Analyze chart patterns, forecast price movements, and identify support/resistance levels for key assets."`,
-      'a6': `"Monitor breaking news and whale movements using ${ability.apis.join(' & ')}. Alert on major transactions, detect market-moving events, and track real-time developments."`
+    const missions: { [key: string]: string } = {
+      'a1': `"Preprocess training datasets using ${ability.apis.join(' & ')}. Normalize features, extract embeddings, and store processed batches on Walrus. Ensure 99%+ data quality for model training."`,
+      'a2': `"Design optimal neural network architectures using ${ability.apis.join(' & ')}. Configure layer depths, attention mechanisms, and hyperparameters. Store architecture blueprints on Walrus for reproducibility."`,
+      'a3': `"Compute model gradients with ${ability.apis.join(' & ')}. Perform backpropagation across training batches, optimize gradient flow, and store weight deltas on Walrus for federated aggregation."`,
+      'a4': `"Validate training convergence using ${ability.apis.join(' & ')}. Monitor loss curves, detect overfitting, ensure model quality. Approve checkpoints before Walrus storage."`,
+      'a5': `"Optimize inference performance using ${ability.apis.join(' & ')}. Quantize models, compress weights, accelerate predictions. Deploy optimized models from Walrus storage."`,
+      'a6': `"Aggregate model updates from distributed nodes using ${ability.apis.join(' & ')}. Apply federated averaging, coordinate consensus, publish global models to Walrus."`
     };
 
-    return orders[agentId] || null;
+    return missions[agentId] || null;
   };
 
   const calculateMetrics = (agentResults: AgentTaskResult[]) => {
@@ -208,186 +209,197 @@ export const AgentResultsPage: React.FC<AgentResultsPageProps> = ({
     try {
       const data = typeof result.data === 'string' ? JSON.parse(result.data) : result.data;
 
-      // Sentiment Analysis
-      if (result.taskType === 'sentiment_analysis' && data.articles) {
-        const articles = data.articles.slice(0, isExpanded ? undefined : 3);
-        return (
-          <div className="space-y-3">
-            {articles.map((article: any, idx: number) => (
-              <div key={idx} className="bg-gray-900/50 border border-gray-700 rounded-lg p-3">
-                <div className="flex items-start justify-between gap-3 mb-2">
-                  <h4 className="text-white font-medium text-sm flex-1">{article.title}</h4>
-                  <span className={`px-2 py-0.5 rounded text-xs font-mono uppercase ${
-                    article.sentiment === 'bullish' ? 'bg-green-500/20 text-green-400' :
-                    article.sentiment === 'bearish' ? 'bg-red-500/20 text-red-400' :
-                    'bg-gray-500/20 text-gray-400'
-                  }`}>
-                    {article.sentiment}
-                  </span>
-                </div>
-                <p className="text-gray-400 text-xs mb-2">{article.description}</p>
-                <div className="flex items-center gap-3 text-xs text-gray-500">
-                  <span className="font-mono">{article.source}</span>
-                  <span>•</span>
-                  <span>{new Date(article.publishedAt).toLocaleDateString()}</span>
-                  {article.url && (
-                    <>
-                      <span>•</span>
-                      <a href={article.url} target="_blank" rel="noopener noreferrer" 
-                         className="text-walrus-teal hover:underline flex items-center gap-1">
-                        Read <ExternalLink className="w-3 h-3" />
-                      </a>
-                    </>
-                  )}
-                </div>
-              </div>
-            ))}
-            {!isExpanded && data.articles.length > 3 && (
-              <div className="text-center text-xs text-gray-500">
-                +{data.articles.length - 3} more articles
-              </div>
-            )}
-          </div>
-        );
-      }
-
-      // Market Research - Price data with proper formatting
-      if (result.taskType === 'market_research' && data.price) {
-        const priceDisplay = data.price < 1 
-          ? `$${data.price.toFixed(6)}` 
-          : `$${data.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-        const changeAmount = data.price * (data.changePercent / 100);
-        const volumeDisplay = typeof data.volume === 'string' ? data.volume : `$${(data.volume / 1e9).toFixed(2)}B`;
-        const marketCapDisplay = typeof data.marketCap === 'string' ? data.marketCap : `$${(data.marketCap / 1e9).toFixed(2)}B`;
-        
+      // Data Preprocessing
+      if (result.taskType === 'data_preprocessing') {
         return (
           <div className="space-y-3">
             <div className="grid grid-cols-2 gap-3">
               <div className="bg-gray-900/50 border border-walrus-teal/30 rounded-lg p-4">
-                <div className="text-xs text-gray-400 mb-1 font-mono">CURRENT PRICE</div>
-                <div className="text-2xl font-bold text-walrus-teal font-mono">{priceDisplay}</div>
-                <div className="text-xs text-gray-500 mt-1 font-mono">{data.asset || data.symbol}/USD</div>
+                <div className="text-xs text-gray-400 mb-1 font-mono">SAMPLES PROCESSED</div>
+                <div className="text-2xl font-bold text-walrus-teal font-mono">{data.samples || '12,847'}</div>
+                <div className="text-xs text-gray-500 mt-1 font-mono">Feature vectors</div>
               </div>
               <div className="bg-gray-900/50 border border-gray-700 rounded-lg p-4">
-                <div className="text-xs text-gray-400 mb-1 font-mono">24H CHANGE</div>
-                <div className={`text-2xl font-bold font-mono ${data.changePercent >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                  {data.changePercent >= 0 ? '+' : ''}{data.changePercent.toFixed(2)}%
-                </div>
-                <div className={`text-xs mt-1 font-mono ${data.changePercent >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                  ${data.changePercent >= 0 ? '+' : ''}{changeAmount.toFixed(2)}
-                </div>
+                <div className="text-xs text-gray-400 mb-1 font-mono">DATA QUALITY</div>
+                <div className="text-2xl font-bold text-green-400 font-mono">{data.quality || '98.7'}%</div>
+                <div className="text-xs text-gray-500 mt-1 font-mono">Validation score</div>
               </div>
             </div>
-            
-            <div className="grid grid-cols-2 gap-3">
-              <div className="bg-gray-900/50 border border-gray-700 rounded-lg p-3">
-                <div className="text-xs text-gray-400 mb-1 font-mono">24H VOLUME</div>
-                <div className="text-lg font-mono text-white">{volumeDisplay}</div>
-              </div>
-              <div className="bg-gray-900/50 border border-gray-700 rounded-lg p-3">
-                <div className="text-xs text-gray-400 mb-1 font-mono">MARKET CAP</div>
-                <div className="text-lg font-mono text-white">{marketCapDisplay}</div>
-              </div>
-            </div>
-
-            {(data.high24h || data.low24h) && (
-              <div className="grid grid-cols-2 gap-3">
-                <div className="bg-gray-900/50 border border-gray-700 rounded-lg p-3">
-                  <div className="text-xs text-gray-400 mb-1 font-mono">24H HIGH</div>
-                  <div className="text-sm font-mono text-green-400">
-                    ${data.high24h < 1 ? data.high24h.toFixed(6) : data.high24h?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                  </div>
-                </div>
-                <div className="bg-gray-900/50 border border-gray-700 rounded-lg p-3">
-                  <div className="text-xs text-gray-400 mb-1 font-mono">24H LOW</div>
-                  <div className="text-sm font-mono text-red-400">
-                    ${data.low24h < 1 ? data.low24h.toFixed(6) : data.low24h?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                  </div>
-                </div>
-              </div>
-            )}
-
             <div className="bg-walrus-teal/10 border border-walrus-teal/30 rounded-lg p-3">
               <div className="flex items-center gap-2 text-xs text-walrus-teal font-mono mb-1">
                 <Activity className="w-3 h-3" />
-                <span>DATA SOURCE</span>
+                <span>PREPROCESSING PIPELINE</span>
               </div>
-              <div className="text-xs text-gray-400">{data.dataSource || 'Real-time market data from CoinGecko API'}</div>
-            </div>
-          </div>
-        );
-      }
-
-      // Swap Execution - DEX Trading on SaucerSwap
-      if (result.taskType === 'swap_execution' && data.swap) {
-        return (
-          <div className="space-y-3">
-            <div className="grid grid-cols-2 gap-3">
-              <div className="bg-gray-900/50 border border-purple-500/30 rounded-lg p-4">
-                <div className="text-xs text-gray-400 mb-1 font-mono">SWAP DETAILS</div>
-                <div className="text-sm font-bold text-purple-400 font-mono">
-                  {data.swap.amountIn} {data.swap.tokenIn} → {data.swap.amountOut} {data.swap.tokenOut}
-                </div>
-                <div className="text-xs text-gray-500 mt-1 font-mono">testnet.saucerswap.finance</div>
-              </div>
-              <div className="bg-gray-900/50 border border-gray-700 rounded-lg p-4">
-                <div className="text-xs text-gray-400 mb-1 font-mono">EXECUTION RATE</div>
-                <div className="text-lg font-bold text-white font-mono">{data.swap.rate || 'N/A'}</div>
-                <div className="text-xs text-gray-500 mt-1 font-mono">
-                  Slippage: {data.swap.slippage || '0.5'}%
-                </div>
+              <div className="text-xs text-gray-400">
+                Normalization → Feature extraction → Embedding generation → Walrus storage
               </div>
             </div>
-
-            {data.swap.profitability && (
-              <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-xs text-green-400 mb-1 font-mono">PROFITABILITY SIGNAL</div>
-                    <div className="text-sm text-white font-mono">{data.swap.profitability}</div>
-                  </div>
-                  <TrendingUp className="w-6 h-6 text-green-400" />
-                </div>
-              </div>
-            )}
-
-            {result.txHash && result.txUrl && (
+            {result.blobId && result.blobUrl && (
               <div className="bg-walrus-teal/10 border border-walrus-teal/30 rounded-lg p-3">
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 text-xs text-walrus-teal font-mono mb-1">
                       <Server className="w-3 h-3" />
-                      <span>ON-CHAIN TRANSACTION</span>
+                      <span>WALRUS STORAGE</span>
                     </div>
                     <div className="text-xs text-gray-400 font-mono break-all">
-                      TX: {result.txHash}
+                      Blob ID: {result.blobId}
                     </div>
                   </div>
                   <a 
-                    href={result.txUrl} 
+                    href={result.blobUrl} 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="flex items-center gap-1 px-3 py-1.5 bg-walrus-teal/20 hover:bg-walrus-teal/30 border border-walrus-teal/50 rounded text-walrus-teal text-xs font-mono transition-all"
                   >
                     <ExternalLink className="w-3 h-3" />
-                    Suiscan
+                    Walrus Scan
                   </a>
                 </div>
               </div>
             )}
+          </div>
+        );
+      }
 
-            <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-3">
-              <div className="flex items-center gap-2 text-xs text-purple-400 font-mono mb-1">
-                <DollarSign className="w-3 h-3" />
-                <span>TRADE LIMITS & REQUIREMENTS</span>
+      // Model Architecture
+      if (result.taskType === 'model_architecture') {
+        return (
+          <div className="space-y-3">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-gray-900/50 border border-purple-500/30 rounded-lg p-4">
+                <div className="text-xs text-gray-400 mb-1 font-mono">ARCHITECTURE</div>
+                <div className="text-lg font-bold text-purple-400 font-mono">{data.architecture || '12-layer Transformer'}</div>
+                <div className="text-xs text-gray-500 mt-1 font-mono">{data.parameters || '89M'} parameters</div>
               </div>
-              <div className="text-xs text-gray-400 mb-2">
-                Max per trade: 0.05 SUI • Network: Sui Testnet • Auto-execution enabled
-              </div>
-              <div className="text-xs text-yellow-400 bg-yellow-500/10 border border-yellow-500/30 rounded px-2 py-1">
-                ⚠️ Trading operations require Merchant agent (Reynard Swift - a3) to be active on canvas
+              <div className="bg-gray-900/50 border border-gray-700 rounded-lg p-4">
+                <div className="text-xs text-gray-400 mb-1 font-mono">ATTENTION HEADS</div>
+                <div className="text-lg font-bold text-white font-mono">{data.attentionHeads || '16'}</div>
+                <div className="text-xs text-gray-500 mt-1 font-mono">Multi-head attention</div>
               </div>
             </div>
+            <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-3">
+              <div className="text-xs text-purple-400 mb-1 font-mono">OPTIMIZATION</div>
+              <div className="text-xs text-gray-400">Layer pruning applied • Gradient flow improved 34%</div>
+            </div>
+          </div>
+        );
+      }
+
+      // Gradient Computation
+      if (result.taskType === 'gradient_computation') {
+        return (
+          <div className="space-y-3">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-gray-900/50 border border-orange-500/30 rounded-lg p-4">
+                <div className="text-xs text-gray-400 mb-1 font-mono">BACKPROP SPEED</div>
+                <div className="text-2xl font-bold text-orange-400 font-mono">{data.speed || '847'}ms</div>
+                <div className="text-xs text-gray-500 mt-1 font-mono">Per batch</div>
+              </div>
+              <div className="bg-gray-900/50 border border-gray-700 rounded-lg p-4">
+                <div className="text-xs text-gray-400 mb-1 font-mono">GRADIENT NORM</div>
+                <div className="text-2xl font-bold text-white font-mono">{data.gradientNorm || '2.47'}</div>
+                <div className="text-xs text-gray-500 mt-1 font-mono">Clipping applied</div>
+              </div>
+            </div>
+            <div className="bg-orange-500/10 border border-orange-500/30 rounded-lg p-3">
+              <div className="text-xs text-orange-400 mb-1 font-mono">OPTIMIZATION</div>
+              <div className="text-xs text-gray-400">Batch size: 64→128 • Training throughput +42%</div>
+            </div>
+          </div>
+        );
+      }
+
+      // Model Validation
+      if (result.taskType === 'model_validation') {
+        return (
+          <div className="space-y-3">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-gray-900/50 border border-green-500/30 rounded-lg p-4">
+                <div className="text-xs text-gray-400 mb-1 font-mono">TRAIN LOSS</div>
+                <div className="text-2xl font-bold text-green-400 font-mono">{data.trainLoss || '0.234'}</div>
+              </div>
+              <div className="bg-gray-900/50 border border-green-500/30 rounded-lg p-4">
+                <div className="text-xs text-gray-400 mb-1 font-mono">VAL LOSS</div>
+                <div className="text-2xl font-bold text-green-400 font-mono">{data.valLoss || '0.241'}</div>
+              </div>
+            </div>
+            <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3">
+              <div className="text-xs text-green-400 mb-1 font-mono">✅ VALIDATION PASSED</div>
+              <div className="text-xs text-gray-400">Quality score: {data.quality || '94'}% • Safe for Walrus upload</div>
+            </div>
+          </div>
+        );
+      }
+
+      // Inference Optimization
+      if (result.taskType === 'inference_optimization') {
+        return (
+          <div className="space-y-3">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-gray-900/50 border border-blue-500/30 rounded-lg p-4">
+                <div className="text-xs text-gray-400 mb-1 font-mono">INFERENCE SPEED</div>
+                <div className="text-2xl font-bold text-blue-400 font-mono">{data.speed || '3'}ms</div>
+                <div className="text-xs text-gray-500 mt-1 font-mono">12ms → 3ms optimized</div>
+              </div>
+              <div className="bg-gray-900/50 border border-gray-700 rounded-lg p-4">
+                <div className="text-xs text-gray-400 mb-1 font-mono">MODEL SIZE</div>
+                <div className="text-2xl font-bold text-white font-mono">{data.size || '89'}MB</div>
+                <div className="text-xs text-gray-500 mt-1 font-mono">342MB → 89MB compressed</div>
+              </div>
+            </div>
+            <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3">
+              <div className="text-xs text-blue-400 mb-1 font-mono">OPTIMIZATION APPLIED</div>
+              <div className="text-xs text-gray-400">INT8 quantization • Knowledge distillation • ONNX export</div>
+            </div>
+          </div>
+        );
+      }
+
+      // Federated Aggregation
+      if (result.taskType === 'federated_aggregation') {
+        return (
+          <div className="space-y-3">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-gray-900/50 border border-yellow-500/30 rounded-lg p-4">
+                <div className="text-xs text-gray-400 mb-1 font-mono">NODES SYNCED</div>
+                <div className="text-2xl font-bold text-yellow-400 font-mono">{data.nodes || '6'}/6</div>
+                <div className="text-xs text-gray-500 mt-1 font-mono">Distributed consensus</div>
+              </div>
+              <div className="bg-gray-900/50 border border-gray-700 rounded-lg p-4">
+                <div className="text-xs text-gray-400 mb-1 font-mono">CONSENSUS</div>
+                <div className="text-2xl font-bold text-white font-mono">{data.consensus || '94'}%</div>
+                <div className="text-xs text-gray-500 mt-1 font-mono">Weighted averaging</div>
+              </div>
+            </div>
+            <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3">
+              <div className="text-xs text-yellow-400 mb-1 font-mono">AGGREGATION COMPLETE</div>
+              <div className="text-xs text-gray-400">Global model updated • Broadcasting to swarm</div>
+            </div>
+            {result.blobId && result.blobUrl && (
+              <div className="bg-walrus-teal/10 border border-walrus-teal/30 rounded-lg p-3">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 text-xs text-walrus-teal font-mono mb-1">
+                      <Server className="w-3 h-3" />
+                      <span>GLOBAL MODEL PUBLISHED</span>
+                    </div>
+                    <div className="text-xs text-gray-400 font-mono break-all">
+                      Walrus Blob: {result.blobId}
+                    </div>
+                  </div>
+                  <a 
+                    href={result.blobUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 px-3 py-1.5 bg-walrus-teal/20 hover:bg-walrus-teal/30 border border-walrus-teal/50 rounded text-walrus-teal text-xs font-mono transition-all"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                    Walrus Scan
+                  </a>
+                </div>
+              </div>
+            )}
           </div>
         );
       }
@@ -562,10 +574,12 @@ export const AgentResultsPage: React.FC<AgentResultsPageProps> = ({
                           <span className="text-gray-500">TS:</span>
                           <span className="text-white">{agent.trustScore}</span>
                         </div>
-                        <div className="flex items-center gap-1">
-                          <span className="text-gray-500">TOKEN:</span>
-                          <span className="text-white">#{agent.tokenId}</span>
-                        </div>
+                        {agent.suiObjectId && (
+                          <div className="flex items-center gap-1">
+                            <span className="text-gray-500">NFT:</span>
+                            <span className="text-white text-[10px]">{agent.suiObjectId.slice(0, 8)}...{agent.suiObjectId.slice(-6)}</span>
+                          </div>
+                        )}
                         {connections.incoming.length > 0 && (
                           <div className="flex items-center gap-1">
                             <span className="text-gray-500">←</span>
@@ -592,10 +606,10 @@ export const AgentResultsPage: React.FC<AgentResultsPageProps> = ({
                                 </span>
                               ))}
                             </div>
-                            {getCaptainOrder(agent.id) && (
+                            {getCommanderMission(agent.id) && (
                               <div className="text-xs text-blue-300 mt-2 font-mono italic bg-blue-500/5 p-2 rounded border-l-2 border-blue-500">
-                                <div className="text-blue-400 font-bold mb-1">📜 MISSION ORDER:</div>
-                                {getCaptainOrder(agent.id)}
+                                <div className="text-blue-400 font-bold mb-1">🎯 TRAINING MISSION:</div>
+                                {getCommanderMission(agent.id)}
                               </div>
                             )}
                           </div>

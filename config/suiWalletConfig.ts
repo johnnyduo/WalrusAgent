@@ -42,6 +42,9 @@ export const WALRUS_CONFIG = {
   ],
   publisher: 'https://publisher.walrus-testnet.walrus.space', // Primary
   
+  // Upload relay configuration for Walrus SDK
+  uploadRelay: 'https://publisher.walrus-testnet.walrus.space',
+  
   // Storage configuration
   epochs: 5, // Number of epochs to store (recommended: 5 for testnet)
   

@@ -288,7 +288,7 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
             <div>🎯 Model Version: <span className="font-mono text-walrus-teal">#{liveMetrics?.modelVersion || (stats?.totalVersions || 0) + 1}</span></div>
             <div>📊 Accuracy: <span className="font-mono text-green-400">{(trainingResult.accuracy * 100).toFixed(1)}%</span> | Loss: <span className="font-mono text-orange-400">{trainingResult.loss.toFixed(4)}</span></div>
             <div>🧮 Gradients: <span className="font-mono">{trainingResult.deltaWeights.length} parameters</span></div>
-            {CONTRACTS_DEPLOYED && <div>💰 Reward: <span className="font-mono text-yellow-400">+50 SUI</span></div>}
+            {CONTRACTS_DEPLOYED && <div>✅ <span className="font-mono text-green-400">Contribution Recorded</span></div>}
           </div>
           <div className="space-y-1">
             {!deltaBlobId.startsWith('local_') && (
@@ -640,7 +640,7 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
               </h3>
               <p className="text-gray-400 text-sm mb-6 max-w-md mx-auto">
                 Contribute compute power directly from your browser to train AI models collaboratively.
-                Your contributions are rewarded with tokens.
+                Your contributions are tracked on Walrus.
               </p>
               <button
                 onClick={handleStartTraining}
@@ -681,7 +681,7 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
                       </div>
                       <div className="text-right">
                         <p className="text-walrus-teal text-xs font-bold">
-                          +100 rewards
+                          Tracked
                         </p>
                       </div>
                     </div>
