@@ -18,8 +18,14 @@
 ### 📦 Deployed Contracts
 
 **Network**: Sui Testnet  
-**Package ID**: `0x0` (Not yet deployed - contracts ready)  
-**Deployer**: `0xce2162a53565ac45e6338efcac7318d83d69debe934498bb2f592cee1f0410c9`
+**Package ID**: `0x5784dcccc3c786420465afed5f820779e61d2f950e2bca6a943b58d0cc4fc0f6`  
+**Deployer**: `0xbf9cf662405b0ddcb7ffb02d8779e48b49def5468e87004ba4ab16edd62fedb7`  
+**Deployed**: November 23, 2025  
+**Transaction**: `EV7nzeeVcHnDF7aWzf2syb2Kzxkr9ooyYyNPE7tPedib`
+
+**Contracts**:
+- **Agent Registry**: `0xf50fb987a2e47aa51996766f36ad8d497a10d5c271dec638fcd8c8955d8739b3`
+- **Training Rewards**: `0xcbe93ec27a9364f210216028f5fbdc86e016ed5cd9325ca94b09910569be59f0`
 
 **Walrus Protocol**:  
 🐋 Aggregator: `https://aggregator.walrus-testnet.walrus.space`  
@@ -64,7 +70,7 @@
 This isn't just a demo—it's a fully functional decentralized AI training system with:
 - **Real ML Training**: 41-parameter neural network with actual backpropagation
 - **Real Walrus Storage**: Training gradients uploaded with Seal certification
-- **Real Blockchain Integration**: On-chain contribution tracking (contracts ready)
+- **Real Blockchain Integration**: On-chain contribution tracking (deployed to Sui testnet)
 - **Real-Time UI**: Live metrics showing loss/accuracy improvements during training
 
 ---
@@ -652,7 +658,11 @@ let improvement_bonus = improvement_score * 10_000;
 let total_reward = base_reward + improvement_bonus;
 ```
 
-**Deployment Status**: Contracts ready for testnet deployment
+**Deployment Status**: ✅ **DEPLOYED TO SUI TESTNET**
+- Package: `0x5784dcccc3c786420465afed5f820779e61d2f950e2bca6a943b58d0cc4fc0f6`
+- Agent Registry: `0xf50fb987a2e47aa51996766f36ad8d497a10d5c271dec638fcd8c8955d8739b3`
+- Training Rewards: `0xcbe93ec27a9364f210216028f5fbdc86e016ed5cd9325ca94b09910569be59f0`
+- [View on Suiscan](https://suiscan.xyz/testnet/object/0x5784dcccc3c786420465afed5f820779e61d2f950e2bca6a943b58d0cc4fc0f6)
 
 ---
 
@@ -893,7 +903,9 @@ MIT License - see [LICENSE](LICENSE) file for details
 **Track**: AI x Data  
 **Repository**: [github.com/johnnyduo/WalrusAgent](https://github.com/johnnyduo/WalrusAgent)  
 **Network**: Sui Testnet  
-**Deployer**: `0xce2162a53565ac45e6338efcac7318d83d69debe934498bb2f592cee1f0410c9`
+**Package ID**: `0x5784dcccc3c786420465afed5f820779e61d2f950e2bca6a943b58d0cc4fc0f6`  
+**Deployer**: `0xbf9cf662405b0ddcb7ffb02d8779e48b49def5468e87004ba4ab16edd62fedb7`  
+**Explorer**: [View on Suiscan](https://suiscan.xyz/testnet/object/0x5784dcccc3c786420465afed5f820779e61d2f950e2bca6a943b58d0cc4fc0f6)
 
 **Built with ❤️ for the Walrus Haulout Hackathon** 🐋
 
