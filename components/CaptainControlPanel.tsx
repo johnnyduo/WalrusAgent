@@ -22,23 +22,27 @@ export const CaptainControlPanel: React.FC<CaptainControlPanelProps> = ({
 
   return (
     <div className={`
-      bg-black/90 backdrop-blur-md border rounded-lg shadow-lg overflow-hidden transition-all duration-200
+      relative bg-gradient-to-br from-black/95 via-walrus-teal/5 to-black/90 backdrop-blur-xl border rounded-2xl shadow-2xl overflow-hidden transition-all duration-300
       ${isExpanded 
-        ? 'border-walrus-teal/50 shadow-walrus-teal/20' 
-        : 'border-walrus-teal/30 shadow-walrus-teal/10'
+        ? 'border-walrus-teal/60 shadow-[0_0_30px_rgba(153,239,228,0.3)]' 
+        : 'border-walrus-teal/20 shadow-[0_0_15px_rgba(153,239,228,0.1)]'
       }
     `}>
+      {/* Ocean Wave Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
+        <div className="absolute -bottom-10 left-0 right-0 h-32 bg-gradient-to-t from-walrus-purple/30 to-transparent rounded-full blur-3xl"></div>
+      </div>
       {/* Main Control Bar - Always Visible */}
       <div className="flex items-center gap-2 p-2">
         {/* Mode Toggle */}
-        <div className="flex items-center gap-1 bg-black/50 rounded-lg p-0.5 border border-white/10">
+        <div className="relative flex items-center gap-1 bg-gradient-to-r from-black/60 to-walrus-purple/10 rounded-xl p-1 border border-walrus-teal/20 backdrop-blur-sm z-10">
           <button
             onClick={() => onModeChange('manual')}
             className={`
-              flex items-center gap-1.5 px-2.5 py-1.5 rounded text-xs font-bold font-mono transition-all
+              relative flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold font-mono transition-all duration-300
               ${mode === 'manual' 
-                ? 'bg-walrus-teal text-black shadow-sm' 
-                : 'text-white/50 hover:text-white/80'
+                ? 'bg-gradient-to-r from-walrus-teal to-walrus-teal/80 text-black shadow-lg shadow-walrus-teal/50' 
+                : 'text-white/50 hover:text-white/80 hover:bg-white/5'
               }
             `}
             title="Manual Control"
@@ -49,10 +53,10 @@ export const CaptainControlPanel: React.FC<CaptainControlPanelProps> = ({
           <button
             onClick={() => onModeChange('auto')}
             className={`
-              flex items-center gap-1.5 px-2.5 py-1.5 rounded text-xs font-bold font-mono transition-all
+              relative flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold font-mono transition-all duration-300
               ${mode === 'auto' 
-                ? 'bg-walrus-teal text-black shadow-sm' 
-                : 'text-white/50 hover:text-white/80'
+                ? 'bg-gradient-to-r from-walrus-teal to-walrus-teal/80 text-black shadow-lg shadow-walrus-teal/50' 
+                : 'text-white/50 hover:text-white/80 hover:bg-white/5'
               }
             `}
             title="Auto Mode"
@@ -67,14 +71,14 @@ export const CaptainControlPanel: React.FC<CaptainControlPanelProps> = ({
 
         {/* Captain Info */}
         {isCaptainRegistered ? (
-          <div className="flex items-center gap-1.5 px-2 py-1 bg-walrus-teal/10 border border-walrus-teal/30 rounded text-xs">
-            <Wallet size={12} className="text-walrus-teal" />
-            <span className="text-walrus-teal font-mono font-bold">CAPTAIN #{captainTokenId}</span>
+          <div className="relative flex items-center gap-1.5 px-3 py-2 bg-gradient-to-r from-walrus-teal/20 to-walrus-purple/10 border border-walrus-teal/40 rounded-lg text-xs backdrop-blur-sm shadow-lg z-10">
+            <Wallet size={12} className="text-walrus-teal drop-shadow-glow" />
+            <span className="text-walrus-teal font-mono font-bold">🐋 CAPTAIN #{captainTokenId}</span>
           </div>
         ) : (
-          <div className="flex items-center gap-1.5 px-2 py-1 bg-red-500/10 border border-red-500/30 rounded text-xs">
+          <div className="relative flex items-center gap-1.5 px-3 py-2 bg-gradient-to-r from-red-500/20 to-red-500/5 border border-red-500/40 rounded-lg text-xs backdrop-blur-sm z-10">
             <Wallet size={12} className="text-red-400" />
-            <span className="text-red-400 font-mono text-[10px]">NOT REGISTERED</span>
+            <span className="text-red-400 font-mono text-[10px]">⚠️ NOT REGISTERED</span>
           </div>
         )}
 
@@ -90,10 +94,10 @@ export const CaptainControlPanel: React.FC<CaptainControlPanelProps> = ({
             }
             disabled:opacity-50 disabled:cursor-not-allowed
           `}
-          title={isConnected ? (isExpanded ? 'Hide x402 Controls' : 'Show x402 Controls') : 'Connect wallet first'}
+          title={isConnected ? (isExpanded ? 'Hide Training Controls' : 'Show Training Controls') : 'Connect wallet first'}
         >
           <DollarSign size={12} />
-          x402
+          🐋 Training
           {isExpanded ? <ChevronUp size={10} /> : <ChevronDown size={10} />}
         </button>
       </div>

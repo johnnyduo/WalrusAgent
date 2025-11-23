@@ -51,17 +51,24 @@ export const MarketDataWidget: React.FC<MarketDataWidgetProps> = ({ compact = fa
   }
 
   return (
-    <div className="bg-black/40 border border-walrus-purple/20 rounded-lg p-4 space-y-3">
-      <div className="flex items-center justify-between">
-        <h3 className="text-white font-bold font-mono text-sm flex items-center gap-2">
-          <Database size={14} className="text-walrus-teal" />
-          On-Chain Data
+    <div className="relative bg-gradient-to-br from-black/60 via-walrus-purple/10 to-black/40 border border-walrus-purple/30 rounded-2xl p-4 space-y-3 backdrop-blur-xl shadow-[0_0_30px_rgba(207,176,255,0.2)] overflow-hidden">
+      {/* Ocean Wave Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
+        <div className="absolute -bottom-10 left-0 right-0 h-32 bg-gradient-to-t from-walrus-teal/30 to-transparent rounded-full blur-3xl animate-wave"></div>
+      </div>
+      <div className="relative flex items-center justify-between z-10">
+        <h3 className="text-white font-bold font-mono text-sm flex items-center gap-2 drop-shadow-glow">
+          <Database size={14} className="text-walrus-teal animate-pulse-slow" />
+          🐋 On-Chain Data
         </h3>
-        <span className="text-xs text-gray-500">Live</span>
+        <span className="flex items-center gap-1 text-xs text-walrus-teal bg-walrus-teal/10 px-2 py-0.5 rounded-full border border-walrus-teal/30">
+          <div className="w-1.5 h-1.5 bg-walrus-teal rounded-full animate-pulse"></div>
+          Live
+        </span>
       </div>
 
       {/* SUI Price */}
-      <div className="bg-black/40 rounded p-3 border border-walrus-teal/20">
+      <div className="relative bg-gradient-to-br from-black/60 via-walrus-teal/10 to-black/40 rounded-xl p-3 border border-walrus-teal/30 backdrop-blur-sm shadow-lg z-10">
         <div className="flex items-center justify-between mb-1">
           <span className="text-gray-400 text-xs">SUI/USD</span>
           {marketData.price.change24h >= 0 ? (

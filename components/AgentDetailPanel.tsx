@@ -19,10 +19,15 @@ const AgentDetailPanel: React.FC<AgentDetailPanelProps> = ({ agent, onClose, onC
   if (!agent) return null;
 
   return (
-    <div className="absolute right-0 top-10 bottom-0 w-96 bg-black/95 border-l border-walrus-teal/30 backdrop-blur-xl shadow-2xl z-[60] transform transition-transform duration-300 flex flex-col">
-      <div className="p-4 border-b border-white/10 flex items-center justify-between bg-walrus-teal/5">
-        <h2 className="text-walrus-teal font-bold font-mono flex items-center gap-2">
-          <span className="text-xs bg-walrus-teal text-black px-1 rounded">EIP-8004</span>
+    <div className="absolute right-0 top-10 bottom-0 w-96 bg-gradient-to-br from-black/98 via-walrus-teal/5 to-black/95 border-l border-walrus-teal/40 backdrop-blur-2xl shadow-[0_0_60px_rgba(153,239,228,0.3)] z-[60] transform transition-transform duration-300 flex flex-col overflow-hidden">
+      {/* Ocean Wave Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-walrus-purple/20 to-transparent rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-walrus-teal/20 to-transparent rounded-full blur-3xl animate-pulse-slow"></div>
+      </div>
+      <div className="relative p-4 border-b border-walrus-teal/20 flex items-center justify-between bg-gradient-to-r from-walrus-teal/10 to-walrus-purple/5 backdrop-blur-sm z-10">
+        <h2 className="text-walrus-teal font-bold font-mono flex items-center gap-2 drop-shadow-glow">
+          <span className="text-xs bg-gradient-to-r from-walrus-teal to-walrus-teal/80 text-black px-2 py-0.5 rounded-lg shadow-lg">🐋 WALRUS</span>
           AGENT DETAILS
         </h2>
         <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">
@@ -33,8 +38,9 @@ const AgentDetailPanel: React.FC<AgentDetailPanelProps> = ({ agent, onClose, onC
       <div className="flex-1 overflow-y-auto p-6">
         {/* Avatar Header */}
         <div className="flex flex-col items-center mb-6">
-           <div className="w-32 h-32 border border-white/20 rounded-lg p-2 bg-black relative overflow-hidden group">
-             <div className="absolute inset-0 bg-walrus-teal/20 blur-xl opacity-50"></div>
+           <div className="relative w-32 h-32 border-2 border-walrus-teal/40 rounded-2xl p-2 bg-gradient-to-br from-black via-walrus-teal/5 to-black overflow-hidden group shadow-[0_0_30px_rgba(153,239,228,0.3)]">
+             <div className="absolute inset-0 bg-gradient-to-br from-walrus-teal/30 via-walrus-purple/20 to-transparent blur-2xl opacity-60 animate-pulse-slow"></div>
+             <div className="absolute inset-0 bg-walrus-teal/10 blur-xl animate-ping-slow"></div>
              {agent.avatarType === 'lottie' ? (
                <LottieAvatar 
                  animationPath={agent.avatar}

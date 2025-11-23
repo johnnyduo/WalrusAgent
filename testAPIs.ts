@@ -4,14 +4,15 @@
 import { geminiService, cryptoService, newsService, suiService, orchestrator } from './services/api';
 
 export const testAPIs = async () => {
-  console.log('🧪 WALRUS AGENTS API Testing Suite\n');
+  console.log('🧪 WALRUS AGENTS - API Testing Suite\n');
   console.log('═══════════════════════════════════════\n');
+  console.log('🐋 Decentralized AI Training on Walrus Protocol\n');
 
   // Test Gemini AI
   console.log('1️⃣ Testing Gemini AI API...');
   try {
     const geminiResult = await geminiService.chat({
-      prompt: 'Say "Hello from WALRUS AGENTS!" in one sentence.',
+      prompt: 'Say "Hello from WALRUS AGENTS - Decentralized AI Training Network!" in one sentence.',
       temperature: 0.7
     });
     console.log('✅ Gemini AI:', geminiResult.text);

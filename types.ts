@@ -44,7 +44,7 @@ export interface AgentTaskResult {
 export interface LogMessage {
   id: string;
   timestamp: string;
-  type: 'A2A' | 'x402' | 'SYSTEM' | 'COMMANDER';
+  type: 'A2A' | 'WALRUS' | 'SYSTEM' | 'COMMANDER';
   content: string;
   agentId?: string;
 }

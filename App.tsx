@@ -108,7 +108,7 @@ if (typeof window !== 'undefined') {
       const streams = JSON.parse(stored);
       console.log('📡 Your Stream IDs:', streams);
       console.log('💡 These are your x402 payment streams');
-      console.log('📝 Save these IDs to manually recover if needed');
+      console.log('🐋 Store these on Walrus for decentralized recovery');
       return streams;
     } catch (err) {
       console.error('❌ Error parsing streams:', err);
@@ -414,7 +414,7 @@ const App: React.FC = () => {
   }, [operationMode, commanderBudget]);
 
   // --- Handlers ---
-  const addLog = (type: 'A2A' | 'x402' | 'SYSTEM' | 'COMMANDER', content: string) => {
+  const addLog = (type: 'A2A' | 'WALRUS' | 'SYSTEM' | 'COMMANDER', content: string) => {
     const newLog: LogMessage = {
       id: Math.random().toString(36).substr(2, 9),
       timestamp: new Date().toLocaleTimeString(),
@@ -749,11 +749,11 @@ const App: React.FC = () => {
     addLog('A2A', `[${agent.name}]: 🔔 Swap signal! ${swapDecision.reason}`);
     addLog('A2A', `[${agent.name}]: Executing autonomous swap: ${swapDecision.recommendedAmount} SUI`);
     
-    // Create x402 stream for fund deduction (Commander -> Agent)
+    // Coordinate training rewards via Walrus (Commander -> Agent)
     const edgeId = `reactflow__edge-a0-${agentId}`;
     setStreamingEdges(prev => [...prev, edgeId]);
     setAgentStatuses(prev => ({ ...prev, a0: 'streaming', [agentId]: 'streaming' }));
-    agentStatusManager.setStatus('a0', 'Transferring fund via x402');
+    agentStatusManager.setStatus('a0', 'Coordinating via Walrus network');
     agentStatusManager.setStatus(agentId, 'Receiving fund authorization');
     
     // Progress: 20%
@@ -765,7 +765,7 @@ const App: React.FC = () => {
     setTimeout(async () => {
       // Deduct from captain fund
       // Fund deduction removed - using on-chain balance
-      addLog('x402', `💸 Deducted ${swapDecision.recommendedAmount} SUI from Captain fund`);
+      addLog('WALRUS', `💸 Allocated ${swapDecision.recommendedAmount} SUI for training`);
       agentStatusManager.setStatus(agentId, `Executing swap: ${swapDecision.recommendedAmount} SUI`);
       
       // Progress: 40%
@@ -795,7 +795,7 @@ const App: React.FC = () => {
         }));
         
         if (result.success) {
-          addLog('x402', `✅ SWAP SUCCESS: ${result.amountOut?.toFixed(2)} USDC received`);
+          addLog('WALRUS', `✅ SWAP SUCCESS: ${result.amountOut?.toFixed(2)} USDC received`);
           agentStatusManager.setStatus(agentId, `Swap complete: ${result.amountOut?.toFixed(2)} USDC`);
           
           // Build transaction URL for Suiscan
@@ -1787,7 +1787,7 @@ const App: React.FC = () => {
             return;
           }
           setBudgetSpent(prev => prev + streamCost);
-          addLog('x402', `💰 Budget: ${streamCost.toFixed(2)} USDC spent on stream. Remaining: ${(commanderBudget - budgetSpent - streamCost).toFixed(2)} USDC`);
+          addLog('WALRUS', `💰 Training: ${streamCost.toFixed(2)} USDC allocated. Remaining: ${(commanderBudget - budgetSpent - streamCost).toFixed(2)} USDC`);
         }
         
         const id1 = activeAgents[Math.floor(Math.random() * activeAgents.length)];
@@ -1814,7 +1814,7 @@ const App: React.FC = () => {
            agentStatusManager.setStatus(id1, `Streaming x402 @ ${rate} wei/s`);
            agentStatusManager.setStatus(id2, `Receiving stream @ ${rate} wei/s`);
            
-           addLog('x402', `Stream OPENED: ${sender.name} → ${receiver.name} @ ${rate} wei/sec`);
+           addLog('WALRUS', `Training STARTED: ${sender.name} → ${receiver.name} @ ${rate} compute/sec`);
            
            // Auto-close stream after random duration
            setTimeout(() => {
@@ -1826,7 +1826,7 @@ const App: React.FC = () => {
              }));
              agentStatusManager.setStatus(id1, 'Stream closed');
              agentStatusManager.setStatus(id2, 'Stream closed');
-             addLog('x402', `Stream CLOSED: ${sender.name} → ${receiver.name}`);
+             addLog('WALRUS', `Training COMPLETED: ${sender.name} → ${receiver.name}`);
            }, 4000 + Math.random() * 4000);
         }
       }

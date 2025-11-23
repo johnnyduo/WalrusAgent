@@ -1,5 +1,6 @@
 // API Service Layer for WALRUS AGENTS
-// Integrates: Gemini AI, TwelveData, News API, Sui Network, and Walrus Storage
+// Integrates: Gemini AI, TwelveData, News API, Sui Network, Walrus Storage, and Suiscan
+// Built for Walrus HaulOut Hackathon - AI x Data Track
 
 import { GoogleGenAI } from "@google/genai";
 
@@ -1289,7 +1290,8 @@ if (typeof window !== 'undefined') {
   (window as any).suiService = suiService;
   
   // Helpful console commands
-  console.log('%c🐋 WALRUS AGENTS API UTILITIES', 'color: #99efe4; font-weight: bold; font-size: 14px;');
+  console.log('%c🐋 WALRUS AGENTS API', 'color: #cfb0ff; font-weight: bold; font-size: 16px; font-family: Outfit, sans-serif;');
+  console.log('%cDecentralized AI Training Network', 'color: #99efe4; font-size: 12px; font-family: Inter, sans-serif;');
   console.log('%cUse these commands in console:', 'color: #99efe4;');
   console.log('  apiUtils.getRateLimitStatus() - Check API rate limits');
   console.log('  apiUtils.getCacheStats() - View cache statistics');

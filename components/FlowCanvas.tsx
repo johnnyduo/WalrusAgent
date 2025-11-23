@@ -27,12 +27,12 @@ const AgentNode = React.memo(({ data }: NodeProps) => {
       relative w-32 flex flex-col items-center 
       ${data.isStreaming ? 'filter drop-shadow-[0_0_10px_#cfb0ff]' : ''}
     `}>
-      {/* Dialogue bubble */}
+      {/* Dialogue bubble - Ocean themed */}
       {dialogue && (
         <div className="absolute left-[50%] bottom-full mb-1 z-50 animate-fade-in pointer-events-auto">
-          <div className="relative bg-gray-800/95 border border-walrus-purple rounded-md p-1.5 shadow-lg w-[130px]" style={{ boxShadow: '0 0 10px rgba(207, 176, 255, 0.3)' }}>
-            <div className="absolute left-2 bottom-0 transform translate-y-full w-0 h-0 border-t-[6px] border-r-[6px] border-t-gray-800 border-r-transparent"></div>
-            <div className="absolute left-2 bottom-0 transform translate-y-[5px] w-0 h-0 border-t-[5px] border-r-[5px] border-t-walrus-purple border-r-transparent"></div>
+          <div className="relative bg-gradient-to-br from-black/95 via-walrus-teal/10 to-black/90 border-2 border-walrus-purple/60 rounded-lg p-2 shadow-[0_0_20px_rgba(207,176,255,0.4)] w-[130px] backdrop-blur-xl">
+            <div className="absolute left-2 bottom-0 transform translate-y-full w-0 h-0 border-t-[8px] border-r-[8px] border-t-black/95 border-r-transparent"></div>
+            <div className="absolute left-2 bottom-0 transform translate-y-[7px] w-0 h-0 border-t-[7px] border-r-[7px] border-t-walrus-purple/60 border-r-transparent"></div>
             
             <div className="flex items-start gap-1">
               <div className="flex-1 min-w-0">
@@ -87,8 +87,8 @@ const AgentNode = React.memo(({ data }: NodeProps) => {
       <Handle type="source" position={Position.Bottom} className="!bg-walrus-teal !w-3 !h-3 !border-none" />
       
       {data.isStreaming && (
-        <div className="absolute -right-4 top-0 bg-walrus-teal text-black text-[8px] font-bold px-1 rounded animate-bounce">
-          x402
+        <div className="absolute -right-4 top-0 bg-gradient-to-l from-walrus-purple to-walrus-teal text-black text-[8px] font-bold px-2 rounded animate-pulse">
+          🐋
         </div>
       )}
     </div>

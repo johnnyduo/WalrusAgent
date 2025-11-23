@@ -56,32 +56,37 @@ const AgentCard: React.FC<AgentCardProps> = ({ agent, isActive, onToggle, onClic
     <div 
       onClick={onClick}
       className={`
-        relative group cursor-pointer transition-all duration-300
-        rounded-xl border backdrop-blur-md overflow-hidden
+        relative group cursor-pointer transition-all duration-500
+        rounded-2xl border backdrop-blur-xl overflow-hidden
         ${isActive 
-          ? 'border-walrus-teal bg-walrus-teal/10 shadow-[0_0_15px_rgba(153,239,228,0.3)]' 
-          : 'border-white/10 bg-white/5 hover:border-walrus-teal/50'}
+          ? 'border-walrus-teal/60 bg-gradient-to-br from-walrus-teal/15 via-walrus-purple/10 to-black/40 shadow-[0_0_30px_rgba(153,239,228,0.4),0_0_60px_rgba(207,176,255,0.2)] animate-pulse-slow' 
+          : 'border-white/5 bg-gradient-to-br from-white/5 to-black/20 hover:border-walrus-teal/40 hover:shadow-[0_0_20px_rgba(153,239,228,0.2)]'}
       `}
     >
+      {/* Ocean Wave Effect */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-30">
+        <div className="absolute -bottom-20 left-0 right-0 h-40 bg-gradient-to-t from-walrus-teal/20 to-transparent rounded-full blur-3xl animate-wave"></div>
+      </div>
       {/* Status Indicator */}
-      <div className="absolute top-3 right-3 flex items-center gap-2">
-        <div className={`w-2 h-2 rounded-full ${getStatusColor()}`} />
-        <span className="text-[10px] font-mono uppercase tracking-wider text-white/60">
+      <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
+        <div className={`w-2.5 h-2.5 rounded-full ${getStatusColor()} shadow-lg`} />
+        <span className="text-[10px] font-mono uppercase tracking-wider text-white/70 bg-black/40 px-2 py-0.5 rounded backdrop-blur-sm">
           {isActive ? currentStatus : 'offline'}
         </span>
       </div>
       
       {/* On-Chain Badge */}
       {isOnChain && (
-        <div className="absolute top-3 left-3 bg-walrus-teal/20 border border-walrus-teal/50 rounded px-1.5 py-0.5 flex items-center gap-1">
-          <span className="text-walrus-teal text-[8px] font-mono font-bold">⛓️ ON-CHAIN</span>
+        <div className="absolute top-3 left-3 bg-gradient-to-r from-walrus-teal/30 to-walrus-purple/20 border border-walrus-teal/60 rounded-lg px-2 py-1 flex items-center gap-1 backdrop-blur-md shadow-lg z-10">
+          <span className="text-walrus-teal text-[9px] font-mono font-bold drop-shadow-glow">🐋 ON-CHAIN</span>
         </div>
       )}
 
       <div className="p-4 flex flex-col items-center text-center">
         {/* Sprite Avatar Container */}
-        <div className="w-20 h-20 mb-4 relative">
-            <div className="absolute inset-0 bg-walrus-teal/20 rounded-full blur-xl opacity-50"></div>
+        <div className="w-20 h-20 mb-4 relative z-10">
+            <div className="absolute inset-0 bg-gradient-to-br from-walrus-teal/30 via-walrus-purple/20 to-transparent rounded-full blur-2xl opacity-60 animate-pulse-slow"></div>
+            <div className="absolute inset-0 bg-walrus-teal/10 rounded-full blur-xl animate-ping-slow"></div>
             {agent.avatarType === 'lottie' ? (
               <LottieAvatar 
                 animationPath={spriteUrl}
@@ -100,23 +105,23 @@ const AgentCard: React.FC<AgentCardProps> = ({ agent, isActive, onToggle, onClic
             )}
         </div>
 
-        <h3 className="text-white font-bold font-mono tracking-tight">{agent.name}</h3>
-        <p className="text-walrus-teal text-xs mb-3">{agent.role}</p>
+        <h3 className="relative text-white font-bold font-display tracking-tight text-sm z-10 drop-shadow-lg">{agent.name}</h3>
+        <p className="relative text-walrus-teal text-xs mb-3 font-mono z-10">{agent.role}</p>
         
-        <div className="w-full grid grid-cols-2 gap-2 text-[10px] text-gray-400 font-mono mb-4">
-          <div className="flex items-center gap-1 bg-black/30 p-1 rounded justify-center">
+        <div className="relative w-full grid grid-cols-2 gap-2 text-[10px] text-gray-400 font-mono mb-4 z-10">
+          <div className="flex items-center gap-1 bg-gradient-to-br from-black/50 to-walrus-teal/10 p-1.5 rounded-lg justify-center border border-walrus-teal/20 backdrop-blur-sm">
             <Shield size={10} className="text-walrus-teal" />
-            <span>TS: {agent.trustScore}</span>
+            <span className="text-white">TS: {agent.trustScore}</span>
           </div>
           {onChainTokenId ? (
-            <div className="flex items-center gap-1 bg-walrus-teal/20 border border-walrus-teal/40 p-1 rounded justify-center">
+            <div className="flex items-center gap-1 bg-gradient-to-br from-walrus-teal/30 to-walrus-purple/20 border border-walrus-teal/50 p-1.5 rounded-lg justify-center backdrop-blur-sm shadow-lg">
               <Hash size={10} className="text-walrus-teal" />
               <span className="text-walrus-teal font-bold">ID: {onChainTokenId}</span>
             </div>
           ) : (
-            <div className="flex items-center gap-1 bg-black/30 p-1 rounded justify-center">
-              <Hash size={10} />
-              <span>#{agent.tokenId}</span>
+            <div className="flex items-center gap-1 bg-gradient-to-br from-black/50 to-walrus-purple/10 p-1.5 rounded-lg justify-center border border-white/10 backdrop-blur-sm">
+              <Hash size={10} className="text-white/60" />
+              <span className="text-white/60">#{agent.tokenId}</span>
             </div>
           )}
         </div>
@@ -137,21 +142,21 @@ const AgentCard: React.FC<AgentCardProps> = ({ agent, isActive, onToggle, onClic
           </div>
         )}
 
-        <div className="flex gap-2 w-full mt-auto">
+        <div className="relative flex gap-2 w-full mt-auto z-10">
            <button 
             onClick={(e) => { e.stopPropagation(); onToggle(); }}
             disabled={isLocked || isMinting || isDeactivating}
             className={`
-              flex-1 py-1 px-2 rounded text-[10px] font-bold font-mono uppercase tracking-wider border transition-all
+              flex-1 py-2 px-3 rounded-lg text-[10px] font-bold font-mono uppercase tracking-wider border transition-all duration-300 shadow-lg
               ${isLocked 
-                ? 'border-gray-600 bg-gray-700 text-gray-500 cursor-not-allowed opacity-50'
+                ? 'border-gray-600 bg-gradient-to-r from-gray-700 to-gray-800 text-gray-500 cursor-not-allowed opacity-50'
                 : isMinting
-                  ? 'border-yellow-500 bg-yellow-500/20 text-yellow-500 cursor-wait animate-pulse'
+                  ? 'border-yellow-500/60 bg-gradient-to-r from-yellow-500/20 to-yellow-500/10 text-yellow-400 cursor-wait animate-pulse shadow-yellow-500/30'
                 : isDeactivating
-                  ? 'border-red-500 bg-red-500/20 text-red-500 cursor-wait animate-pulse'
+                  ? 'border-red-500/60 bg-gradient-to-r from-red-500/20 to-red-500/10 text-red-400 cursor-wait animate-pulse shadow-red-500/30'
                 : isActive 
-                  ? 'border-walrus-teal bg-walrus-teal text-black hover:bg-white hover:border-white' 
-                  : 'border-white/20 text-white/60 hover:border-white hover:text-white'}
+                  ? 'border-walrus-teal/80 bg-gradient-to-r from-walrus-teal to-walrus-teal/80 text-black hover:from-white hover:to-walrus-teal hover:border-white shadow-walrus-teal/50' 
+                  : 'border-white/20 bg-gradient-to-r from-white/5 to-transparent text-white/60 hover:border-walrus-teal/50 hover:text-walrus-teal hover:from-walrus-teal/10'}
             `}
            >
              {isLocked ? (
@@ -179,9 +184,11 @@ const AgentCard: React.FC<AgentCardProps> = ({ agent, isActive, onToggle, onClic
         </div>
       )}
       
-      {/* Decorative corner accents */}
-      <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-walrus-teal opacity-50"></div>
-      <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-walrus-teal opacity-50"></div>
+      {/* Decorative corner accents with glow */}
+      <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-walrus-teal/60 opacity-70 rounded-tl-lg"></div>
+      <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-walrus-purple/60 opacity-70 rounded-br-lg"></div>
+      <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-walrus-purple/40 opacity-50 rounded-tr-lg"></div>
+      <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-walrus-teal/40 opacity-50 rounded-bl-lg"></div>
     </div>
   );
 };

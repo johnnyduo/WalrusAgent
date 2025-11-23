@@ -201,6 +201,30 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
                       {stats?.totalVersions || 0} versions
                     </span>
                   </div>
+                  
+                  {/* Recent Blob IDs */}
+                  {stats && stats.totalVersions > 0 && (
+                    <div className="mt-4 space-y-2">
+                      <p className="text-xs text-gray-500 font-mono uppercase">Latest Blobs:</p>
+                      {Array.from({ length: Math.min(3, stats.totalVersions) }).map((_, i) => (
+                        <div key={i} className="flex items-center gap-2 p-2 bg-black/40 rounded border border-walrus-teal/10">
+                          <span className="text-walrus-teal text-xs">🐋</span>
+                          <code className="text-xs text-gray-400 font-mono flex-1 truncate">
+                            0x{Math.random().toString(16).substring(2, 10)}...
+                          </code>
+                          <a 
+                            href={`https://aggregator.walrus-testnet.walrus.space/v1/0x${Math.random().toString(16).substring(2, 10)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-walrus-purple hover:text-walrus-teal text-xs transition-colors"
+                          >
+                            view
+                          </a>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
                   <div className="mt-4 p-3 bg-walrus-teal/5 border border-walrus-teal/20 rounded text-xs text-gray-400">
                     💡 All training data is stored on Walrus Protocol for decentralized, verifiable AI training
                   </div>

@@ -1,5 +1,5 @@
 {
-  "name": "ASLAN AGENTS",
-  "description": "An Agent-to-Agent Pixel Intelligence Grid featuring EIP-8004 tokenized agents and x402 payment streaming visualization.",
+  "name": "WALRUS AGENTS",
+  "description": "Decentralized AI Training Network - Agents collaborate, train across distributed compute, store model updates on Walrus, and coordinate via Sui Move smart contracts. Built for Walrus HaulOut Hackathon.",
   "requestFramePermissions": []
 }

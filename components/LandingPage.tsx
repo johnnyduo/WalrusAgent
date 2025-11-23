@@ -21,8 +21,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
         {/* Header - matches WalletBar */}
         <header className="h-12 bg-black/80 backdrop-blur-md border-b border-white/10 flex items-center px-6 justify-between sticky top-0 z-50">
           <div className="flex items-center gap-4">
-            <h1 className="text-walrus-teal font-bold font-display tracking-tight flex items-center gap-2 text-lg">
-              <Layers size={18} /> ASLAN AGENTS <span className="text-white/40 text-xs font-normal font-mono">v2.0-walrus</span>
+            <h1 className="font-bold font-heading tracking-tight flex items-center gap-2 text-lg">
+              <Layers size={18} className="text-walrus-purple" /> 
+              <span className="bg-gradient-to-l from-walrus-teal to-walrus-purple bg-clip-text text-transparent">WALRUS AGENTS</span>
+              <span className="text-white/40 text-xs font-normal font-mono">v1.0</span>
             </h1>
           </div>
           <button
@@ -43,18 +45,19 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
               </span>
             </div>
 
-            <h2 className="text-5xl lg:text-7xl font-bold leading-tight font-display">
-              <span className="bg-gradient-to-r from-walrus-teal to-walrus-purple bg-clip-text text-transparent">ASLAN</span>
+            <h2 className="text-5xl lg:text-7xl font-bold leading-tight font-heading">
+              <span className="bg-gradient-to-l from-walrus-teal via-walrus-purple to-walrus-teal bg-clip-text text-transparent">WALRUS</span>
               <br />
               <span className="text-white/90">AI Agents</span>
               <br />
               <span className="text-white/60">Network</span>
             </h2>
 
-            <p className="text-base text-gray-400 max-w-2xl leading-relaxed font-mono">
-              Deploy autonomous AI agents powered by <span className="text-walrus-teal font-bold">x402 streaming payments</span> that 
-              collaborate, trade, and execute smart contracts in real-time. 
-              Built on Sui Network with Walrus decentralized storage for enterprise-grade performance.
+            <p className="text-base text-gray-400 max-w-2xl leading-relaxed">
+              Deploy autonomous AI agents that <span className="text-walrus-purple font-semibold">train collaboratively</span> across 
+              distributed compute, store model updates on <span className="text-walrus-teal font-semibold">Walrus</span>, and 
+              coordinate via <span className="text-walrus-purple font-semibold">Sui Move</span> smart contracts. 
+              True decentralized AI training without centralized servers.
             </p>
 
             <div className="flex flex-wrap gap-4">
@@ -65,7 +68,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                 <Zap size={16} /> Launch App
               </button>
               <a
-                href="https://github.com/johnnyduo/AslanAgents"
+                href="https://github.com/johnnyduo/WalrusAgent"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-6 py-3 bg-white/5 hover:bg-white/10 rounded font-bold text-sm font-mono uppercase tracking-wider backdrop-blur-sm border border-white/10 hover:border-walrus-purple/50 transition-all duration-300"

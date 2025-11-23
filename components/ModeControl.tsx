@@ -24,20 +24,24 @@ export const ModeControl: React.FC<ModeControlProps> = ({
   };
 
   return (
-    <div className="bg-black/80 backdrop-blur border border-walrus-purple/30 rounded-lg p-4 mb-4">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-[#99efe4] font-bold font-mono text-sm flex items-center gap-2">
-          <Zap size={16} />
-          OPERATION MODE
+    <div className="relative bg-gradient-to-br from-black/90 via-walrus-purple/5 to-black/80 backdrop-blur-xl border border-walrus-purple/40 rounded-2xl p-5 mb-4 shadow-[0_0_30px_rgba(207,176,255,0.15)] overflow-hidden">
+      {/* Ocean Wave Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
+        <div className="absolute -bottom-10 left-0 right-0 h-32 bg-gradient-to-t from-walrus-teal/30 to-transparent rounded-full blur-3xl animate-wave"></div>
+      </div>
+      <div className="relative flex items-center justify-between mb-4 z-10">
+        <h3 className="text-walrus-teal font-bold font-mono text-sm flex items-center gap-2 drop-shadow-glow">
+          <Zap size={16} className="animate-pulse-slow" />
+          🐋 OPERATION MODE
         </h3>
-        <div className="flex items-center gap-2 bg-black/50 rounded-lg p-1">
+        <div className="flex items-center gap-2 bg-gradient-to-r from-black/60 to-walrus-purple/10 rounded-xl p-1 border border-walrus-teal/20 backdrop-blur-sm">
           <button
             onClick={() => onModeChange('manual')}
             className={`
-              flex items-center gap-2 px-3 py-1.5 rounded font-mono text-xs transition-all
+              flex items-center gap-2 px-4 py-2 rounded-lg font-mono text-xs transition-all duration-300
               ${mode === 'manual' 
-                ? 'bg-[#99efe4] text-black font-bold' 
-                : 'text-white/50 hover:text-white/80'
+                ? 'bg-gradient-to-r from-walrus-teal to-walrus-teal/80 text-black font-bold shadow-lg shadow-walrus-teal/50' 
+                : 'text-white/50 hover:text-white/80 hover:bg-white/5'
               }
             `}
           >
@@ -47,10 +51,10 @@ export const ModeControl: React.FC<ModeControlProps> = ({
           <button
             onClick={() => onModeChange('auto')}
             className={`
-              flex items-center gap-2 px-3 py-1.5 rounded font-mono text-xs transition-all
+              flex items-center gap-2 px-4 py-2 rounded-lg font-mono text-xs transition-all duration-300
               ${mode === 'auto' 
-                ? 'bg-[#99efe4] text-black font-bold' 
-                : 'text-white/50 hover:text-white/80'
+                ? 'bg-gradient-to-r from-walrus-teal to-walrus-teal/80 text-black font-bold shadow-lg shadow-walrus-teal/50' 
+                : 'text-white/50 hover:text-white/80 hover:bg-white/5'
               }
             `}
           >
@@ -92,8 +96,8 @@ export const ModeControl: React.FC<ModeControlProps> = ({
             <span className="text-[#99efe4] font-bold">{budget.toFixed(2)} USDC</span>
           </div>
 
-          <div className="bg-yellow-500/10 border border-yellow-500/30 rounded p-2 text-yellow-500/80 text-xs font-mono">
-            ⚡ Auto mode: Commander will activate agents and execute x402 streams within budget limit
+          <div className="bg-walrus-purple/10 border border-walrus-purple/30 rounded p-2 text-walrus-purple/80 text-xs font-mono">
+            ⚡ Auto mode: Commander will activate agents and execute distributed training within budget limit
           </div>
         </div>
       )}

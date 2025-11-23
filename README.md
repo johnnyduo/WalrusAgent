@@ -1,13 +1,14 @@
-# 🦁 ASLAN AGENTS - Decentralized AI Training on Walrus
+# 🐋 WALRUS AGENTS - Decentralized AI Training Platform
 
-**Democratizing AI Training Through Crowdsourced Compute on Walrus Protocol**
+**Democratizing AI Training Through Federated Learning on Walrus Protocol**
 
-> 🏆 **Built for Walrus Haulout Hackathon - AI x Data Track**
+> 🏆 **Built for Walrus HaulOut Hackathon - AI x Data Track**
 
-A revolutionary platform that enables **anyone** to contribute their browser's computing power to train AI agents collaboratively. All training data, model weights, and deltas are stored on **Walrus Protocol**, ensuring decentralized, verifiable, and permanent AI training infrastructure.
+A revolutionary platform that enables **anyone** to contribute their browser's computing power to train AI agents collaboratively. All training data, model weights, and deltas are stored on **Walrus Protocol**, ensuring decentralized, verifiable, and permanent AI training infrastructure. Powered by **Sui** blockchain for agent coordination and **BlockBerry API** for mainnet data feeds.
 
-🔗 **Live Demo**: [Coming Soon]  
-📚 **Documentation**: [Full Technical Docs](./docs)
+🔗 **GitHub**: [github.com/yourusername/walrus-agents](https://github.com/yourusername/walrus-agents)  
+📚 **Documentation**: [Full Technical Docs](./docs)  
+🌐 **Walrus Testnet**: [aggregator.walrus-testnet.walrus.space](https://aggregator.walrus-testnet.walrus.space)
 
 [![Sui](https://img.shields.io/badge/Sui-Testnet-4DA2FF?logo=sui)](https://suiscan.xyz/testnet)
 [![Walrus](https://img.shields.io/badge/Walrus-Protocol-FF6B9D?logo=walrus)](https://walrus.site)
@@ -30,7 +31,7 @@ Current issues:
 
 ## 💡 Our Solution: Crowdsourced AI Training on Walrus
 
-**ASLAN AGENTS** enables decentralized AI training by:
+**WALRUS AGENTS** enables decentralized AI training by:
 1. **Browser-Based Training**: Anyone can contribute compute power directly from their browser using TensorFlow.js
 2. **Walrus Storage**: All model weights, deltas, embeddings, and datasets stored on Walrus Protocol
 3. **Federated Learning**: Aggregate model updates from multiple contributors without sharing raw data
@@ -42,14 +43,14 @@ Current issues:
 ## 🎯 Key Features
 
 ### 🤖 7 AI Agent Specialists
-Each agent has a unique role and contributes to collaborative training:
-- 👑 **Aslan the Great** (Commander) - Strategic orchestration & task coordination
-- 🦅 **Eagleton Skywatcher** (Navigator) - Market data analysis & pattern recognition
-- 🦉 **Athena Nightwing** (Archivist) - Knowledge aggregation & data preprocessing
-- 🦊 **Reynard Swift** (Merchant) - Trading strategy optimization
-- 🐻 **Ursus Guardian** (Sentinel) - Security & anomaly detection
-- 🐺 **Luna Mysticfang** (Oracle) - Prediction model training
-- 🐦 **Corvus Messenger** (Glitch) - Real-time data streaming
+Each agent has a unique role in the distributed training pipeline:
+- 🐋 **Walrus Commander** (a0) - Distributed training coordination & epoch management
+- 🦅 **Eagleton Skywatcher** (a1) - Data preprocessing & feature engineering
+- 🦉 **Athena Nightwing** (a2) - Model architecture design & optimization
+- 🦊 **Reynard Swift** (a3) - Gradient computation & backpropagation
+- 🐻 **Ursus Guardian** (a4) - Model validation & quality assurance
+- 🐺 **Luna Mysticfang** (a5) - Inference optimization & quantization
+- 🐦 **Corvus Messenger** (a6) - Federated aggregation & consensus
 
 ### ⛓️ Sui Blockchain Integration
 - **Agent Registry Contract** (`move/sources/agent_registry.move`)

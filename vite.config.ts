@@ -14,8 +14,10 @@ export default defineConfig(({ mode }) => {
         'import.meta.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
         'import.meta.env.TWELVEDATA_API_KEY': JSON.stringify(env.TWELVEDATA_API_KEY),
         'import.meta.env.NEWS_API_KEY': JSON.stringify(env.NEWS_API_KEY),
-        'import.meta.env.SUISCAN_API_KEY': JSON.stringify(env.SUISCAN_API_KEY),
-        'import.meta.env.SUISCAN_API_URL': JSON.stringify(env.SUISCAN_API_URL || 'https://suiscan.xyz/api'),
+        'import.meta.env.BLOCKBERRY_API_KEY': JSON.stringify(env.BLOCKBERRY_API_KEY),
+        'import.meta.env.BLOCKBERRY_API_URL': JSON.stringify(env.BLOCKBERRY_API_URL || 'https://api.blockberry.one/sui/v1'),
+        'import.meta.env.WALRUS_AGGREGATOR_URL': JSON.stringify(env.WALRUS_AGGREGATOR_URL || 'https://aggregator.walrus-testnet.walrus.space'),
+        'import.meta.env.WALRUS_PUBLISHER_URL': JSON.stringify(env.WALRUS_PUBLISHER_URL || 'https://publisher.walrus-testnet.walrus.space'),
       },
       resolve: {
         alias: {

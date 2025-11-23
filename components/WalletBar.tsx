@@ -115,8 +115,12 @@ const WalletBar: React.FC<WalletBarProps> = ({ onLogoClick }) => {
     setTotalBalance(display);
   }, [streamBalances, totalBalance]);
   return (
-    <div className="h-12 bg-black/80 backdrop-blur-md border-b border-white/10 flex items-center px-6 justify-between z-50 sticky top-0">
-        <div className="flex items-center gap-4">
+    <div className="relative h-12 bg-gradient-to-r from-black/95 via-walrus-teal/5 to-black/95 backdrop-blur-xl border-b border-walrus-teal/20 flex items-center px-6 justify-between z-50 sticky top-0 shadow-lg overflow-hidden">
+        {/* Ocean Wave Effect */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
+          <div className="absolute top-0 left-0 right-0 h-full bg-gradient-to-b from-walrus-purple/10 to-transparent"></div>
+        </div>
+        <div className="relative flex items-center gap-4 z-10">
             <h1 
               className={`text-walrus-teal font-bold font-mono tracking-wider flex items-center gap-2 ${onLogoClick ? 'cursor-pointer hover:text-walrus-teal/80 transition-colors' : ''}`}
               onClick={onLogoClick}
@@ -149,8 +153,8 @@ const WalletBar: React.FC<WalletBarProps> = ({ onLogoClick }) => {
                   }`} 
                 />
                 <span className={`transition-all duration-300 ${
-                  parseFloat(totalBalance) > 0 ? 'text-walrus-teal/70' : 'text-gray-500/70'
-                }`}>x402 STREAMING:</span>
+                  parseFloat(totalBalance) > 0 ? 'text-walrus-purple/70' : 'text-gray-500/70'
+                }`}>WALRUS BALANCE:</span>
                 <span className={`font-bold transition-all duration-300 ${
                   parseFloat(totalBalance) > 0 
                     ? isUpdating 
