@@ -130,16 +130,20 @@ export const WalletConnect: React.FC = () => {
             </button>
           )}
 
-          {/* Use Suiet Wallet Kit's ConnectButton for disconnect */}
-          <ConnectButton />
+          {/* Use Suiet Wallet Kit's ConnectButton for disconnect - styled to match theme */}
+          <div className="wallet-kit-button-wrapper">
+            <ConnectButton />
+          </div>
         </>
       ) : (
-        <ConnectButton>
-          <div className="flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-walrus-teal to-walrus-purple hover:from-walrus-teal/80 hover:to-walrus-purple/80 text-black font-bold text-xs rounded transition-all duration-300 cursor-pointer shadow-lg hover:shadow-walrus-purple-glow">
-            <Wallet size={14} />
-            Connect Wallet
-          </div>
-        </ConnectButton>
+        <div className="wallet-kit-button-wrapper">
+          <ConnectButton>
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-walrus-teal to-walrus-purple hover:from-walrus-teal/90 hover:to-walrus-purple/90 text-black font-bold text-xs rounded-lg transition-all duration-300 cursor-pointer shadow-lg hover:shadow-walrus-purple-glow hover:scale-105 active:scale-95">
+              <Wallet size={14} />
+              <span>Connect Wallet</span>
+            </div>
+          </ConnectButton>
+        </div>
       )}
     </div>
   );

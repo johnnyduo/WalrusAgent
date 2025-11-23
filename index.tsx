@@ -4,6 +4,7 @@ import { WalletProvider } from '@suiet/wallet-kit';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from './App';
 import '@suiet/wallet-kit/style.css';
+import './wallet-kit-theme.css';
 
 // Create React Query client
 const queryClient = new QueryClient({
