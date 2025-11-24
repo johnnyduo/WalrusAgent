@@ -694,60 +694,9 @@ struct RewardPool has key {
    - Training features derived from Sui ecosystem data
 
 ---
-├── App.tsx              # Main application
-└── package.json         # Dependencies
-```
-
----
-
-## 🎓 Key Innovation: Why This Matters
-
-### Problem with Current AI Training
-- **Centralized**: Big tech companies monopolize AI training (OpenAI, Google, Meta)
-- **Expensive**: Cloud GPU costs $1-5/hour, inaccessible for most developers
-- **Opaque**: No visibility into training data, model updates, or contributor rewards
-- **Data Silos**: Training data locked in proprietary systems
-
-### Our Solution: Crowdsourced + Decentralized
-1. **Anyone Can Contribute**: Browser-based training requires no special hardware
-2. **Transparent**: All training data on Walrus, all contributions on Sui blockchain
-3. **Incentivized**: Contributors earn SUI tokens for their compute
-4. **Federated**: Privacy-preserving - share gradients, not raw data
-5. **Permanent**: Walrus stores model history immutably
-
-### Real-World Use Cases
-- **DeFi Prediction Models**: Train on live price/volume data from Sui ecosystem
-- **Validator Monitoring**: AI detects anomalies in validator performance
-- **Fraud Detection**: Collaborative training on transaction patterns
-- **Market Sentiment**: Analyze NFT sales, token launches, whale movements
-- **Educational AI**: Community trains models for blockchain education
-
----
-
-## 📜 License & Legal
-
-**MIT License** - Free for commercial and personal use
-
-```
-Copyright (c) 2025 Walrus Agents Team
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction...
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction...
-```
-
-See [LICENSE](./LICENSE) for full text.
-
----
 
 <div align="center">
 
-**⭐ Star us on GitHub if you find this project helpful!**
-
-[Live Demo](https://walrus-agent.vercel.app/) • [Documentation](./docs) • [Report Bug](https://github.com/johnnyduo/WalrusAgents/issues) • [Request Feature](https://github.com/johnnyduo/WalrusAgents/issues)
+© 2025 WALRUS - Tokenized AI Agents. All rights reserved.
 
 </div>
