@@ -17,7 +17,7 @@
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev/)
 [![TensorFlow.js](https://img.shields.io/badge/TensorFlow.js-4.22-FF6F00?logo=tensorflow)](https://www.tensorflow.org/js)
 
-<img width="1722" height="915" alt="Screenshot 2568-11-24 at 08 50 16" src="https://github.com/user-attachments/assets/e739fc40-1d84-40ee-8dff-6e9a7a3b9639" />
+<img width="1728" height="2099" alt="screencapture-localhost-3000-2025-11-24-08_58_30" src="https://github.com/user-attachments/assets/11ed532a-632d-4e87-8680-2190c2b918e2" />
 
 ### 📦 Deployed Contracts
 
@@ -102,6 +102,7 @@ Browser (TensorFlow.js) → Walrus Protocol → Sui Blockchain
    Real Training         Permanent Storage    Contribution Tracking
    41 Parameters         Seal Certified       Verified Records
 ```
+<img width="561" height="423" alt="Screenshot 2568-11-24 at 10 55 35" src="https://github.com/user-attachments/assets/054fd8da-e016-4239-8069-a02a52736733" />
 
 **How It Works:**
 1. 🧠 **Train** - Run real neural network training in your browser (1-2 seconds)
@@ -160,6 +161,8 @@ User clicks "REGISTER AGENT"
     ↓
 ✅ Agent registered and ready for training!
 ```
+
+<img width="1728" height="4013" alt="screencapture-localhost-3000-2025-11-24-10_55_12" src="https://github.com/user-attachments/assets/67111cf8-ae9b-44de-9426-0e18c556f331" />
 
 #### 2. **Training Contribution Flow**
 ```
