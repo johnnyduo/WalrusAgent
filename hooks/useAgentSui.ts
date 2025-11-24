@@ -113,8 +113,15 @@ export const useMintAgent = (): UseMintAgentReturn => {
           throw new Error('Transaction failed: No digest returned from wallet.');
         }
         
+        // Check if transaction was successful
+        const status = result.effects?.status?.status;
+        if (status !== 'success') {
+          console.error('❌ Transaction failed with status:', status, result.effects?.status);
+          throw new Error(`Transaction failed: ${status || 'Unknown error'}`);
+        }
+        
         // Extract the created Agent object ID from transaction effects
-        let agentObjectId = result.digest; // fallback to tx digest
+        let agentObjectId = result.digest; // fallback to tx digest (should not be used)
         if (result.effects?.created && result.effects.created.length > 0) {
           // Find the Agent object (should be the first created object)
           const createdAgent = result.effects.created[0];
@@ -127,6 +134,11 @@ export const useMintAgent = (): UseMintAgentReturn => {
             agentObjectId = created.objectId;
             console.log('🎯 Created Agent Object ID (from objectChanges):', agentObjectId);
           }
+        }
+        
+        if (agentObjectId === result.digest) {
+          console.warn('⚠️ Could not extract object ID, using transaction digest as fallback');
+          console.warn('⚠️ This may cause issues viewing the agent on-chain');
         }
         
         console.log('✅ Agent minted on Sui!', result.digest);

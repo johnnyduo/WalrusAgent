@@ -304,12 +304,67 @@ export const useMintAgent = () => {
         throw new Error('Wallet not connected');
       }
 
-      // Contracts are deployed - use metadata blob ID as transaction reference
-      console.log('✅ Agent registered with metadata blob:', metadataBlobId);
-      setTxDigest(metadataBlobId);
+      if (!signAndExecuteTransactionBlock) {
+        console.error('❌ signAndExecuteTransactionBlock not available');
+        throw new Error('Wallet functions not available. Please reconnect your wallet.');
+      }
+
+      // Create Sui transaction to mint agent NFT (using TransactionBlock for wallet compatibility)
+      const { TransactionBlock } = await import('@mysten/sui.js/transactions');
+      const tx = new TransactionBlock();
+      
+      console.log('🔍 Contract check:', { AGENT_PACKAGE_ID, AGENT_REGISTRY_ID });
+      console.log('🔍 Wallet state:', { address, hasSignFunction: !!signAndExecuteTransactionBlock });
+      
+      // Call the actual mint_agent function on the deployed contract
+      console.log('📝 Calling mint_agent on contract:', AGENT_PACKAGE_ID);
+      
+      // mint_agent returns an Agent object that needs to be transferred
+      const [agent] = tx.moveCall({
+        target: `${AGENT_PACKAGE_ID}::agent_registry::mint_agent`,
+        arguments: [
+          tx.object(AGENT_REGISTRY_ID),
+          tx.pure(Array.from(new TextEncoder().encode(metadata.name))),
+          tx.pure(Array.from(new TextEncoder().encode(metadata.role))),
+          tx.pure(Array.from(new TextEncoder().encode(metadataBlobId))),
+        ],
+      });
+      
+      // Transfer the Agent NFT to the sender
+      tx.transferObjects([agent], tx.pure(address));
+
+      console.log('🔐 Requesting wallet signature for mint_agent...');
+      
+      const result = await signAndExecuteTransactionBlock({
+        transactionBlock: tx,
+        options: {
+          showEffects: true,
+          showObjectChanges: true,
+        },
+      });
+      
+      console.log('📦 Mint result:', JSON.stringify(result, null, 2));
+      
+      // Validate the result
+      if (!result || !result.digest) {
+        console.error('❌ Invalid response from wallet - no digest:', result);
+        throw new Error('Transaction failed: No digest returned from wallet.');
+      }
+      
+      // Check if transaction was successful
+      const status = result.effects?.status?.status;
+      if (status !== 'success') {
+        console.error('❌ Transaction failed with status:', status, result.effects?.status);
+        throw new Error(`Transaction failed: ${status || 'Unknown error'}`);
+      }
+      
+      console.log('✅ Agent minted on Sui!', result.digest);
+      console.log('🔗 View on explorer:', `https://suiscan.xyz/testnet/tx/${result.digest}`);
+      
+      setTxDigest(result.digest);
       setIsSuccess(true);
       setIsPending(false);
-      return metadataBlobId;
+      return result.digest;
     } catch (err: any) {
       console.error('❌ Mint failed:', err);
       setError(err);

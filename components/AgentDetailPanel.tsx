@@ -206,10 +206,12 @@ const AgentDetailPanel: React.FC<AgentDetailPanelProps> = ({ agent, onClose, onC
                     onClick={() => {
                       navigator.clipboard.writeText(agent.suiObjectId!);
                     }}
-                    title="Click to copy agent on-chain object ID"
+                    title="Click to copy agent on-chain identifier"
                   >
                       <div className="flex-1">
-                        <div className="text-gray-500 text-[10px] mb-0.5">Sui Object ID</div>
+                        <div className="text-gray-500 text-[10px] mb-0.5">
+                          {agent.suiObjectId.startsWith('0x') ? 'Sui Object ID' : 'Sui Transaction'}
+                        </div>
                         <div className="text-walrus-teal">
                           {agent.suiObjectId.length > 20 
                             ? `${agent.suiObjectId.slice(0, 10)}...${agent.suiObjectId.slice(-8)}`
@@ -217,7 +219,9 @@ const AgentDetailPanel: React.FC<AgentDetailPanelProps> = ({ agent, onClose, onC
                         </div>
                         <div className="text-gray-400 mt-0.5 text-[10px]">Token #{onChainTokenId || agent.id}</div>
                         <a
-                          href={`https://suiscan.xyz/testnet/object/${agent.suiObjectId}`}
+                          href={agent.suiObjectId.startsWith('0x') 
+                            ? `https://suiscan.xyz/testnet/object/${agent.suiObjectId}`
+                            : `https://suiscan.xyz/testnet/tx/${agent.suiObjectId}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-walrus-purple hover:text-walrus-teal text-[10px] mt-1 inline-block"
@@ -261,35 +265,37 @@ const AgentDetailPanel: React.FC<AgentDetailPanelProps> = ({ agent, onClose, onC
                 <label className="text-xs text-gray-500 font-mono uppercase">Registration Details</label>
                 
                 {/* Walrus Blob ID */}
-                <div 
-                  className="flex items-center gap-2 bg-black p-2 rounded border border-walrus-teal/20 font-mono text-xs break-all cursor-pointer hover:bg-white/5 transition-colors group"
-                  onClick={() => {
-                    navigator.clipboard.writeText(walrusBlobId || agent.walrusBlobId || '');
-                  }}
-                  title="Click to copy Walrus blob ID"
-                >
-                    <div className="flex-1">
-                      <div className="text-gray-500 text-[10px] mb-0.5">🐋 Walrus Metadata Blob</div>
-                      <div className="text-walrus-teal">
-                        {(walrusBlobId || agent.walrusBlobId || '').length > 20 
-                          ? `${(walrusBlobId || agent.walrusBlobId || '').slice(0, 12)}...${(walrusBlobId || agent.walrusBlobId || '').slice(-8)}`
-                          : (walrusBlobId || agent.walrusBlobId)}
+                {(walrusBlobId || agent.walrusBlobId) && (
+                  <div 
+                    className="flex items-center gap-2 bg-black p-2 rounded border border-walrus-teal/20 font-mono text-xs break-all cursor-pointer hover:bg-white/5 transition-colors group"
+                    onClick={() => {
+                      navigator.clipboard.writeText(walrusBlobId || agent.walrusBlobId || '');
+                    }}
+                    title="Click to copy Walrus blob ID"
+                  >
+                      <div className="flex-1">
+                        <div className="text-gray-500 text-[10px] mb-0.5">🐋 Walrus Metadata Blob</div>
+                        <div className="text-walrus-teal">
+                          {(walrusBlobId || agent.walrusBlobId || '').length > 20 
+                            ? `${(walrusBlobId || agent.walrusBlobId || '').slice(0, 12)}...${(walrusBlobId || agent.walrusBlobId || '').slice(-8)}`
+                            : (walrusBlobId || agent.walrusBlobId)}
+                        </div>
+                        <a
+                          href={`https://walruscan.com/testnet/blob/${walrusBlobId || agent.walrusBlobId}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-walrus-purple hover:text-walrus-teal text-[10px] mt-1 inline-block"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          View on Walruscan →
+                        </a>
                       </div>
-                      <a
-                        href={`https://walruscan.com/testnet/blob/${walrusBlobId || agent.walrusBlobId}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-walrus-purple hover:text-walrus-teal text-[10px] mt-1 inline-block"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        View on Walruscan →
-                      </a>
-                    </div>
-                    <Copy size={12} className="ml-auto text-walrus-teal opacity-50 group-hover:opacity-100 transition-opacity" />
-                </div>
+                      <Copy size={12} className="ml-auto text-walrus-teal opacity-50 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                )}
 
-                {/* Sui Transaction */}
-                {(suiTxDigest || agent.suiObjectId) && (
+                {/* Sui Transaction - only show if different from On-Chain Identity */}
+                {suiTxDigest && suiTxDigest !== agent.suiObjectId && (
                   <div 
                     className="flex items-center gap-2 bg-black p-2 rounded border border-walrus-purple/20 font-mono text-xs break-all cursor-pointer hover:bg-white/5 transition-colors group"
                     onClick={() => {

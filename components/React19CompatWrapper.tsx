@@ -92,17 +92,37 @@ const fixAriaHiddenIssues = () => {
  * Fix empty src attributes in images from wallet kit
  */
 const fixEmptyImageSrc = () => {
+  // Fix existing empty src attributes immediately
+  const fixEmptySrc = (container: HTMLElement = document.body) => {
+    const images = container.querySelectorAll('img[src=""], img:not([src])');
+    images.forEach((img) => {
+      const htmlImg = img as HTMLImageElement;
+      if (!htmlImg.src || htmlImg.src === window.location.href) {
+        htmlImg.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="24" height="24"%3E%3C/svg%3E';
+      }
+    });
+  };
+
+  // Fix immediately on mount
+  fixEmptySrc();
+
+  // Prevent error logging for failed image loads (like wallet icons)
+  const handleImageError = (e: Event) => {
+    const img = e.target as HTMLImageElement;
+    if (img && (img.src?.includes('spacecywallet') || img.src?.includes('favicon'))) {
+      e.stopPropagation();
+      e.preventDefault();
+      img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="24" height="24"%3E%3Crect width="24" height="24" fill="%2399efe4" opacity="0.1" rx="4"/%3E%3C/svg%3E';
+    }
+  };
+  document.addEventListener('error', handleImageError, true);
+
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       mutation.addedNodes.forEach((node) => {
         if (node.nodeType === Node.ELEMENT_NODE) {
           const element = node as HTMLElement;
-          
-          // Fix empty src in img tags
-          const images = element.querySelectorAll('img[src=""]');
-          images.forEach((img) => {
-            img.setAttribute('src', 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"%3E%3C/svg%3E');
-          });
+          fixEmptySrc(element);
         }
       });
     });
@@ -113,7 +133,14 @@ const fixEmptyImageSrc = () => {
     subtree: true,
   });
 
-  return () => observer.disconnect();
+  // Also run periodically to catch any stragglers
+  const interval = setInterval(() => fixEmptySrc(), 1000);
+
+  return () => {
+    observer.disconnect();
+    clearInterval(interval);
+    document.removeEventListener('error', handleImageError, true);
+  };
 };
 
 /**
