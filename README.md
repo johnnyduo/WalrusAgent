@@ -2,8 +2,6 @@
 
 ## Decentralized AI Training Network with NFT-Based Multi-Agent Coordination
 
-<img width="3456" height="3740" alt="image" src="https://github.com/user-attachments/assets/145debf9-ae0d-428e-be0d-078ff0b4cd9b" />
-
 > 🏆 **Built for Walrus Haulout Hackathon**  
 > 🎯 **Category**: AI x Decentralized Storage  
 > ⛓️ **Blockchain**: Sui Network (Testnet)  
@@ -17,7 +15,7 @@
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev/)
 [![TensorFlow.js](https://img.shields.io/badge/TensorFlow.js-4.22-FF6F00?logo=tensorflow)](https://www.tensorflow.org/js)
 
-<img width="1728" height="2099" alt="screencapture-localhost-3000-2025-11-24-08_58_30" src="https://github.com/user-attachments/assets/11ed532a-632d-4e87-8680-2190c2b918e2" />
+<img width="3456" height="3740" alt="image" src="https://github.com/user-attachments/assets/145debf9-ae0d-428e-be0d-078ff0b4cd9b" />
 
 ### 📦 Deployed Contracts
 
@@ -59,6 +57,8 @@
 ---
 
 ## 🎯 Overview
+
+<img width="1728" height="2099" alt="screencapture-localhost-3000-2025-11-24-08_58_30" src="https://github.com/user-attachments/assets/11ed532a-632d-4e87-8680-2190c2b918e2" />
 
 **WALRUS** is a tokenized AI agent platform where each agent is an NFT on Sui blockchain. Built for the Walrus Haulout Hackathon, this platform demonstrates how blockchain and decentralized storage revolutionize AI training by making it:
 
