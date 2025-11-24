@@ -145,7 +145,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
           <AgentPreview 
             name="Walrus Commander" 
             role="Coordinator" 
-            avatar="https://media0.giphy.com/media/v1.Y2lkPTZjMDliOTUyaXF2MDBoMzdvajVvOG13M3ljYzkyenNveTY4ZXBlZG05a2c3cTdtcCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/XCPnjIUMT06ek/giphy.gif"
+            avatar="/walrus-commander.gif"
             ability="Distributed training coordination & epoch management across the network"
           />
           <AgentPreview 

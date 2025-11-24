@@ -9,7 +9,7 @@ export const AGENTS: AgentMetadata[] = [
     capabilities: ['Strategic Planning', 'Agent Coordination', 'Risk Management', 'Decision Making'],
     trustScore: 100,
     spriteSeed: 'lion-king-crown-golden-majestic',
-    avatar: '/lottie/walrusagent.gif',
+    avatar: '/walrus-commander.gif',
     avatarType: 'gif' as const,
     status: 'idle',
     personality: {
