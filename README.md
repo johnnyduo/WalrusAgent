@@ -58,7 +58,7 @@
 
 ## 🎯 Overview
 
-<img width="1728" height="2099" alt="screencapture-localhost-3000-2025-11-24-08_58_30" src="https://github.com/user-attachments/assets/11ed532a-632d-4e87-8680-2190c2b918e2" />
+<img width="1723" height="912" alt="Screenshot 2568-11-24 at 11 39 24" src="https://github.com/user-attachments/assets/2f048d27-4f85-4a4b-b151-89dccbfa55f3" />
 
 **WALRUS** is a tokenized AI agent platform where each agent is an NFT on Sui blockchain. Built for the Walrus Haulout Hackathon, this platform demonstrates how blockchain and decentralized storage revolutionize AI training by making it:
 
@@ -73,7 +73,7 @@
 
 This isn't just a demo—it's a fully functional tokenized AI agent ecosystem with:
 - **NFT-Based Agents**: Mint AI agents as Sui NFTs with metadata on Walrus
-- **Multi-Agent Training**: 7 specialized agents coordinate training pipeline
+- **Multi-Agent Training**: 7 specialized agents coordinate the training pipeline
 - **Real ML Training**: 41-parameter neural network with actual backpropagation
 - **Seal Certification**: Training gradients uploaded with cryptographic proof
 - **On-Chain Tracking**: Agent registry and rewards system (deployed to Sui testnet)
