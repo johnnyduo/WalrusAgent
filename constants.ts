@@ -252,9 +252,11 @@ export const AGENT_ABILITIES = {
 };
 
 export const INITIAL_LOGS: any[] = [
-  { id: 'sys-1', timestamp: '10:00:00', type: 'SYSTEM', content: '🐋 WALRUS AGENTS: Distributed Training Network Initialized' },
-  { id: 'sys-2', timestamp: '10:00:01', type: 'SYSTEM', content: '✅ Walrus Protocol Storage: Connected to Testnet' },
-  { id: 'sys-3', timestamp: '10:00:02', type: 'SYSTEM', content: '🔗 Sui Network (Testnet): Agent Registry Loaded' },
-  { id: 'sys-4', timestamp: '10:00:03', type: 'SYSTEM', content: '📊 BlockBerry API: Mainnet Data Pipeline Active' },
-  { id: 'sys-5', timestamp: '10:00:04', type: 'WALRUS', content: '🤖 7 Agents Ready for Federated Learning' },
+  { id: 'sys-1', timestamp: '10:00:00', type: 'SYSTEM', content: '🐋 WALRUS AGENTS v1.0: Distributed AI Training Platform' },
+  { id: 'sys-2', timestamp: '10:00:01', type: 'SYSTEM', content: '✅ Walrus Protocol: Connected to Testnet Storage Network' },
+  { id: 'sys-3', timestamp: '10:00:02', type: 'SYSTEM', content: '⛓️ Sui Blockchain: Agent Registry & Smart Contracts Active' },
+  { id: 'sys-4', timestamp: '10:00:03', type: 'SYSTEM', content: '🤖 AI Agent Swarm: 7 Specialized Agents Ready' },
+  { id: 'sys-5', timestamp: '10:00:04', type: 'SYSTEM', content: '🧠 Federated Learning Pipeline: Initialized & Standby' },
+  { id: 'sys-6', timestamp: '10:00:05', type: 'WALRUS', content: '📡 APIs Online: Gemini AI, BlockBerry, Pyth Network' },
+  { id: 'sys-7', timestamp: '10:00:06', type: 'SYSTEM', content: '⚡ System Ready: Register agents on-chain to begin training' },
 ];

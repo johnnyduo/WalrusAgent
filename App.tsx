@@ -503,14 +503,15 @@ const App: React.FC = () => {
         return newState;
       });
       
-      // Store the Walrus blob ID if available
-      if (currentWalrusBlobIdRef.current) {
+      // Store the Walrus blob ID if available (save to local var first to avoid race condition)
+      const savedWalrusBlobId = currentWalrusBlobIdRef.current;
+      if (savedWalrusBlobId) {
         setWalrusBlobIds(prev => {
           const newState = {
             ...prev,
-            [agentId]: currentWalrusBlobIdRef.current!
+            [agentId]: savedWalrusBlobId
           };
-          console.log('🐋 Stored Walrus blob ID in state:', agentId, '→', currentWalrusBlobIdRef.current);
+          console.log('🐋 Stored Walrus blob ID in state:', agentId, '→', savedWalrusBlobId);
           console.log('🐋 New walrusBlobIds state:', newState);
           return newState;
         });
@@ -519,7 +520,7 @@ const App: React.FC = () => {
         const walletKey = `walrusBlobIds_${address?.toLowerCase()}`;
         const stored = localStorage.getItem(walletKey);
         const blobIds = stored ? JSON.parse(stored) : {};
-        blobIds[agentId] = currentWalrusBlobIdRef.current;
+        blobIds[agentId] = savedWalrusBlobId;
         localStorage.setItem(walletKey, JSON.stringify(blobIds));
       }
       
@@ -544,6 +545,7 @@ const App: React.FC = () => {
         return next;
       });
       
+      // Clear refs only AFTER all state updates to prevent race conditions
       currentMintingAgentRef.current = null;
       currentWalrusBlobIdRef.current = null;
       
