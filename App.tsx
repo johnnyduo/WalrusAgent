@@ -2267,12 +2267,15 @@ const App: React.FC = () => {
   // --- Render ---
   const selectedAgent = selectedAgentId ? AGENTS.find(a => a.id === selectedAgentId) || null : null;
   
-  // Enrich selectedAgent with on-chain data
-  const enrichedAgent = selectedAgent ? {
-    ...selectedAgent,
-    suiObjectId: onChainAgents[selectedAgent.id],
-    walrusBlobId: walrusBlobIds[selectedAgent.id]
-  } : null;
+  // Enrich selectedAgent with on-chain data (useMemo to ensure it updates when state changes)
+  const enrichedAgent = React.useMemo(() => {
+    if (!selectedAgent) return null;
+    return {
+      ...selectedAgent,
+      suiObjectId: onChainAgents[selectedAgent.id],
+      walrusBlobId: walrusBlobIds[selectedAgent.id]
+    };
+  }, [selectedAgent, onChainAgents, walrusBlobIds]);
 
   // Show results page if requested
   if (showResultsPage) {
