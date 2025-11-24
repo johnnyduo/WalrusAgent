@@ -505,11 +505,15 @@ const App: React.FC = () => {
       
       // Store the Walrus blob ID if available
       if (currentWalrusBlobIdRef.current) {
-        setWalrusBlobIds(prev => ({
-          ...prev,
-          [agentId]: currentWalrusBlobIdRef.current!
-        }));
-        console.log('🐋 Stored Walrus blob ID:', agentId, '→', currentWalrusBlobIdRef.current);
+        setWalrusBlobIds(prev => {
+          const newState = {
+            ...prev,
+            [agentId]: currentWalrusBlobIdRef.current!
+          };
+          console.log('🐋 Stored Walrus blob ID in state:', agentId, '→', currentWalrusBlobIdRef.current);
+          console.log('🐋 New walrusBlobIds state:', newState);
+          return newState;
+        });
         
         // Also save to localStorage for persistence
         const walletKey = `walrusBlobIds_${address?.toLowerCase()}`;
