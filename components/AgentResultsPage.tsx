@@ -141,12 +141,12 @@ export const AgentResultsPage: React.FC<AgentResultsPageProps> = ({
     if (!ability) return null;
 
     const missions: { [key: string]: string } = {
-      'a1': `"Preprocess training datasets using ${ability.apis.join(' & ')}. Normalize features, extract embeddings, and store processed batches on Walrus. Ensure 99%+ data quality for model training."`,
-      'a2': `"Design optimal neural network architectures using ${ability.apis.join(' & ')}. Configure layer depths, attention mechanisms, and hyperparameters. Store architecture blueprints on Walrus for reproducibility."`,
-      'a3': `"Compute model gradients with ${ability.apis.join(' & ')}. Perform backpropagation across training batches, optimize gradient flow, and store weight deltas on Walrus for federated aggregation."`,
-      'a4': `"Validate training convergence using ${ability.apis.join(' & ')}. Monitor loss curves, detect overfitting, ensure model quality. Approve checkpoints before Walrus storage."`,
-      'a5': `"Optimize inference performance using ${ability.apis.join(' & ')}. Quantize models, compress weights, accelerate predictions. Deploy optimized models from Walrus storage."`,
-      'a6': `"Aggregate model updates from distributed nodes using ${ability.apis.join(' & ')}. Apply federated averaging, coordinate consensus, publish global models to Walrus."`
+      'a1': `"🐟 Flying Fish: Collect real-time market data via ${ability.apis.join(' & ')}. Preprocess training batches, normalize features, extract embeddings. Store processed datasets on Walrus for distributed training pipeline."`,
+      'a2': `"🐙 Octopus: Design optimal neural network architectures using ${ability.apis.join(' & ')}. Configure transformer layers, attention heads, hyperparameters. Store architecture blueprints on Walrus for reproducibility."`,
+      'a3': `"🐬 Dolphin: Compute model gradients via ${ability.apis.join(' & ')}. Perform backpropagation across batches, optimize gradient flow, store weight deltas on Walrus for federated aggregation across the swarm."`,
+      'a4': `"🐢 Sea Turtle: Validate model convergence using ${ability.apis.join(' & ')}. Monitor loss curves, detect overfitting, ensure quality. Only approve checkpoints that meet convergence criteria before Walrus storage."`,
+      'a5': `"🪼 Jellyfish: Optimize inference performance via ${ability.apis.join(' & ')}. Quantize models to INT8, compress weights, accelerate predictions. Deploy optimized models from Walrus for production inference."`,
+      'a6': `"🦈 Manta Ray: Aggregate model updates from distributed nodes via ${ability.apis.join(' & ')}. Apply federated averaging, coordinate consensus, publish global model checkpoints to Walrus Protocol."`
     };
 
     return missions[agentId] || null;
@@ -437,11 +437,11 @@ export const AgentResultsPage: React.FC<AgentResultsPageProps> = ({
           
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-4xl font-bold text-walrus-teal mb-2 font-mono">AGENT OPERATIONS REPORT</h1>
+              <h1 className="text-4xl font-bold text-walrus-teal mb-2 font-mono">🐋 TRAINING OPERATIONS LOG</h1>
               <p className="text-gray-400 font-mono text-sm">
                 {activeAgents.length > 0 
-                  ? `Monitoring ${activeAgents.length} active agent${activeAgents.length > 1 ? 's' : ''} on canvas`
-                  : 'Real-time intelligence from autonomous agents'}
+                  ? `Distributed AI Training: ${activeAgents.length} Agent${activeAgents.length > 1 ? 's' : ''} • Walrus Protocol Storage • Sui Blockchain Registry`
+                  : 'Federated Learning Pipeline • Real-time Model Training • Decentralized Storage'}
               </p>
             </div>
             <div className="text-right flex flex-col gap-3">
@@ -617,7 +617,7 @@ export const AgentResultsPage: React.FC<AgentResultsPageProps> = ({
                         {isAgentCaptain && connections.outgoing.length > 0 && (
                           <div className="mb-3 bg-yellow-500/10 border border-yellow-500/30 rounded p-2">
                             <div className="flex items-center gap-2 text-xs">
-                              <span className="text-yellow-400 font-mono font-bold">⚡ COMMANDING AGENTS:</span>
+                              <span className="text-yellow-400 font-mono font-bold">🐋 COORDINATING TRAINING SWARM:</span>
                               {connections.outgoing.map((conn: any, idx: number) => (
                                 <span key={idx} className="px-2 py-0.5 bg-purple-500/20 border border-purple-500/50 rounded text-purple-400 font-mono">
                                   {conn.name}
@@ -625,7 +625,7 @@ export const AgentResultsPage: React.FC<AgentResultsPageProps> = ({
                               ))}
                             </div>
                             <div className="text-xs text-gray-400 mt-1 font-mono">
-                              Orchestrating operations and coordinating agent activities
+                              🧠 Orchestrating distributed training • Aggregating model deltas • Managing epochs • Storing checkpoints on Walrus
                             </div>
                           </div>
                         )}

@@ -328,6 +328,10 @@ const App: React.FC = () => {
     dialogue: string;
   } | null>(null);
   const [taskResults, setTaskResults] = useState<AgentTaskResult[]>(() => {
+    // Start fresh - only AI training operations from TrainingDashboard should be recorded
+    // Old localStorage may contain outdated DeFi/trading operations
+    return [];
+    /* eslint-disable-next-line no-unreachable */
     const stored = localStorage.getItem('taskResults');
     if (stored) {
       try {
@@ -408,11 +412,37 @@ const App: React.FC = () => {
     localStorage.setItem('agentConnections', JSON.stringify(edges));
   }, []);
 
-  // --- Initialization: Check API Status ---
+  // --- Initialization: Check API Status and Clear Old Data ---
   useEffect(() => {
     const checkAPIs = async () => {
       addLog('SYSTEM', '🚀 WALRUS AGENTS Grid Initializing...');
       addLog('SYSTEM', '💡 TIP: Run testAPIs() in browser console to verify all API connections');
+      
+      // Clear old DeFi/trading task results from localStorage
+      const stored = localStorage.getItem('taskResults');
+      if (stored) {
+        try {
+          const oldResults = JSON.parse(stored);
+          // Filter out any trading-related operations (market_research, swap_execution, etc.)
+          const aiTrainingResults = oldResults.filter((result: any) => 
+            result.taskType === 'training_coordination' ||
+            result.taskType === 'data_preprocessing' ||
+            result.taskType === 'model_architecture' ||
+            result.taskType === 'gradient_computation' ||
+            result.taskType === 'model_validation' ||
+            result.taskType === 'inference_optimization' ||
+            result.taskType === 'federated_aggregation'
+          );
+          if (aiTrainingResults.length !== oldResults.length) {
+            console.log('🧹 Cleaned up old trading operations, keeping AI training results only');
+            localStorage.setItem('taskResults', JSON.stringify(aiTrainingResults));
+            setTaskResults(aiTrainingResults);
+          }
+        } catch (e) {
+          console.log('🧹 Clearing invalid taskResults');
+          localStorage.removeItem('taskResults');
+        }
+      }
       
       // Quick API availability check
       setTimeout(() => {

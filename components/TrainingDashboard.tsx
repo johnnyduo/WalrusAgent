@@ -156,7 +156,7 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
       });
 
       // Step 4: Sea Turtle Guardian - Validate model quality (65%)
-      setTrainingStep(`🛡️ Sea Turtle: Validating accuracy (${(trainingResult.accuracy * 100).toFixed(1)}%)...`);
+      setTrainingStep(`🐢 Sea Turtle: Validating accuracy (${(trainingResult.accuracy * 100).toFixed(1)}%)...`);
       setTrainingProgress(65);
       await new Promise(resolve => setTimeout(resolve, 500)); // Brief validation pause
 
@@ -247,14 +247,14 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
       }
 
       // Step 6: Manta Ray Messenger - Aggregate and publish (85%)
-      setTrainingStep('🐦 Manta Ray: Aggregating model updates for consensus...');
+      setTrainingStep('🦈 Manta Ray: Aggregating model updates for consensus...');
       setTrainingProgress(85);
       await new Promise(resolve => setTimeout(resolve, 500)); // Brief aggregation pause
 
       // Step 7: Submit to blockchain (90%) - Optional if contracts deployed
       let txDigest: string | undefined;
       if (CONTRACTS_DEPLOYED) {
-        setTrainingStep('⛓️ Manta Ray: Publishing contribution to Sui blockchain...');
+        setTrainingStep('⛓️ 🦈 Manta Ray: Publishing contribution to Sui blockchain...');
         setTrainingProgress(90);
         
         txDigest = await submitToChain({
@@ -268,7 +268,7 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
       }
 
       // Step 8: Jellyfish Mystic - Optimize for inference (95%)
-      setTrainingStep('🦊 Jellyfish: Optimizing model for deployment...');
+      setTrainingStep('🪼 Jellyfish: Optimizing model for deployment...');
       setTrainingProgress(95);
       await new Promise(resolve => setTimeout(resolve, 500)); // Brief optimization pause
 
@@ -994,13 +994,13 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
                               Contribution recorded on Sui blockchain
                             </div>
                             <a
-                              href={getSuiExplorerUrl('transaction', contribution.txDigest)}
+                              href={contribution.txDigest.startsWith('http') ? contribution.txDigest : getSuiExplorerUrl('transaction', contribution.txDigest)}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-walrus-purple hover:underline text-xs block"
                               title={`Transaction: ${contribution.txDigest}`}
                             >
-                              ⛓️ Sui TX: {contribution.txDigest.slice(0, 8)}...{contribution.txDigest.slice(-6)}
+                              ⛓️ Sui TX: {contribution.txDigest.includes('suiscan.xyz') ? contribution.txDigest.split('/').pop()?.slice(0, 8) + '...' + contribution.txDigest.split('/').pop()?.slice(-6) : contribution.txDigest.slice(0, 8) + '...' + contribution.txDigest.slice(-6)}
                             </a>
                           </div>
                         )}

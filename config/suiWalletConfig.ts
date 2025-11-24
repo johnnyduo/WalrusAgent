@@ -119,8 +119,10 @@ export const getTokenByType = (tokenType: string) => {
 };
 
 // Helper functions
-export const getSuiExplorerUrl = (type: 'address' | 'object' | 'transaction', id: string): string => {
-  return `${SUI_EXPLORER_URLS[SUI_NETWORK]}/${type}/${id}`;
+export const getSuiExplorerUrl = (type: 'address' | 'object' | 'transaction' | 'tx', id: string): string => {
+  // Suiscan uses 'tx' for transactions, not 'transaction'
+  const path = type === 'transaction' ? 'tx' : type;
+  return `${SUI_EXPLORER_URLS[SUI_NETWORK]}/${path}/${id}`;
 };
 
 export const getWalrusExplorerUrl = (blobId: string): string => {
