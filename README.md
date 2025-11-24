@@ -44,15 +44,14 @@
 
 1. [Overview](#-overview)
 2. [The Problem & Solution](#-the-problem--solution)
-3. [Architecture](#-architecture)
+3. [Architecture](#%EF%B8%8F-architecture)
 4. [Key Features](#-key-features)
-5. [Technology Stack](#-technology-stack)
+5. [Technology Stack](#%EF%B8%8F-technology-stack)
 6. [Getting Started](#-getting-started)
-7. [How It Works](#-how-it-works)
-8. [Walrus Integration](#-walrus-integration)
-9. [Smart Contracts](#-smart-contracts)
-10. [Project Structure](#-project-structure)
-11. [Future Roadmap](#-future-roadmap)
+7. [Walrus Integration Deep Dive](#-walrus-integration-deep-dive)
+8. [Smart Contracts](#%EF%B8%8F-smart-contracts)
+9. [Future Roadmap](#-future-roadmap)
+10. [Hackathon Submission](#-hackathon-submission)
 
 ---
 
