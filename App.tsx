@@ -328,18 +328,10 @@ const App: React.FC = () => {
     dialogue: string;
   } | null>(null);
   const [taskResults, setTaskResults] = useState<AgentTaskResult[]>(() => {
-    // Start fresh - only AI training operations from TrainingDashboard should be recorded
-    // Old localStorage may contain outdated DeFi/trading operations
-    return [];
-    /* eslint-disable-next-line no-unreachable */
-    const stored = localStorage.getItem('taskResults');
-    if (stored) {
-      try {
-        return JSON.parse(stored);
-      } catch {
-        return [];
-      }
-    }
+    // Clear ALL old task results - they contain DeFi/trading operations
+    // Only AI training operations from TrainingDashboard should be recorded going forward
+    localStorage.removeItem('taskResults');
+    console.log('🧹 Cleared all old task results - only AI training operations will be recorded');
     return [];
   });
   const [showResultsPage, setShowResultsPage] = useState(false);
@@ -418,31 +410,8 @@ const App: React.FC = () => {
       addLog('SYSTEM', '🚀 WALRUS AGENTS Grid Initializing...');
       addLog('SYSTEM', '💡 TIP: Run testAPIs() in browser console to verify all API connections');
       
-      // Clear old DeFi/trading task results from localStorage
-      const stored = localStorage.getItem('taskResults');
-      if (stored) {
-        try {
-          const oldResults = JSON.parse(stored);
-          // Filter out any trading-related operations (market_research, swap_execution, etc.)
-          const aiTrainingResults = oldResults.filter((result: any) => 
-            result.taskType === 'training_coordination' ||
-            result.taskType === 'data_preprocessing' ||
-            result.taskType === 'model_architecture' ||
-            result.taskType === 'gradient_computation' ||
-            result.taskType === 'model_validation' ||
-            result.taskType === 'inference_optimization' ||
-            result.taskType === 'federated_aggregation'
-          );
-          if (aiTrainingResults.length !== oldResults.length) {
-            console.log('🧹 Cleaned up old trading operations, keeping AI training results only');
-            localStorage.setItem('taskResults', JSON.stringify(aiTrainingResults));
-            setTaskResults(aiTrainingResults);
-          }
-        } catch (e) {
-          console.log('🧹 Clearing invalid taskResults');
-          localStorage.removeItem('taskResults');
-        }
-      }
+      // Ensure taskResults stays clean - no DeFi operations
+      // Already cleared in useState initializer
       
       // Quick API availability check
       setTimeout(() => {
@@ -2089,10 +2058,11 @@ const App: React.FC = () => {
     const interval = setInterval(async () => {
       const rand = Math.random();
 
-      // 1. Fetch real intelligence for random agent (20% chance - increased for better UX)
-      if (rand < 0.20 && activeAgents.length > 0) {
-        const randomAgent = activeAgents[Math.floor(Math.random() * activeAgents.length)];
-        fetchAgentIntelligence(randomAgent);
+      // 1. Fetch real intelligence for random agent - DISABLED
+      // Old DeFi/trading intelligence system replaced with AI Training Dashboard
+      // Agent operations now happen through explicit training sessions only
+      if (false) {
+        // Disabled DeFi operations
       }
 
       // 2. A2A Negotiation Event (25% chance) - Fixed: removed gap, now 20-45%
