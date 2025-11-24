@@ -98,9 +98,16 @@ const AgentCard: React.FC<AgentCardProps> = ({ agent, isActive, onToggle, onClic
               <img 
                 src={spriteUrl} 
                 alt={agent.name} 
-                className="w-full h-full object-contain relative z-10 drop-shadow-[0_5px_5px_rgba(0,0,0,0.5)] transition-all group-hover:scale-110 duration-300"
-                style={{ imageRendering: 'pixelated' }}
-                onLoad={() => setSpriteLoaded(true)}
+                className="w-full h-full object-cover relative z-10 drop-shadow-[0_5px_5px_rgba(0,0,0,0.5)] transition-all group-hover:scale-110 duration-300 rounded-full"
+                onLoad={() => {
+                  setSpriteLoaded(true);
+                  console.log('Avatar loaded:', agent.name, spriteUrl);
+                }}
+                onError={(e) => {
+                  console.error('Avatar failed to load:', agent.name, spriteUrl);
+                  e.currentTarget.src = '/lottie/walrusagent.gif';
+                }}
+                crossOrigin="anonymous"
               />
             )}
         </div>

@@ -127,9 +127,14 @@ const AgentDetailPanel: React.FC<AgentDetailPanelProps> = ({ agent, onClose, onC
              ) : (
                <img 
                   src={agent.avatar} 
-                  className="w-full h-full object-contain relative z-10 drop-shadow-[0_5px_5px_rgba(0,0,0,0.5)]"
-                  style={{ imageRendering: 'pixelated' }}
+                  className="w-full h-full object-cover relative z-10 drop-shadow-[0_5px_5px_rgba(0,0,0,0.5)] rounded-2xl"
                   alt={agent.name}
+                  onError={(e) => {
+                    console.error('Avatar failed to load:', agent.name, agent.avatar);
+                    e.currentTarget.src = '/lottie/walrusagent.gif';
+                  }}
+                  onLoad={() => console.log('Avatar loaded:', agent.name, agent.avatar)}
+                  crossOrigin="anonymous"
                />
              )}
              <div className="absolute bottom-0 left-0 right-0 bg-walrus-teal/20 h-1/3 blur-xl"></div>

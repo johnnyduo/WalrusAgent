@@ -71,8 +71,7 @@ const AgentNode = React.memo(({ data }: NodeProps) => {
           <img 
             src={spriteUrl} 
             alt={agent.name}
-            className="w-full h-full object-contain p-2"
-            style={{ imageRendering: 'pixelated' }}
+            className="w-full h-full object-cover p-2 rounded-full"
           />
         )}
       </div>

@@ -91,12 +91,12 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
       const summary = model.getModelSummary();
       console.log('🧠 Model ready:', summary);
 
-      // Step 2: Eagleton Skywatcher - Data preprocessing (30%)
-      setTrainingStep(`📊 Eagleton: Preprocessing training batch (${summary.architecture})...`);
+      // Step 2: Flying Fish Scout - Data preprocessing (30%)
+      setTrainingStep(`📊 Flying Fish: Preprocessing training batch (${summary.architecture})...`);
       setTrainingProgress(30);
 
-      // Step 3: Reynard Swift - Gradient computation (50%)
-      setTrainingStep('⚡ Reynard: Computing gradients with backpropagation...');
+      // Step 3: Dolphin Trainer - Gradient computation (50%)
+      setTrainingStep('⚡ Dolphin: Computing gradients with backpropagation...');
       setTrainingProgress(50);
       
       // Initialize live metrics with model version and contributors
@@ -155,8 +155,8 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
         computeTime: trainingResult.computeTime + 'ms',
       });
 
-      // Step 4: Ursus Guardian - Validate model quality (65%)
-      setTrainingStep(`🛡️ Ursus: Validating accuracy (${(trainingResult.accuracy * 100).toFixed(1)}%)...`);
+      // Step 4: Sea Turtle Guardian - Validate model quality (65%)
+      setTrainingStep(`🛡️ Sea Turtle: Validating accuracy (${(trainingResult.accuracy * 100).toFixed(1)}%)...`);
       setTrainingProgress(65);
       await new Promise(resolve => setTimeout(resolve, 500)); // Brief validation pause
 
@@ -246,15 +246,15 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
         localStorage.setItem(`training_delta_${deltaBlobId}`, JSON.stringify(fallbackData));
       }
 
-      // Step 6: Corvus Messenger - Aggregate and publish (85%)
-      setTrainingStep('🐦 Corvus: Aggregating model updates for consensus...');
+      // Step 6: Manta Ray Messenger - Aggregate and publish (85%)
+      setTrainingStep('🐦 Manta Ray: Aggregating model updates for consensus...');
       setTrainingProgress(85);
       await new Promise(resolve => setTimeout(resolve, 500)); // Brief aggregation pause
 
       // Step 7: Submit to blockchain (90%) - Optional if contracts deployed
       let txDigest: string | undefined;
       if (CONTRACTS_DEPLOYED) {
-        setTrainingStep('⛓️ Corvus: Publishing contribution to Sui blockchain...');
+        setTrainingStep('⛓️ Manta Ray: Publishing contribution to Sui blockchain...');
         setTrainingProgress(90);
         
         txDigest = await submitToChain({
@@ -267,8 +267,8 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
         console.log('ℹ️ Sui contracts not deployed - skipping blockchain TX');
       }
 
-      // Step 8: Luna Mysticfang - Optimize for inference (95%)
-      setTrainingStep('🦊 Luna: Optimizing model for deployment...');
+      // Step 8: Jellyfish Mystic - Optimize for inference (95%)
+      setTrainingStep('🦊 Jellyfish: Optimizing model for deployment...');
       setTrainingProgress(95);
       await new Promise(resolve => setTimeout(resolve, 500)); // Brief optimization pause
 
@@ -613,7 +613,7 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
                                 </div>
                               </div>
 
-                              {/* Eagleton - Data Prep */}
+                              {/* Flying Fish - Data Prep */}
                               <div className={`p-3 rounded-lg transition-all duration-300 border ${
                                 trainingProgress >= 30 && trainingProgress < 50 
                                   ? 'bg-blue-500/20 border-blue-400 shadow-lg shadow-blue-400/30 scale-105' 
@@ -622,8 +622,8 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
                                     : 'bg-gray-900 border-gray-700'
                               }`}>
                                 <div className="text-center">
-                                  <div className="text-2xl mb-1">🦅</div>
-                                  <div className="text-[10px] font-mono font-bold text-white">Eagleton</div>
+                                  <div className="text-2xl mb-1">🐟</div>
+                                  <div className="text-[10px] font-mono font-bold text-white">Flying Fish</div>
                                   <div className="text-[9px] text-gray-400 mt-1">Data Prep</div>
                                   {trainingProgress >= 30 && trainingProgress < 50 && (
                                     <div className="mt-2 flex justify-center">
@@ -634,7 +634,7 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
                                 </div>
                               </div>
 
-                              {/* Athena - Architecture */}
+                              {/* Octopus - Architecture */}
                               <div className={`p-3 rounded-lg transition-all duration-300 border ${
                                 trainingProgress >= 50 && trainingProgress < 55 
                                   ? 'bg-purple-500/20 border-purple-400 shadow-lg shadow-purple-400/30 scale-105' 
@@ -643,8 +643,8 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
                                     : 'bg-gray-900 border-gray-700'
                               }`}>
                                 <div className="text-center">
-                                  <div className="text-2xl mb-1">🦉</div>
-                                  <div className="text-[10px] font-mono font-bold text-white">Athena</div>
+                                  <div className="text-2xl mb-1">🐙</div>
+                                  <div className="text-[10px] font-mono font-bold text-white">Octopus</div>
                                   <div className="text-[9px] text-gray-400 mt-1">Architecture</div>
                                   {trainingProgress >= 50 && trainingProgress < 55 && (
                                     <div className="mt-2 flex justify-center">
@@ -655,7 +655,7 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
                                 </div>
                               </div>
 
-                              {/* Reynard - Gradients */}
+                              {/* Dolphin - Gradients */}
                               <div className={`p-3 rounded-lg transition-all duration-300 border ${
                                 trainingProgress >= 55 && trainingProgress < 65 
                                   ? 'bg-orange-500/20 border-orange-400 shadow-lg shadow-orange-400/30 scale-105' 
@@ -664,8 +664,8 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
                                     : 'bg-gray-900 border-gray-700'
                               }`}>
                                 <div className="text-center">
-                                  <div className="text-2xl mb-1">🦊</div>
-                                  <div className="text-[10px] font-mono font-bold text-white">Reynard</div>
+                                  <div className="text-2xl mb-1">🐬</div>
+                                  <div className="text-[10px] font-mono font-bold text-white">Dolphin</div>
                                   <div className="text-[9px] text-gray-400 mt-1">Gradients</div>
                                   {trainingProgress >= 55 && trainingProgress < 65 && (
                                     <div className="mt-2 flex justify-center gap-1">
@@ -678,7 +678,7 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
                                 </div>
                               </div>
 
-                              {/* Ursus - Validation */}
+                              {/* Sea Turtle - Validation */}
                               <div className={`p-3 rounded-lg transition-all duration-300 border ${
                                 trainingProgress >= 65 && trainingProgress < 70 
                                   ? 'bg-yellow-500/20 border-yellow-400 shadow-lg shadow-yellow-400/30 scale-105' 
@@ -687,8 +687,8 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
                                     : 'bg-gray-900 border-gray-700'
                               }`}>
                                 <div className="text-center">
-                                  <div className="text-2xl mb-1">🐻</div>
-                                  <div className="text-[10px] font-mono font-bold text-white">Ursus</div>
+                                  <div className="text-2xl mb-1">🐢</div>
+                                  <div className="text-[10px] font-mono font-bold text-white">Sea Turtle</div>
                                   <div className="text-[9px] text-gray-400 mt-1">Validate</div>
                                   {trainingProgress >= 65 && trainingProgress < 70 && (
                                     <div className="mt-2 flex justify-center">
@@ -699,7 +699,7 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
                                 </div>
                               </div>
 
-                              {/* Luna - Optimization */}
+                              {/* Jellyfish - Optimization */}
                               <div className={`p-3 rounded-lg transition-all duration-300 border ${
                                 trainingProgress >= 70 && trainingProgress < 85 
                                   ? 'bg-indigo-500/20 border-indigo-400 shadow-lg shadow-indigo-400/30 scale-105' 
@@ -708,8 +708,8 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
                                     : 'bg-gray-900 border-gray-700'
                               }`}>
                                 <div className="text-center">
-                                  <div className="text-2xl mb-1">🐺</div>
-                                  <div className="text-[10px] font-mono font-bold text-white">Luna</div>
+                                  <div className="text-2xl mb-1">🪼</div>
+                                  <div className="text-[10px] font-mono font-bold text-white">Jellyfish</div>
                                   <div className="text-[9px] text-gray-400 mt-1">Optimize</div>
                                   {trainingProgress >= 70 && trainingProgress < 85 && (
                                     <div className="mt-2 flex justify-center">

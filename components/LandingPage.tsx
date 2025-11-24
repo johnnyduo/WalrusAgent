@@ -145,43 +145,43 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
           <AgentPreview 
             name="Walrus Commander" 
             role="Coordinator" 
-            avatar="/lottie/walrusagent.gif"
+            avatar="https://media0.giphy.com/media/v1.Y2lkPTZjMDliOTUyaXF2MDBoMzdvajVvOG13M3ljYzkyenNveTY4ZXBlZG05a2c3cTdtcCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/XCPnjIUMT06ek/giphy.gif"
             ability="Distributed training coordination & epoch management across the network"
           />
           <AgentPreview 
-            name="Eagleton Skywatcher" 
+            name="Flying Fish Scout" 
             role="Preprocessor" 
-            avatar="/lottie/running pigeon.json"
+            avatar="https://storage.gra.cloud.ovh.net/v1/AUTH_728ab22ba0c842468a897907be9a7075/flipanim/anim/njjpf2to.gif"
             ability="Data preprocessing & feature engineering for optimal model input"
           />
           <AgentPreview 
-            name="Athena Nightwing" 
+            name="Octopus Architect" 
             role="Architect" 
-            avatar="/lottie/Duo Attack.json"
+            avatar="/octopus.gif"
             ability="Model architecture design & hyperparameter optimization"
           />
           <AgentPreview 
-            name="Reynard Swift" 
+            name="Dolphin Trainer" 
             role="Trainer" 
-            avatar="/lottie/Happy Unicorn Dog.json"
+            avatar="/dolphin.gif"
             ability="Gradient computation & backpropagation with TensorFlow.js"
           />
           <AgentPreview 
-            name="Ursus Guardian" 
+            name="Sea Turtle Guardian" 
             role="Validator" 
-            avatar="/lottie/Cute bear dancing.json"
+            avatar="/sea-turtle.gif"
             ability="Model validation & quality assurance with accuracy thresholds"
           />
           <AgentPreview 
-            name="Luna Mysticfang" 
+            name="Jellyfish Mystic" 
             role="Optimizer" 
-            avatar="/lottie/happy fox.json"
+            avatar="/jellyfish.gif"
             ability="Inference optimization & model quantization for deployment"
           />
           <AgentPreview 
-            name="Corvus Messenger" 
+            name="Manta Ray Messenger" 
             role="Aggregator" 
-            avatar="/lottie/Dragon.json"
+            avatar="/manta-ray.gif"
             ability="Federated aggregation & consensus of gradient updates"
           />
         </div>

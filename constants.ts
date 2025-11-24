@@ -26,14 +26,14 @@ export const AGENTS: AgentMetadata[] = [
   },
   {
     id: 'a1',
-    name: 'Eagleton Skywatcher',
+    name: 'Flying Fish Scout',
     role: AgentRole.NAVIGATOR,
-    description: 'Data Preprocessing Agent. Sharp-eyed eagle who collects real-time market data, performs feature engineering, normalizes datasets, and stores training batches on Walrus.',
+    description: 'Data Preprocessing Agent. Swift flying fish who collects real-time market data, performs feature engineering, normalizes datasets, and stores training batches on Walrus.',
     capabilities: ['Data Collection', 'Feature Engineering', 'Normalization', 'Batch Storage'],
     trustScore: 98,
-    spriteSeed: 'eagle-bird-scout-teal-wings',
-    avatar: '/lottie/running pigeon.json',
-    avatarType: 'lottie' as const,
+    spriteSeed: 'flying-fish-scout-teal-swift',
+    avatar: '/flying-fish.gif',
+    avatarType: 'gif' as const,
     status: 'idle',
     personality: {
       traits: ['Data-focused', 'Precise', 'Preprocessing', 'Storage-efficient'],
@@ -49,14 +49,14 @@ export const AGENTS: AgentMetadata[] = [
   },
   {
     id: 'a2',
-    name: 'Athena Nightwing',
+    name: 'Octopus Architect',
     role: AgentRole.ARCHIVIST,
-    description: 'Model Architecture Specialist. Wise owl who designs neural networks, optimizes layer configurations, implements attention mechanisms, and stores architectures on Walrus.',
+    description: 'Model Architecture Specialist. Intelligent octopus who designs neural networks, optimizes layer configurations, implements attention mechanisms, and stores architectures on Walrus.',
     capabilities: ['Network Design', 'Layer Optimization', 'Attention Mechanisms', 'Architecture Storage'],
     trustScore: 99,
-    spriteSeed: 'owl-wise-indigo-scholar',
-    avatar: '/lottie/Duo Attack.json',
-    avatarType: 'lottie' as const,
+    spriteSeed: 'octopus-architect-indigo-intelligent',
+    avatar: '/octopus.gif',
+    avatarType: 'gif' as const,
     status: 'idle',
     personality: {
       traits: ['Architectural', 'Deep-thinking', 'Optimization-focused', 'Design-savvy'],
@@ -72,14 +72,14 @@ export const AGENTS: AgentMetadata[] = [
   },
   {
     id: 'a3',
-    name: 'Reynard Swift',
+    name: 'Dolphin Trainer',
     role: AgentRole.MERCHANT,
-    description: 'Gradient Computation Agent. Cunning fox who calculates model gradients, performs backpropagation, optimizes batch sizes, and stores deltas on Walrus.',
+    description: 'Gradient Computation Agent. Intelligent dolphin who calculates model gradients, performs backpropagation, optimizes batch sizes, and stores deltas on Walrus.',
     capabilities: ['Gradient Calculation', 'Backpropagation', 'Batch Optimization', 'Delta Storage'],
     trustScore: 85,
-    spriteSeed: 'fox-trader-purple-clever',
-    avatar: '/lottie/Happy Unicorn Dog.json',
-    avatarType: 'lottie' as const,
+    spriteSeed: 'dolphin-trainer-purple-intelligent',
+    avatar: '/dolphin.gif',
+    avatarType: 'gif' as const,
     status: 'idle',
     personality: {
       traits: ['Fast-computing', 'Gradient-focused', 'Optimization-aware', 'Swift'],
@@ -95,14 +95,14 @@ export const AGENTS: AgentMetadata[] = [
   },
   {
     id: 'a4',
-    name: 'Ursus Guardian',
+    name: 'Sea Turtle Guardian',
     role: AgentRole.SENTINEL,
-    description: 'Model Validation Agent. Protective bear who validates training convergence, detects overfitting, monitors loss metrics, and ensures model quality before Walrus storage.',
+    description: 'Model Validation Agent. Wise sea turtle who validates training convergence, detects overfitting, monitors loss metrics, and ensures model quality before Walrus storage.',
     capabilities: ['Convergence Validation', 'Overfitting Detection', 'Loss Monitoring', 'Quality Assurance'],
     trustScore: 100,
-    spriteSeed: 'bear-guardian-black-strong',
-    avatar: '/lottie/Cute bear dancing.json',
-    avatarType: 'lottie' as const,
+    spriteSeed: 'sea-turtle-guardian-green-wise',
+    avatar: '/sea-turtle.gif',
+    avatarType: 'gif' as const,
     status: 'idle',
     personality: {
       traits: ['Protective', 'Quality-focused', 'Validation-driven', 'Duty-bound'],
@@ -118,14 +118,14 @@ export const AGENTS: AgentMetadata[] = [
   },
   {
     id: 'a5',
-    name: 'Luna Mysticfang',
+    name: 'Jellyfish Mystic',
     role: AgentRole.ORACLE,
-    description: 'Inference Optimization Agent. Mystical wolf who quantizes models, optimizes inference speed, implements model compression, and predicts with stored Walrus models.',
+    description: 'Inference Optimization Agent. Mystical jellyfish who quantizes models, optimizes inference speed, implements model compression, and predicts with stored Walrus models.',
     capabilities: ['Model Quantization', 'Inference Acceleration', 'Model Compression', 'Prediction Optimization'],
     trustScore: 96,
-    spriteSeed: 'wolf-mystic-violet-prophecy',
-    avatar: '/lottie/happy fox.json',
-    avatarType: 'lottie' as const,
+    spriteSeed: 'jellyfish-mystic-violet-mystical',
+    avatar: '/jellyfish.gif',
+    avatarType: 'gif' as const,
     status: 'idle',
     personality: {
       traits: ['Performance-focused', 'Predictive', 'Optimization-driven', 'Speed-augmented'],
@@ -141,14 +141,14 @@ export const AGENTS: AgentMetadata[] = [
   },
   {
     id: 'a6',
-    name: 'Corvus Messenger',
+    name: 'Manta Ray Messenger',
     role: AgentRole.GLITCH,
-    description: 'Federated Aggregation Agent. Swift raven who aggregates model updates from distributed nodes, applies federated averaging, coordinates consensus, and publishes to Walrus.',
+    description: 'Federated Aggregation Agent. Graceful manta ray who aggregates model updates from distributed nodes, applies federated averaging, coordinates consensus, and publishes to Walrus.',
     capabilities: ['Model Aggregation', 'Federated Averaging', 'Consensus Coordination', 'Update Publishing'],
     trustScore: 42,
-    spriteSeed: 'raven-messenger-black-alert',
-    avatar: '/lottie/Dragon.json',
-    avatarType: 'lottie' as const,
+    spriteSeed: 'manta-ray-messenger-black-graceful',
+    avatar: '/manta-ray.gif',
+    avatarType: 'gif' as const,
     status: 'idle',
     personality: {
       traits: ['Aggregating', 'Fast-coordinating', 'Consensus-driven', 'Distributed'],
@@ -177,7 +177,7 @@ export const AGENT_ABILITIES = {
       'BlockBerry API': 'https://api.blockberry.one/sui/v1'
     }
   },
-  'a1': { // Eagleton Skywatcher - Data Preprocessing
+  'a1': { // Flying Fish Scout - Data Preprocessing
     primary: 'Data Preprocessing',
     apis: ['TwelveData API', 'Walrus Protocol'],
     operations: ['Data collection', 'Feature engineering', 'Normalization', 'Batch storage'],
@@ -189,7 +189,7 @@ export const AGENT_ABILITIES = {
       'Walrus Protocol': 'https://aggregator.walrus-testnet.walrus.space'
     }
   },
-  'a2': { // Athena Nightwing - Model Architecture
+  'a2': { // Octopus Architect - Model Architecture
     primary: 'Model Architecture Design',
     apis: ['Gemini AI', 'Walrus Protocol'],
     operations: ['Network design', 'Layer optimization', 'Attention mechanisms', 'Architecture storage'],
@@ -201,7 +201,7 @@ export const AGENT_ABILITIES = {
       'Walrus Protocol': 'https://aggregator.walrus-testnet.walrus.space'
     }
   },
-  'a3': { // Reynard Swift - Gradient Computation
+  'a3': { // Dolphin Trainer - Gradient Computation
     primary: 'Gradient Computation',
     apis: ['Walrus Protocol', 'BlockBerry API'],
     operations: ['Gradient calculation', 'Backpropagation', 'Batch optimization', 'Delta storage'],
@@ -215,7 +215,7 @@ export const AGENT_ABILITIES = {
       'BlockBerry API': 'https://api.blockberry.one/sui/v1'
     }
   },
-  'a4': { // Ursus Guardian - Model Validation
+  'a4': { // Sea Turtle Guardian - Model Validation
     primary: 'Model Validation',
     apis: ['Walrus Protocol', 'Gemini AI'],
     operations: ['Convergence validation', 'Overfitting detection', 'Loss monitoring', 'Quality assurance'],
@@ -226,7 +226,7 @@ export const AGENT_ABILITIES = {
       'Gemini AI': 'https://generativelanguage.googleapis.com/v1beta'
     }
   },
-  'a5': { // Luna Mysticfang - Inference Optimization
+  'a5': { // Jellyfish Mystic - Inference Optimization
     primary: 'Inference Optimization',
     apis: ['Gemini AI', 'Walrus Protocol'],
     operations: ['Model quantization', 'Inference acceleration', 'Model compression', 'Prediction optimization'],
@@ -238,7 +238,7 @@ export const AGENT_ABILITIES = {
       'Walrus Protocol': 'https://aggregator.walrus-testnet.walrus.space'
     }
   },
-  'a6': { // Corvus Messenger - Federated Aggregation
+  'a6': { // Manta Ray Messenger - Federated Aggregation
     primary: 'Federated Aggregation',
     apis: ['Walrus Protocol', 'BlockBerry API'],
     operations: ['Model aggregation', 'Federated averaging', 'Consensus coordination', 'Update publishing'],
