@@ -2394,6 +2394,7 @@ const App: React.FC = () => {
 
         {/* Right Sidebar: Details Panel (Conditional) */}
         <AgentDetailPanel 
+          key={enrichedAgent ? `${enrichedAgent.id}-${enrichedAgent.suiObjectId}-${enrichedAgent.walrusBlobId}` : 'no-agent'}
           agent={enrichedAgent} 
           onClose={() => setSelectedAgentId(null)}
           onChainTokenId={enrichedAgent ? getTokenIdAsNumber(enrichedAgent.id) || undefined : undefined}
