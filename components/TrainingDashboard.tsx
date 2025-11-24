@@ -10,12 +10,14 @@ interface TrainingDashboardProps {
   agentId: string;
   agentName: string;
   onClose: () => void;
+  onTaskComplete?: (result: any) => void;
 }
 
 export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
   agentId,
   agentName,
-  onClose
+  onClose,
+  onTaskComplete
 }) => {
   const { address, isConnected } = useSuiWallet();
   const { startTraining, getTrainingStats, getContributions, recordTrainingSession, isTraining } = useTraining();
@@ -291,6 +293,25 @@ export const TrainingDashboard: React.FC<TrainingDashboardProps> = ({
           txDigest: txDigest,
         }
       );
+
+      // Add to main task results
+      if (onTaskComplete) {
+        onTaskComplete({
+          agentId,
+          agentName,
+          taskType: 'model_architecture' as const,
+          status: 'success' as const,
+          data: {
+            accuracy: trainingResult.accuracy,
+            loss: trainingResult.loss,
+            epoch: (stats?.latestEpoch || 0) + 1,
+            modelVersion: (stats?.totalVersions || 0) + 1,
+            deltaBlobId,
+            txDigest,
+            gradients: trainingResult.deltaWeights.length
+          }
+        });
+      }
 
       // Refresh stats from localStorage
       const updatedStats = getTrainingStats(agentId);

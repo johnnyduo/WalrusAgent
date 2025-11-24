@@ -2065,6 +2065,15 @@ const App: React.FC = () => {
         // Disabled DeFi operations
       }
 
+      // 1.5 Agent Training Operations (15% chance) - AI training activities
+      if (rand >= 0.05 && rand < 0.20 && activeAgents.length > 0) {
+        const eligibleAgents = activeAgents.filter(id => id !== 'a0'); // Exclude Commander
+        if (eligibleAgents.length > 0) {
+          const agentId = eligibleAgents[Math.floor(Math.random() * eligibleAgents.length)];
+          simulateAgentTrainingOperation(agentId);
+        }
+      }
+
       // 2. A2A Negotiation Event (25% chance) - Fixed: removed gap, now 20-45%
       else if (rand >= 0.20 && rand < 0.45 && activeAgents.length >= 2) {
         const senderId = activeAgents[Math.floor(Math.random() * activeAgents.length)];
@@ -2266,6 +2275,121 @@ const App: React.FC = () => {
     setShowTrainingDashboard(true);
   };
 
+  // Simulate characteristic training operations for non-Commander agents
+  const simulateAgentTrainingOperation = useCallback((agentId: string) => {
+    const agent = AGENTS.find(a => a.id === agentId);
+    if (!agent || agentId === 'a0') return; // Skip Walrus Commander
+    
+    const abilities = AGENT_ABILITIES[agentId];
+    if (!abilities?.taskType) return;
+
+    // Generate realistic operation data based on agent characteristic
+    const generateOperationData = () => {
+      switch (agentId) {
+        case 'a1': // Flying Fish Scout - Data Preprocessing
+          return {
+            taskType: 'data_preprocessing' as const,
+            data: {
+              samples: Math.floor(Math.random() * 5000 + 5000),
+              features: Math.floor(Math.random() * 50 + 100),
+              normalized: true,
+              batchSize: 32,
+              augmentation: ['rotation', 'scaling', 'noise'][Math.floor(Math.random() * 3)],
+              dataSource: 'Real-time market feeds'
+            },
+            summary: `Preprocessed ${Math.floor(Math.random() * 5000 + 5000)} samples with ${Math.floor(Math.random() * 50 + 100)} features. Applied normalization and ${['rotation', 'scaling', 'noise'][Math.floor(Math.random() * 3)]} augmentation.`
+          };
+        
+        case 'a2': // Octopus Architect - Model Architecture  
+          return {
+            taskType: 'model_architecture' as const,
+            data: {
+              layers: Math.floor(Math.random() * 5 + 8),
+              parameters: Math.floor(Math.random() * 50000 + 100000),
+              activation: ['ReLU', 'Tanh', 'Sigmoid'][Math.floor(Math.random() * 3)],
+              optimizer: 'Adam',
+              learningRate: (Math.random() * 0.001).toFixed(5)
+            },
+            summary: `Designed ${Math.floor(Math.random() * 5 + 8)}-layer architecture with ${Math.floor(Math.random() * 50000 + 100000)} parameters. Using ${['ReLU', 'Tanh', 'Sigmoid'][Math.floor(Math.random() * 3)]} activation.`
+          };
+        
+        case 'a3': // Dolphin Trainer - Gradient Computation
+          return {
+            taskType: 'gradient_computation' as const,
+            data: {
+              gradients: Math.floor(Math.random() * 100 + 100),
+              batchLoss: (Math.random() * 0.5 + 0.1).toFixed(4),
+              learningRate: 0.001,
+              momentum: 0.9,
+              clipNorm: 1.0
+            },
+            summary: `Computed ${Math.floor(Math.random() * 100 + 100)} gradients with batch loss ${(Math.random() * 0.5 + 0.1).toFixed(4)}. Applied momentum and gradient clipping.`
+          };
+        
+        case 'a4': // Sea Turtle Guardian - Model Validation
+          return {
+            taskType: 'model_validation' as const,
+            data: {
+              valAccuracy: (Math.random() * 0.15 + 0.80).toFixed(3),
+              valLoss: (Math.random() * 0.3 + 0.1).toFixed(4),
+              overfitting: Math.random() > 0.7 ? 'Detected' : 'None',
+              convergence: Math.random() > 0.6 ? 'Stable' : 'Improving'
+            },
+            summary: `Validation accuracy: ${(Math.random() * 0.15 + 0.80).toFixed(3)}, loss: ${(Math.random() * 0.3 + 0.1).toFixed(4)}. ${Math.random() > 0.7 ? 'Overfitting detected.' : 'Model generalizes well.'}`
+          };
+        
+        case 'a5': // Jellyfish Mystic - Inference Optimization
+          return {
+            taskType: 'inference_optimization' as const,
+            data: {
+              originalSize: Math.floor(Math.random() * 50 + 100) + 'MB',
+              optimizedSize: Math.floor(Math.random() * 20 + 30) + 'MB',
+              speedup: (Math.random() * 2 + 2).toFixed(1) + 'x',
+              quantization: '8-bit',
+              inferenceTime: Math.floor(Math.random() * 50 + 20) + 'ms'
+            },
+            summary: `Optimized model from ${Math.floor(Math.random() * 50 + 100)}MB to ${Math.floor(Math.random() * 20 + 30)}MB. ${(Math.random() * 2 + 2).toFixed(1)}x faster inference at ${Math.floor(Math.random() * 50 + 20)}ms.`
+          };
+        
+        case 'a6': // Manta Ray Messenger - Federated Aggregation
+          return {
+            taskType: 'federated_aggregation' as const,
+            data: {
+              participants: Math.floor(Math.random() * 3 + 3),
+              aggregationMethod: 'FedAvg',
+              consensusRound: Math.floor(Math.random() * 10 + 1),
+              globalAccuracy: (Math.random() * 0.1 + 0.85).toFixed(3),
+              convergence: 'Improving'
+            },
+            summary: `Aggregated updates from ${Math.floor(Math.random() * 3 + 3)} participants. Global model accuracy: ${(Math.random() * 0.1 + 0.85).toFixed(3)}. Round ${Math.floor(Math.random() * 10 + 1)} complete.`
+          };
+        
+        default:
+          return null;
+      }
+    };
+
+    const operation = generateOperationData();
+    if (!operation) return;
+
+    // Add to task results with mock blockchain data
+    addTaskResult({
+      agentId: agent.id,
+      agentName: agent.name,
+      taskType: operation.taskType,
+      status: 'success',
+      data: {
+        ...operation.data,
+        deltaBlobId: `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        txDigest: Math.random() > 0.5 ? undefined : `0x${Math.random().toString(16).substr(2, 8)}...`
+      },
+      summary: operation.summary
+    });
+
+    addLog('A2A', `[${agent.name}] ✅ ${abilities.primary}: ${operation.summary.substring(0, 80)}...`);
+  }, [addTaskResult, addLog]);
+
+
   // --- Render ---
   const selectedAgent = selectedAgentId ? AGENTS.find(a => a.id === selectedAgentId) || null : null;
   
@@ -2353,6 +2477,7 @@ const App: React.FC = () => {
               onTrainingChange={setShowTrainingDashboard}
               trainingAgentId={trainingAgentId}
               trainingAgentName={trainingAgentName}
+              onTaskComplete={addTaskResult}
             />
           </div>
           

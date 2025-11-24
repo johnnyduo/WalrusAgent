@@ -13,6 +13,7 @@ interface CaptainControlPanelProps {
   onTrainingChange?: (show: boolean) => void;
   trainingAgentId?: string;
   trainingAgentName?: string;
+  onTaskComplete?: (result: any) => void;
 }
 
 export const CaptainControlPanel: React.FC<CaptainControlPanelProps> = ({
@@ -24,7 +25,8 @@ export const CaptainControlPanel: React.FC<CaptainControlPanelProps> = ({
   showTraining,
   onTrainingChange,
   trainingAgentId,
-  trainingAgentName
+  trainingAgentName,
+  onTaskComplete
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showTrainingDashboard, setShowTrainingDashboard] = useState(false);
@@ -103,6 +105,7 @@ export const CaptainControlPanel: React.FC<CaptainControlPanelProps> = ({
           agentId={agentToTrain}
           agentName={agentToTrainName}
           onClose={() => setTrainingOpen(false)}
+          onTaskComplete={onTaskComplete}
         />,
         document.body
       )}
