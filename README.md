@@ -697,6 +697,6 @@ struct RewardPool has key {
 
 <div align="center">
 
-© 2025 WALRUS - Tokenized AI Agents. All rights reserved.
+© 2025 WALRUS AGENTS - Tokenized AI Agents. All rights reserved.
 
 </div>
