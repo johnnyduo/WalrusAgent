@@ -260,12 +260,12 @@ const result = await walrusService.uploadModelWeights(
 ### 🤖 7 AI Agent Specialists
 Each agent has a unique role in the distributed training pipeline:
 - 🐋 **Walrus Commander** (a0) - Distributed training coordination & epoch management
-- 🦅 **Eagleton Skywatcher** (a1) - Data preprocessing & feature engineering
-- 🦉 **Athena Nightwing** (a2) - Model architecture design & optimization
-- 🦊 **Reynard Swift** (a3) - Gradient computation & backpropagation
-- 🐻 **Ursus Guardian** (a4) - Model validation & quality assurance
-- 🐺 **Luna Mysticfang** (a5) - Inference optimization & quantization
-- 🐦 **Corvus Messenger** (a6) - Federated aggregation & consensus
+- 🐟 **Flying Fish Scout** (a1) - Data preprocessing & feature engineering
+- 🐙 **Octopus Architect** (a2) - Model architecture design & optimization
+- 🐬 **Dolphin Trainer** (a3) - Gradient computation & backpropagation
+- 🐢 **Sea Turtle Guardian** (a4) - Model validation & quality assurance
+- 🪼 **Jellyfish Mystic** (a5) - Inference optimization & quantization
+- 🦈 **Manta Ray Messenger** (a6) - Federated aggregation & consensus
 
 ### ⛓️ Sui Blockchain Integration
 **Smart Contracts (DEPLOYED ✅):**
