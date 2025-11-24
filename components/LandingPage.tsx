@@ -29,7 +29,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
           </div>
           <button
             onClick={onLaunchApp}
-            className="px-5 py-2 bg-gradient-to-r from-walrus-teal to-walrus-purple hover:from-walrus-teal/90 hover:to-walrus-purple/90 rounded border-0 transition-all duration-300 flex items-center gap-2 text-black text-sm font-display font-bold tracking-tight shadow-lg hover:shadow-walrus-purple/50"
+            className="px-5 py-2 bg-gradient-to-r from-walrus-teal to-walrus-purple hover:from-walrus-teal/90 hover:to-walrus-purple/90 rounded border-0 transition-all duration-300 flex items-center gap-2 text-black text-sm font-display tracking-tight shadow-lg hover:shadow-walrus-purple/50"
           >
             Launch App <ArrowRight size={16} />
           </button>

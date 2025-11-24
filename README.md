@@ -75,8 +75,9 @@ This isn't just a demo—it's a fully functional tokenized AI agent ecosystem wi
 - **NFT-Based Agents**: Mint AI agents as Sui NFTs with metadata on Walrus
 - **Multi-Agent Training**: 7 specialized agents coordinate the training pipeline
 - **Real ML Training**: 41-parameter neural network with actual backpropagation
-- **Seal Certification**: Training gradients uploaded with cryptographic proof
-- **On-Chain Tracking**: Agent registry and rewards system (deployed to Sui testnet)
+- **Walrus Storage**: Model weights permanently stored on Walrus Protocol with Seal certification
+- **Cryptographic Proof**: Every training contribution gets a Walrus Seal certificate
+- **On-Chain Rewards**: Contributors earn SUI tokens tracked via smart contracts on Sui blockchain
 - **Live Metrics**: Real-time loss/accuracy improvements during training
 
 ---
